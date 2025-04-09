@@ -28,6 +28,8 @@ public class AuthUserServiceImpl implements AuthUserService {
                 throw new UserAlreadyExistsException("user this username "+ signUpDto + " already exists");
             }
             userRepository.save(mapperToUserModel(signUpDto));
+        } catch (UserAlreadyExistsException e){
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +52,9 @@ public class AuthUserServiceImpl implements AuthUserService {
         UserModel userModel = new UserModel(
                 signUpDto.name(),
                 signUpDto.lastname(),
-                signUpDto.password()
+                signUpDto.password(),
+                false,
+                false
         );
 
         return addUsername(userModel, signUpDto.username());

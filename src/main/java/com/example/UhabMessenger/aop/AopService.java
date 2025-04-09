@@ -1,9 +1,7 @@
 package com.example.UhabMessenger.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -14,7 +12,7 @@ public class AopService {
 
     private static final Logger log = LoggerFactory.getLogger(AopService.class);
 
-    @Pointcut("execution(* com.example.UhabMessenger.controller.AuthorizationController+)")
+    @Pointcut("within(com.example.UhabMessenger.controller.AuthorizationController+)")
     public void userSignUp(){}
 
     @Around("userSignUp()")
@@ -25,6 +23,16 @@ public class AopService {
         Object result = joinPoint.proceed(args);
         log.info("<<<<<<<<<<<AROUND AFTER SIGNUP>>>>>>>>>>>>>>");
         return result;
+    }
+
+    @Before("userSignUp()")
+    public void beforeUserSignUp() {
+        log.info("======before======");
+    }
+
+    @AfterThrowing("userSignUp()")
+    public void afterThrowing() {
+        log.info("======== was be exception ========");
     }
 
 }

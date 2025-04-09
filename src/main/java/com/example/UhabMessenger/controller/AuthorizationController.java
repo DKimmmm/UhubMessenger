@@ -10,16 +10,18 @@ import com.example.UhabMessenger.statusCodes.HttpCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping
+@RequestMapping("authorization")
 @RequiredArgsConstructor
 public class AuthorizationController {
 
     private final AuthUserService authUserService;
 
+    @PostMapping("signUp")
     public ResponseEntity<Void> signUp(SignUpDto signUpDto) {
         try {
             authUserService.signUp(signUpDto);
@@ -37,6 +39,7 @@ public class AuthorizationController {
         }
     }
 
+    @PostMapping("login")
     public ResponseEntity<?> login(LoginDto loginDto) {
         try {
             authUserService.login(loginDto);

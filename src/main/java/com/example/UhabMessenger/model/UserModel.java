@@ -16,7 +16,7 @@ import java.util.UUID;
 @Data
 public class UserModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID userId;
     @Column(name = "\"name\"")
@@ -30,9 +30,11 @@ public class UserModel {
     @Column(name = "approved_email")
     private Boolean approvedEmail;
 
-    public UserModel(String name, String lastname, String password) {
+    public UserModel(String name, String lastname, String password, boolean approvedPhone, boolean approvedEmail) {
         this.name = name;
         this.lastname = lastname;
         this.password = password;
+        this.approvedPhone = approvedPhone;
+        this.approvedEmail = approvedEmail;
     }
 }

@@ -1,5 +1,6 @@
 create table if not exists public.users(
-    user_id serial primary key,
+    user_id uuid primary key,
+--    user_id uuid primary key default gen_random_uuid(),
     "name" varchar(50) not null,
     lastname varchar(80) not null,
     phone varchar(20),
