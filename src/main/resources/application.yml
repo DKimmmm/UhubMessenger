@@ -20,8 +20,8 @@ spring:
 logging:
   level:
     org.springframework.transaction: DEBUG
-#    org.springframework.orm.jpa: DEBUG
-#    org.springframework.jdbc: DEBUG
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.jdbc: DEBUG
     org.springframework.aop: DEBUG
 #    org.springframework.transaction.support: TRACE
 
