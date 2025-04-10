@@ -61,15 +61,6 @@ public class AuthUserServiceImpl implements AuthUserService {
                 mapstructService.toUserModel(signUpDto),
                 signUpDto.username()
         );
-//        UserModel userModel = new UserModel(
-//                signUpDto.name(),
-//                signUpDto.lastname(),
-//                signUpDto.password(),
-//                false,
-//                false
-//        );
-//
-//        return addUsername(userModel, signUpDto.username());
     }
 
     private UserModel addUsername(UserModel userModel, String username) {

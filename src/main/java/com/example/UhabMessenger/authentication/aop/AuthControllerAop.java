@@ -13,7 +13,7 @@ public class AuthControllerAop {
 
     private static final Logger log = LoggerFactory.getLogger(AuthControllerAop.class);
 
-    @Pointcut("execution(* com.example.UhabMessenger.controller.AuthorizationController.signUp(..))")
+    @Pointcut("execution(* com.example.UhabMessenger.authentication.controller.AuthorizationController.signUp(..))")
     public void userSignUp(){}
 
     @Around("userSignUp()")
@@ -28,7 +28,7 @@ public class AuthControllerAop {
 
     @Before("userSignUp()")
     public void beforeUserSignUp() {
-        log.info("======before======");
+        log.info("============== before signup ==============");
     }
 
     @AfterThrowing("userSignUp()")
@@ -36,12 +36,12 @@ public class AuthControllerAop {
         log.info("======== was be exception ========");
     }
 
-    @Pointcut("execution(* com.example.UhabMessenger.controller.AuthorizationController.login(..))")
+    @Pointcut("execution(* com.example.UhabMessenger..AuthorizationController.login(..))")
     public void pointcutLogin(){}
 
     @After("pointcutLogin()")
     public void beforeLogin(JoinPoint joinPoint) {
-        log.info("<<<<<<<<<<< AFTER USER LOGIN >>>>>>>>>>>> {}", joinPoint.getArgs()[0].toString());
+        log.info("============== after login ============== {}", joinPoint.getArgs()[0].toString());
     }
 
 }
