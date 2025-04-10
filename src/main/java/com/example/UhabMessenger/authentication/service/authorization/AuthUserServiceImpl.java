@@ -1,11 +1,12 @@
-package com.example.UhabMessenger.service.authorization;
+package com.example.UhabMessenger.authentication.service.authorization;
 
-import com.example.UhabMessenger.dto.LoginDto;
-import com.example.UhabMessenger.exception.UncorrectedPasswordException;
-import com.example.UhabMessenger.exception.UserAlreadyExistsException;
-import com.example.UhabMessenger.dto.SignUpDto;
-import com.example.UhabMessenger.model.UserModel;
-import com.example.UhabMessenger.repository.UserRepository;
+import com.example.UhabMessenger.authentication.dto.LoginDto;
+import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
+import com.example.UhabMessenger.authentication.exception.UserAlreadyExistsException;
+import com.example.UhabMessenger.authentication.dto.SignUpDto;
+import com.example.UhabMessenger.authentication.mapper.MapstructService;
+import com.example.UhabMessenger.authentication.model.UserModel;
+import com.example.UhabMessenger.authentication.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthUserServiceImpl implements AuthUserService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthUserServiceImpl.class);
+    private final MapstructService mapstructService;
 
     private final UserRepository userRepository;
+
+//    @Autowired
+//    public AuthUserServiceImpl(MapstructService mapstructService, UserRepository userRepository) {
+//        this.mapstructService = mapstructService;
+//        this.userRepository = userRepository;
+//    }
 
     @Override
     @Transactional
@@ -49,15 +57,19 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     private UserModel mapperToUserModel(SignUpDto signUpDto) {
-        UserModel userModel = new UserModel(
-                signUpDto.name(),
-                signUpDto.lastname(),
-                signUpDto.password(),
-                false,
-                false
+        return addUsername(
+                mapstructService.toUserModel(signUpDto),
+                signUpDto.username()
         );
-
-        return addUsername(userModel, signUpDto.username());
+//        UserModel userModel = new UserModel(
+//                signUpDto.name(),
+//                signUpDto.lastname(),
+//                signUpDto.password(),
+//                false,
+//                false
+//        );
+//
+//        return addUsername(userModel, signUpDto.username());
     }
 
     private UserModel addUsername(UserModel userModel, String username) {

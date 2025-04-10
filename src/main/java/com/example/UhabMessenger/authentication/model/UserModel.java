@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.model;
+package com.example.UhabMessenger.authentication.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,9 +25,9 @@ public class UserModel {
     private String phone;
     private String email;
     private String password;
-    @Column(name = "approved_phone")
+    @Column(name = "approved_phone", insertable = false)
     private Boolean approvedPhone;
-    @Column(name = "approved_email")
+    @Column(name = "approved_email", insertable = false)
     private Boolean approvedEmail;
 
     public UserModel(String name, String lastname, String password, boolean approvedPhone, boolean approvedEmail) {

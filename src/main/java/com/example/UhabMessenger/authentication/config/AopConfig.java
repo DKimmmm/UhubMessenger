@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.config;
+package com.example.UhabMessenger.authentication.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;

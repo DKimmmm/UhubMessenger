@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.dto;
+package com.example.UhabMessenger.authentication.dto;
 
 public record LoginDto(
         String username,

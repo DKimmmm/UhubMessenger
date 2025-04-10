@@ -1,0 +1,45 @@
+package com.example.UhabMessenger.authentication.secutiry;
+
+//import com.example.Java_Server_Part.model.UserModel;
+//import com.example.Java_Server_Part.service.UserService;
+
+import com.example.UhabMessenger.authentication.model.UserModel;
+import com.example.UhabMessenger.authentication.repository.UserRepository;
+import com.example.UhabMessenger.authentication.service.main.MainUserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final MainUserService userService;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserModel userModel = null;
+        try {
+            userModel = userService.getUserByUsername(username);
+        } catch (Exception e) {
+            log.warn("error in load user by email");
+        }
+        String currentPassword = userModel.getPassword();
+//        log.info("find by user name : {}, : password {}, role : {}", username, currentPassword, userModel.getRole());
+        String encodedPassword = passwordEncoder.encode(currentPassword);
+        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return new UserPrincipal(username, encodedPassword, authorities); // Убедитесь, что роли добавляются в UserPrincipal
+    }
+}
+

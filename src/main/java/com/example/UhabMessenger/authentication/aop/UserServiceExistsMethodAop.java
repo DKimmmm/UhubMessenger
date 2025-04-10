@@ -1,6 +1,5 @@
-package com.example.UhabMessenger.aop;
+package com.example.UhabMessenger.authentication.aop;
 
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

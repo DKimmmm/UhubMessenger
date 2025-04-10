@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.exception;
+package com.example.UhabMessenger.authentication.exception;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException(String message) {

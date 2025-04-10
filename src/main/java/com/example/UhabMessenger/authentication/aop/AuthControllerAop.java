@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.aop;
+package com.example.UhabMessenger.authentication.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
