@@ -7,15 +7,17 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-  sql:
-    init:
-      schema-locations: classpath:sql/schema.sql
-#      data-locations: classpath:sql/data.sql
-      mode: always
+  liquibase:
+    change-log: classpath:db/liquibase/liquibase-changelog.yaml
+  #  sql:
+#    init:
+#      schema-locations: classpath:sql/schema.sql
+##      data-locations: classpath:sql/data.sql
+#      mode: always
 
   jpa:
     hibernate:
-      ddl-auto=update:
+      ddl-auto: none
 
 logging:
   level:

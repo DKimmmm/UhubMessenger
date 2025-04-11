@@ -7,6 +7,7 @@ import com.example.UhabMessenger.authentication.dto.SignUpDto;
 import com.example.UhabMessenger.authentication.mapper.MapstructService;
 import com.example.UhabMessenger.authentication.model.UserModel;
 import com.example.UhabMessenger.authentication.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     @Transactional
-    public void signUp(SignUpDto signUpDto) {
+    public void signup(SignUpDto signUpDto, HttpServletResponse response) {
         try {
             if (checkForAlreadyExists(signUpDto.username())) {
                 throw new UserAlreadyExistsException("user this username "+ signUpDto + " already exists");
@@ -46,7 +47,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     @Transactional(readOnly = true)
-    public void login(LoginDto loginDto) {
+    public void login(LoginDto loginDto, HttpServletResponse response) {
         if (!checkForAlreadyExists(loginDto.username())) {
             throw new UncorrectedPasswordException("user login fail with username: " + loginDto.username());
         }

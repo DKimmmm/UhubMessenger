@@ -7,6 +7,7 @@ import com.example.UhabMessenger.authentication.exception.UserAlreadyExistsExcep
 import com.example.UhabMessenger.authentication.dto.SignUpDto;
 import com.example.UhabMessenger.authentication.service.authorization.AuthUserService;
 import com.example.UhabMessenger.authentication.statusCodes.HttpCodes;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,10 @@ public class AuthorizationController {
     private final AuthUserService authUserService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(SignUpDto signUpDto) {
+    public ResponseEntity<Void> signUp(SignUpDto signUpDto, HttpServletResponse response) {
 
         try {
-            authUserService.signUp(signUpDto);
+            authUserService.signup(signUpDto, response);
             return ResponseEntity.ok().build();
         } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(
@@ -45,9 +46,10 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(LoginDto loginDto) {
+    public ResponseEntity<?> login(LoginDto loginDto, HttpServletResponse response) {
         try {
-            authUserService.login(loginDto);
+            authUserService.login(loginDto, response);
+
             return ResponseEntity.ok().build();
         } catch (UncorrectedPasswordException e) {
             return new ResponseEntity<>(HttpStatus.valueOf(
