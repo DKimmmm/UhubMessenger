@@ -35,7 +35,8 @@ public class SecurityConfig {
     };
 
     private static final String[] AUTH_AUTHORIZATION = {
-            "/messenger"
+            "/messenger",
+            "/user-profile"
     };
 
     private final JwtTokenProvider jwtTokenProvider;

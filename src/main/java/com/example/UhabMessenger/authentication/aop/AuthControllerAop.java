@@ -62,7 +62,6 @@ public class AuthControllerAop {
     @Around("createAuthTokenHeader()")
     public Object createTokenIntoResponse(ProceedingJoinPoint joinPoint) throws Throwable{
         Object[] args = joinPoint.getArgs();
-        log.info(" = = = = = = =  = = = = = for token = = = = = = = = ==  = = = ");
         Object proceed = joinPoint.proceed(args);
         if (args.length >= 2) {
             Object arg1 = args[0];
