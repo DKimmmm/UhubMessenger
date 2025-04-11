@@ -3,3 +3,8 @@
 --(2, 'Seven', 'Sidorov', 'pass111'),
 --(3, 'Oleg', 'Alexeev', '1111')
 --ON CONFLICT (user_id) DO NOTHING;
+
+
+select * from public.users;
+
+select * from "public".images;

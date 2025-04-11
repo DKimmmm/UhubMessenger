@@ -1,5 +1,7 @@
 package com.example.UhabMessenger.user_data.service;
 
+import com.example.UhabMessenger.authentication.model.UserModel;
+import com.example.UhabMessenger.authentication.repository.UserRepository;
 import com.example.UhabMessenger.user_data.config.MinioInitializer;
 import com.example.UhabMessenger.user_data.model.ImageModel;
 import com.example.UhabMessenger.user_data.repository.ImageRepository;
@@ -12,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,29 +23,35 @@ public class MainService {
     private static final Logger log = LoggerFactory.getLogger(MainService.class);
     private final MinioInitializer minioInitializer;
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
 
-    public void uploadImage(MultipartFile file) throws Throwable {
+    public void uploadImage(MultipartFile file, UUID userId) throws Throwable {
         minioInitializer.uploadFile(file.getOriginalFilename(), file.getInputStream(), file.getSize());
 
-        imageSaveInPostgres(file);
+        imageSaveInPostgres(file, userId);
         log.info("дописать сохраннение в postgresql");
     }
 
-    private void imageSaveInPostgres(MultipartFile file) {
+    private void imageSaveInPostgres(MultipartFile file, UUID userId) {
         imageRepository.save(
                 ImageModel.builder()
                         .contentType(file.getContentType())
                         .size(file.getSize())
-                        .fileName(file.getOriginalFilename()).build());
+                        .fileName(file.getOriginalFilename())
+                        .userModel(findUserById(userId)).build());
     }
 
-    public void downloadImage(String fileName, HttpServletResponse response) throws Throwable {
-        ImageModel image = findInPostgres(fileName);
+    private UserModel findUserById(UUID userId) {
+        return userRepository.findById(userId).get();
+    }
+
+    public void downloadImage(UUID userId, HttpServletResponse response) throws Throwable {
+        ImageModel image = findInPostgres(findUserById(userId));
         if (image == null) {
             return;
         }
         log.info("---------------> -_----------------> image name {}", image.getFileName());
-        try (InputStream is = minioInitializer.downloadInputStream(fileName);
+        try (InputStream is = minioInitializer.downloadInputStream(image.getFileName());
              OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
             response.setContentType(image.getContentType());
@@ -52,9 +61,10 @@ public class MainService {
 
     }
 
-    private ImageModel findInPostgres(String fileName) {
+    private ImageModel findInPostgres(UserModel user) {
         try {
-            return imageRepository.findByFileName(fileName).get();
+            log.info("user name is {} - - - - - --- - -  - ---- - -", user.getName());
+            return imageRepository.findByUserModel(user).get();
         } catch (Exception e) {
             log.warn("error in find image in postgres");
             return null;

@@ -1,5 +1,6 @@
 package com.example.UhabMessenger.user_data.model;
 
+import com.example.UhabMessenger.authentication.model.UserModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +27,9 @@ public class ImageModel {
     @Column(name = "content_type")
     private String contentType;
     private Long size;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserModel userModel;
 
 }

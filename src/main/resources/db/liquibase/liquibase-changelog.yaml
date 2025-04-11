@@ -1,3 +1,7 @@
 databaseChangeLog:
   - include:
-      file: db/liquibase/scripts/create-table.sql
+      file: db/liquibase/scripts/1-create-table-images.sql
+  - include:
+      file: db/liquibase/scripts/2-alter-table-users.sql
+  - include:
+      file: db/liquibase/scripts/3-create-table-users.sql

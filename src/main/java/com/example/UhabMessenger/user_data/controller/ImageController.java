@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("image")
@@ -20,19 +22,20 @@ public class ImageController {
 
     private final MainService mainService;
 
-    @PostMapping(value = "create/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> save(@RequestPart MultipartFile multipartFile) throws Throwable {
-        mainService.uploadImage(multipartFile);
+    @PostMapping(value = "create/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> save(@PathVariable UUID userId,
+                                  @RequestPart MultipartFile multipartFile) throws Throwable {
+        mainService.uploadImage(multipartFile, userId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("download")
-    public ResponseEntity<?> downloadImage(@RequestParam String fileName, HttpServletResponse response) {
+    public ResponseEntity<?> downloadImage(@RequestParam UUID userId, HttpServletResponse response) {
         try {
-            mainService.downloadImage(fileName, response);
+            mainService.downloadImage(userId, response);
             return ResponseEntity.ok().build();
         } catch (Throwable e) {
-            return new ResponseEntity<>(HttpStatus.valueOf(444));
+            return new ResponseEntity<>(HttpStatus.valueOf(415));
         }
     }
 }
