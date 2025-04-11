@@ -1,19 +1,27 @@
 server:
   port: 8081
 
+minio:
+  url: http://localhost:9000
+  access-key: minio_user
+  secret-key: password123
+  bucket-name: "photo-bucket"
+
 spring:
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+
+
   liquibase:
     change-log: classpath:db/liquibase/liquibase-changelog.yaml
   #  sql:
-#    init:
-#      schema-locations: classpath:sql/schema.sql
-##      data-locations: classpath:sql/data.sql
-#      mode: always
+  #    init:
+  #      schema-locations: classpath:sql/schema.sql
+  ##      data-locations: classpath:sql/data.sql
+  #      mode: always
 
   jpa:
     hibernate:
