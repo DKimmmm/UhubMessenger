@@ -9,3 +9,11 @@ create table if not exists public.users(
     approved_phone boolean not null default false,
     approved_email boolean not null default false
 );
+
+
+create table if not exists public.images (
+    image_id uuid primary key,
+    file_name varchar(255),
+    content_type varchar(255),
+    size integer
+);

@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.user_data.controller.config;
+package com.example.UhabMessenger.user_data.config;
 
 import io.minio.*;
 import io.minio.errors.*;
@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -80,6 +81,24 @@ public class MinioInitializer {
         log.info(
                 "'{}' is successfully uploaded as object '{}' to bucket '{}'.",
                 fileName, fileName, bucketName);
+    }
+
+    public InputStream downloadInputStream(String fileName) throws Throwable{
+        InputStream inputStream = minioClient.getObject(
+                GetObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(fileName)
+                        .build());
+//        imageSaveInPostgres(file);
+
+        log.info(
+                "Object '{}' is successfully downloaded from bucket '{}'.",
+                fileName, bucketName);
+
+        return inputStream;
+    }
+
+    private void imageSaveInPostgres(MultipartFile file) {
     }
 
 }
