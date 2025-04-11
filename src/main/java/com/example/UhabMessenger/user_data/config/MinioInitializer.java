@@ -6,7 +6,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,19 +57,14 @@ public class MinioInitializer {
                         .credentials(accessKey, secretKey)
                         .build();
 
-        // Make 'asiatrip' bucket if not exist.
         boolean found =
                 minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
         if (!found) {
-            // Make a new bucket called 'asiatrip'.
-            log.info("------------------ bucket {}, !found build", bucketName);
             minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-        } else {
-            log.info("------------------ Bucket {} already exists.", bucketName);
         }
     }
 
-    public void uploadFile(String fileName, InputStream inputStream, long contentLength) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public void uploadFile(String fileName, InputStream inputStream, long contentLength) throws Throwable{
         minioClient.putObject(
                 PutObjectArgs.builder()
                         .bucket(bucketName)
@@ -83,13 +77,12 @@ public class MinioInitializer {
                 fileName, fileName, bucketName);
     }
 
-    public InputStream downloadInputStream(String fileName) throws Throwable{
+    public InputStream downloadInputStream(String fileName) throws Throwable {
         InputStream inputStream = minioClient.getObject(
                 GetObjectArgs.builder()
                         .bucket(bucketName)
                         .object(fileName)
                         .build());
-//        imageSaveInPostgres(file);
 
         log.info(
                 "Object '{}' is successfully downloaded from bucket '{}'.",
@@ -98,7 +91,16 @@ public class MinioInitializer {
         return inputStream;
     }
 
-    private void imageSaveInPostgres(MultipartFile file) {
+    public void deleteFile(String fileName) throws Throwable{
+        minioClient.removeObject(
+                RemoveObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(fileName)
+                        .build());
+
+        log.info(
+                "Object '{}' is successfully deleted from bucket '{}'.",
+                fileName, bucketName);
     }
 
 }

@@ -48,9 +48,7 @@ public class AuthorizationController {
     @PostMapping("/login")
     public ResponseEntity<?> login(LoginDto loginDto, HttpServletResponse response) {
         try {
-            authUserService.login(loginDto, response);
-
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(authUserService.login(loginDto, response));
         } catch (UncorrectedPasswordException e) {
             return new ResponseEntity<>(HttpStatus.valueOf(
                     HttpCodes.UncorrectedPassword.getCode()

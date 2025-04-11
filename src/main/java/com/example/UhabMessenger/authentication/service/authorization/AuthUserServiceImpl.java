@@ -7,12 +7,15 @@ import com.example.UhabMessenger.authentication.dto.SignUpDto;
 import com.example.UhabMessenger.authentication.mapper.MapstructService;
 import com.example.UhabMessenger.authentication.model.UserModel;
 import com.example.UhabMessenger.authentication.repository.UserRepository;
+import com.example.UhabMessenger.authentication.service.main.MainUserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     private final MapstructService mapstructService;
 
     private final UserRepository userRepository;
+    private final MainUserService userService;
 
 //    @Autowired
 //    public AuthUserServiceImpl(MapstructService mapstructService, UserRepository userRepository) {
@@ -47,10 +51,15 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     @Transactional(readOnly = true)
-    public void login(LoginDto loginDto, HttpServletResponse response) {
+    public UUID login(LoginDto loginDto, HttpServletResponse response) {
         if (!checkForAlreadyExists(loginDto.username())) {
             throw new UncorrectedPasswordException("user login fail with username: " + loginDto.username());
         }
+        return findIdByUsername(loginDto.username());
+    }
+
+    private UUID findIdByUsername(String username) {
+        return userService.getUserByUsername(username).getUserId();
     }
 
     private boolean checkForAlreadyExists(String username) {

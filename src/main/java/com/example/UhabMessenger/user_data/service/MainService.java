@@ -7,6 +7,7 @@ import com.example.UhabMessenger.user_data.model.ImageModel;
 import com.example.UhabMessenger.user_data.repository.ImageRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,19 +27,27 @@ public class MainService {
     private final UserRepository userRepository;
 
     public void uploadImage(MultipartFile file, UUID userId) throws Throwable {
-        minioInitializer.uploadFile(file.getOriginalFilename(), file.getInputStream(), file.getSize());
+        deleteIfAlreadyExists(userId);
+        minioInitializer.uploadFile(
+                file.getOriginalFilename(),
+                file.getInputStream(), file.getSize());
 
         imageSaveInPostgres(file, userId);
-        log.info("дописать сохраннение в postgresql");
     }
 
-    private void imageSaveInPostgres(MultipartFile file, UUID userId) {
+    private void imageSaveInPostgres(MultipartFile file, UUID userId) throws Throwable{
+
         imageRepository.save(
                 ImageModel.builder()
                         .contentType(file.getContentType())
                         .size(file.getSize())
                         .fileName(file.getOriginalFilename())
                         .userModel(findUserById(userId)).build());
+    }
+
+    @SneakyThrows
+    private void deleteIfAlreadyExists(UUID userId){
+        deleteImage(userId);
     }
 
     private UserModel findUserById(UUID userId) {
@@ -64,10 +73,22 @@ public class MainService {
     private ImageModel findInPostgres(UserModel user) {
         try {
             log.info("user name is {} - - - - - --- - -  - ---- - -", user.getName());
-            return imageRepository.findByUserModel(user).get();
+            return imageRepository.findByUserModel(user).getFirst().get();
         } catch (Exception e) {
             log.warn("error in find image in postgres");
             return null;
+        }
+    }
+
+    public void deleteImage(UUID userId) throws Throwable {
+        try {
+            ImageModel imageModel = imageRepository.findByUserModel(findUserById(userId)).getFirst().get();
+            String fileName = imageModel.getFileName();
+            minioInitializer.deleteFile(fileName);
+            imageRepository.delete(imageModel);
+            log.info("image with name {}, was be deleted", fileName);
+        } catch (Throwable e) {
+            log.info("file not found or delete error");
         }
     }
 }
