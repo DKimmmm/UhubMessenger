@@ -4,6 +4,7 @@ import com.example.UhabMessenger.user_data.service.MainService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.HttpEntity;
@@ -22,9 +23,10 @@ public class ImageController {
 
     private final MainService mainService;
 
+    @SneakyThrows
     @PostMapping(value = "/create/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> save(@PathVariable UUID userId,
-                                  @RequestPart MultipartFile multipartFile) throws Throwable {
+                                  @RequestPart MultipartFile multipartFile) {
         mainService.uploadImage(multipartFile, userId);
         return ResponseEntity.ok().build();
     }

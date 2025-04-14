@@ -26,27 +26,28 @@ public class MainService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
 
-    public void uploadImage(MultipartFile file, UUID userId) throws Throwable {
+    @SneakyThrows
+    public void uploadImage(MultipartFile file, UUID userId) {
         deleteIfAlreadyExists(userId);
-        minioInitializer.uploadFile(
-                file.getOriginalFilename(),
-                file.getInputStream(), file.getSize());
+        minioInitializer.uploadFile(file.getOriginalFilename(), file.getInputStream(), file.getSize());
 
         imageSaveInPostgres(file, userId);
     }
 
-    private void imageSaveInPostgres(MultipartFile file, UUID userId) throws Throwable{
+    @SneakyThrows
+    private void imageSaveInPostgres(MultipartFile file, UUID userId) {
 
-        imageRepository.save(
-                ImageModel.builder()
-                        .contentType(file.getContentType())
-                        .size(file.getSize())
-                        .fileName(file.getOriginalFilename())
-                        .userModel(findUserById(userId)).build());
+        imageRepository.save(ImageModel.builder()
+                .contentType(file.getContentType())
+                .size(file.getSize())
+                .fileName(file.getOriginalFilename())
+                .userModel(findUserById(userId))
+                .build());
+
     }
 
     @SneakyThrows
-    private void deleteIfAlreadyExists(UUID userId){
+    private void deleteIfAlreadyExists(UUID userId) {
         deleteImage(userId);
     }
 
@@ -54,14 +55,13 @@ public class MainService {
         return userRepository.findById(userId).get();
     }
 
-    public void downloadImage(UUID userId, HttpServletResponse response) throws Throwable {
+    @SneakyThrows
+    public void downloadImage(UUID userId, HttpServletResponse response) {
         ImageModel image = findInPostgres(findUserById(userId));
         if (image == null) {
             return;
         }
-        log.info("---------------> -_----------------> image name {}", image.getFileName());
-        try (InputStream is = minioInitializer.downloadInputStream(image.getFileName());
-             OutputStream os = response.getOutputStream()) {
+        try (InputStream is = minioInitializer.downloadInputStream(image.getFileName()); OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
             response.setContentType(image.getContentType());
             response.setContentLength(image.getSize().intValue());
@@ -72,7 +72,6 @@ public class MainService {
 
     private ImageModel findInPostgres(UserModel user) {
         try {
-            log.info("user name is {} - - - - - --- - -  - ---- - -", user.getName());
             return imageRepository.findByUserModel(user).getFirst().get();
         } catch (Exception e) {
             log.warn("error in find image in postgres");
@@ -80,13 +79,13 @@ public class MainService {
         }
     }
 
-    public void deleteImage(UUID userId) throws Throwable {
+    @SneakyThrows
+    public void deleteImage(UUID userId) {
         try {
             ImageModel imageModel = imageRepository.findByUserModel(findUserById(userId)).getFirst().get();
             String fileName = imageModel.getFileName();
             minioInitializer.deleteFile(fileName);
             imageRepository.delete(imageModel);
-            log.info("image with name {}, was be deleted", fileName);
         } catch (Throwable e) {
             log.info("file not found or delete error");
         }

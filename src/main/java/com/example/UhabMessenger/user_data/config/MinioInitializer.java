@@ -1,23 +1,18 @@
 package com.example.UhabMessenger.user_data.config;
 
 import io.minio.*;
-import io.minio.errors.*;
 import jakarta.annotation.PostConstruct;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 @Slf4j
 @Component
-//@RequiredArgsConstructor
 public class MinioInitializer {
 
-    //    private final S3Client s3Client;
     private MinioClient minioClient;
 
     @Value("${minio.bucket-name}")
@@ -31,26 +26,10 @@ public class MinioInitializer {
 
     @Value("${minio.secret-key}")
     private String secretKey;
-//
-//    public MinioInitializer(S3Client s3Client) {
-//        this.s3Client = s3Client;
-//    }
 
-//    @PostConstruct
-//    public void init() {
-//        log.info("bucket name is {}", bucketName);
-//
-//        try {
-//            // Проверяем, существует ли бакет
-//            s3Client.headBucket(HeadBucketRequest.builder().bucket(bucketName).build());
-//        } catch (Exception e) {
-//            // Если бакет не существует, создаем его
-//            s3Client.createBucket(CreateBucketRequest.builder().bucket(bucketName).build());
-//        }
-//    }
-
+    @SneakyThrows
     @PostConstruct
-    public void init() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public void init() {
         minioClient =
                 MinioClient.builder()
                         .endpoint(minioUrl)
@@ -64,7 +43,8 @@ public class MinioInitializer {
         }
     }
 
-    public void uploadFile(String fileName, InputStream inputStream, long contentLength) throws Throwable{
+    @SneakyThrows
+    public void uploadFile(String fileName, InputStream inputStream, long contentLength) {
         minioClient.putObject(
                 PutObjectArgs.builder()
                         .bucket(bucketName)
@@ -77,7 +57,8 @@ public class MinioInitializer {
                 fileName, fileName, bucketName);
     }
 
-    public InputStream downloadInputStream(String fileName) throws Throwable {
+    @SneakyThrows
+    public InputStream downloadInputStream(String fileName){
         InputStream inputStream = minioClient.getObject(
                 GetObjectArgs.builder()
                         .bucket(bucketName)
@@ -91,7 +72,8 @@ public class MinioInitializer {
         return inputStream;
     }
 
-    public void deleteFile(String fileName) throws Throwable{
+    @SneakyThrows
+    public void deleteFile(String fileName){
         minioClient.removeObject(
                 RemoveObjectArgs.builder()
                         .bucket(bucketName)

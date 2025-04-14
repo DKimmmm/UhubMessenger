@@ -23,7 +23,6 @@ public class ImageModel {
     private UUID imageId;
     @Column(name = "file_name")
     private String fileName;
-    //    private String minioPath;
     @Column(name = "content_type")
     private String contentType;
     private Long size;
