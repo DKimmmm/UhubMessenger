@@ -8,13 +8,17 @@ import com.example.UhabMessenger.authentication.exception.UserAlreadyExistsExcep
 import com.example.UhabMessenger.authentication.service.authorization.AuthUserService;
 import com.example.UhabMessenger.authentication.statusCodes.HttpCodes;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/authorization")
 @RequiredArgsConstructor
@@ -24,8 +28,7 @@ public class AuthorizationController {
     private final AuthUserService authUserService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(SignUpDto signUpDto, HttpServletResponse response) {
-
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpDto signUpDto, HttpServletResponse response) {
         try {
             authUserService.signup(signUpDto, response);
             return ResponseEntity.ok().build();
@@ -43,7 +46,7 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
         try {
             return ResponseEntity.ok(authUserService.login(loginDto, response));
         } catch (UncorrectedPasswordException e) {
