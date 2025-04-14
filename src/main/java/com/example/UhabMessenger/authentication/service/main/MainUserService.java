@@ -18,7 +18,6 @@ public class MainUserService {
     private final UserRepository userRepository;
 
     public UserModel getUserByUsername(String username) {
-        log.info("add custom exception");
         if (usernameIsEmailFormat(username)) {
             return findUserByEmail(username);
         } else if (usernameIsPhoneFormat(username)) {

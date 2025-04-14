@@ -9,6 +9,7 @@ import com.example.UhabMessenger.authentication.mapper.MapstructService;
 import com.example.UhabMessenger.authentication.model.UserModel;
 import com.example.UhabMessenger.authentication.repository.UserRepository;
 import com.example.UhabMessenger.authentication.service.main.MainUserService;
+import com.example.UhabMessenger.authentication.validation.PhoneOrEmailValidator;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -69,24 +70,21 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     private UserModel addUsername(UserModel userModel, String username) {
-        log.info("add custom exception");
-        if (usernameIsEmailFormatted()) {
+        if (usernameIsEmailFormatted(username)) {
             userModel.setEmail(username);
-        } else if (usernameIsPhoneFormatted()) {
+        } else if (usernameIsPhoneFormatted(username)) {
             userModel.setPhone(username);
         } else {
-            throw new RuntimeException();
+            throw new AuthorizationErrorException("wrong username");
         }
         return userModel;
     }
 
-    private boolean usernameIsPhoneFormatted() {
-        log.info("add check is this email or phone");
-        return true;
+    private boolean usernameIsPhoneFormatted(String username) {
+        return PhoneOrEmailValidator.matchersPhoneRegex(username);
     }
 
-    private boolean usernameIsEmailFormatted() {
-        log.info("add check is this email or phone");
-        return false;
+    private boolean usernameIsEmailFormatted(String username) {
+        return PhoneOrEmailValidator.matchersEmailRegex(username);
     }
 }

@@ -28,7 +28,7 @@ public class AuthorizationController {
     private final AuthUserService authUserService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpDto signUpDto, HttpServletResponse response) {
+    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpDto signUpDto, HttpServletResponse response) {
         try {
             authUserService.signup(signUpDto, response);
             return ResponseEntity.ok().build();
@@ -46,7 +46,7 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
         try {
             return ResponseEntity.ok(authUserService.login(loginDto, response));
         } catch (UncorrectedPasswordException e) {
