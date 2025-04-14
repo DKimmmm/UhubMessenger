@@ -50,6 +50,10 @@ public class AuthorizationController {
             return new ResponseEntity<>(HttpStatus.valueOf(
                     HttpCodes.UncorrectedPassword.getCode()
             ));
+        } catch (AuthorizationErrorException e) {
+            return new ResponseEntity<>(HttpStatus.valueOf(
+                    HttpCodes.AuthorizationError.getCode()
+            ));
         }
     }
 
