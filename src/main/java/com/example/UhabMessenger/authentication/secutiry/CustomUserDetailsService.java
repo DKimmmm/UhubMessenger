@@ -1,10 +1,6 @@
 package com.example.UhabMessenger.authentication.secutiry;
 
-//import com.example.Java_Server_Part.model.UserModel;
-//import com.example.Java_Server_Part.service.UserService;
-
 import com.example.UhabMessenger.authentication.model.UserModel;
-import com.example.UhabMessenger.authentication.repository.UserRepository;
 import com.example.UhabMessenger.authentication.service.main.MainUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,10 +32,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             log.warn("error in load user by email");
         }
         String currentPassword = userModel.getPassword();
-//        log.info("find by user name : {}, : password {}, role : {}", username, currentPassword, userModel.getRole());
         String encodedPassword = passwordEncoder.encode(currentPassword);
         Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UserPrincipal(username, encodedPassword, authorities); // Убедитесь, что роли добавляются в UserPrincipal
+        return new UserPrincipal(username, encodedPassword, authorities);
     }
 }
 

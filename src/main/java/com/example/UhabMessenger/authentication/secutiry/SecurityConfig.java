@@ -1,4 +1,5 @@
 package com.example.UhabMessenger.authentication.secutiry;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,10 +22,6 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-//    private static final String FRONT_IP = ApiConfig.FRONT_IP;
-//    private static final String FRONT_PORT = ApiConfig.FRONT_PORT;
-
 
     private static final String[] AUTH_WHITELIST = {
             "/authorization/**",
@@ -49,7 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorization -> authorization
                                 .requestMatchers(AUTH_WHITELIST).permitAll()
                                 .requestMatchers(AUTH_AUTHORIZATION).authenticated()// Любой аутентифицированный пользователь
-//                        .anyRequest().denyAll() // Запрещаем все остальное
+                                .anyRequest().denyAll() // Запрещаем все остальное
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 

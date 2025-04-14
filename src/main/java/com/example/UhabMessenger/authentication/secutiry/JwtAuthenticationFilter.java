@@ -11,8 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -22,10 +20,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Извлекаем токен из заголовков запроса
+
         String token = jwtTokenProvider.resolveToken(request);
-        log.info("api is: [{}], token is: [{}], headers {}",
-                request.getServletPath(), token, request.getHeaderNames());
+        log.info("api is: [{}], token is: [{}]", request.getServletPath(), token);
         token = tokenBearerDelete(token);
 
         try {
@@ -38,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             log.warn("error in check token");
         }
-        // Продолжаем выполнение цепочки фильтров
+
         filterChain.doFilter(request, response);
     }
 

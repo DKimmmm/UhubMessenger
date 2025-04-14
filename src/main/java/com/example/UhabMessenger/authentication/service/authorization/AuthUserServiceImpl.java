@@ -1,6 +1,7 @@
 package com.example.UhabMessenger.authentication.service.authorization;
 
 import com.example.UhabMessenger.authentication.dto.LoginDto;
+import com.example.UhabMessenger.authentication.exception.AuthorizationErrorException;
 import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
 import com.example.UhabMessenger.authentication.exception.UserAlreadyExistsException;
 import com.example.UhabMessenger.authentication.dto.SignUpDto;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -27,12 +29,6 @@ public class AuthUserServiceImpl implements AuthUserService {
     private final UserRepository userRepository;
     private final MainUserService userService;
 
-//    @Autowired
-//    public AuthUserServiceImpl(MapstructService mapstructService, UserRepository userRepository) {
-//        this.mapstructService = mapstructService;
-//        this.userRepository = userRepository;
-//    }
-
     @Override
     @Transactional
     public void signup(SignUpDto signUpDto, HttpServletResponse response) {
@@ -41,13 +37,11 @@ public class AuthUserServiceImpl implements AuthUserService {
                 throw new UserAlreadyExistsException("user this username "+ signUpDto + " already exists");
             }
             userRepository.save(mapperToUserModel(signUpDto));
-        } catch (UserAlreadyExistsException e){
+        } catch (UserAlreadyExistsException | AuthorizationErrorException e){
+            log.warn("was be error {}", e.getMessage());
             throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -62,6 +56,7 @@ public class AuthUserServiceImpl implements AuthUserService {
         return userService.getUserByUsername(username).getUserId();
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private boolean checkForAlreadyExists(String username) {
         return userRepository.existsByPhone(username) || userRepository.existsByEmail(username);
     }

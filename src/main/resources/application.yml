@@ -13,7 +13,9 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+
   liquibase:
+    enabled: true
     change-log: classpath:db/liquibase/liquibase-changelog.yaml
 
   jpa:

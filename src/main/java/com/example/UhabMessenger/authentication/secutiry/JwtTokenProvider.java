@@ -18,15 +18,14 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    private final long JWT_EXPIRATION = 604800000L; // Время жизни токена - 7 дней
-//    private final SecretKey secretKey = Jwts.SIG.HS256.key().build();
+//    private final long JWT_EXPIRATION = 604800000L; // Время жизни токена - 7 дней
+//    private final SecretKey secretKey = Jwts.SIG.HS256.key().build(); // использование при деплое
 
     private final String JWT_SECRET = "yoursdfpauhg;lsdhghasidfhghpash[dfoahwedfskjajdsfnv;akldfhjadshfkjj";
     private final SecretKey secretKey = Keys.hmacShaKeyFor(JWT_SECRET.getBytes());
@@ -34,10 +33,11 @@ public class JwtTokenProvider {
     private final MainUserService userService;
 
     public String generateToken(Authentication authentication) {
+        log.warn("если деплой нужно заменить на нормальное создание токена");
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return Jwts.builder()
                 .subject(userPrincipal.getUsername())
-//                .issuedAt(new Date())
+//                .issuedAt(new Date())     // for deploy
 //                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
                 .signWith(secretKey)
                 .compact();
@@ -47,7 +47,7 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
-    // check token
+
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -71,9 +71,8 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         String username = claims.getSubject(); //извлечение ключегого поля элемента
-        // поиск user and his password
+
         UserModel userModel = userService.getUserByUsername(username);
-//        log.info("username in getAuthentication is {}", login);
 
         String currentPassword = userModel.getPassword();
 
@@ -81,8 +80,7 @@ public class JwtTokenProvider {
         Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         UserPrincipal userPrincipal = new UserPrincipal(username, encodePassword, authorities);
 
-        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(userPrincipal, "USER_ROLE", userPrincipal.getAuthorities());
-        return authenticationToken;
+        return new UsernamePasswordAuthenticationToken(userPrincipal, "USER_ROLE", userPrincipal.getAuthorities());
     }
 }
 

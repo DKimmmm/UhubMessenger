@@ -32,6 +32,5 @@ public class UserPrincipal implements UserDetails {
         return username;
     }
 
-    // Реализация других методов из интерфейса UserDetails
 }
 
