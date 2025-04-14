@@ -1,2 +1,2 @@
 drop table public.users;
-drop table public.tttable;
+drop table public.images;

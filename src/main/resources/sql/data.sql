@@ -1,9 +1,3 @@
---insert into public.users (user_id, "name", lastname, "password") values
---(1, 'Igor', 'Ivanov', 'pass123'),
---(2, 'Seven', 'Sidorov', 'pass111'),
---(3, 'Oleg', 'Alexeev', '1111')
---ON CONFLICT (user_id) DO NOTHING;
-
 
 select * from public.users;
 

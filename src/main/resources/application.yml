@@ -13,15 +13,8 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-
-
   liquibase:
     change-log: classpath:db/liquibase/liquibase-changelog.yaml
-  #  sql:
-  #    init:
-  #      schema-locations: classpath:sql/schema.sql
-  ##      data-locations: classpath:sql/data.sql
-  #      mode: always
 
   jpa:
     hibernate:
@@ -33,6 +26,3 @@ logging:
     org.springframework.orm.jpa: DEBUG
     org.springframework.jdbc: DEBUG
     org.springframework.aop: DEBUG
-#    org.springframework.transaction.support: TRACE
-
-#debug: true
