@@ -1,7 +1,7 @@
 package com.example.UhabMessenger.authentication.secutiry;
 
-import com.example.UhabMessenger.authentication.model.UserModel;
-import com.example.UhabMessenger.authentication.service.main.MainUserService;
+import com.example.UhabMessenger.userdata.model.UserModel;
+import com.example.UhabMessenger.userdata.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final MainUserService userService;
+    private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override

@@ -1,7 +1,7 @@
 package com.example.UhabMessenger.authentication.secutiry;
 
-import com.example.UhabMessenger.authentication.model.UserModel;
-import com.example.UhabMessenger.authentication.service.main.MainUserService;
+import com.example.UhabMessenger.userdata.model.UserModel;
+import com.example.UhabMessenger.userdata.service.user.main.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -30,7 +30,7 @@ public class JwtTokenProvider {
     private final String JWT_SECRET = "yoursdfpauhg;lsdhghasidfhghpash[dfoahwedfskjajdsfnv;akldfhjadshfkjj";
     private final SecretKey secretKey = Keys.hmacShaKeyFor(JWT_SECRET.getBytes());
 
-    private final MainUserService userService;
+    private final UserService userService;
 
     public String generateToken(Authentication authentication) {
         log.warn("если деплой нужно заменить на нормальное создание токена");

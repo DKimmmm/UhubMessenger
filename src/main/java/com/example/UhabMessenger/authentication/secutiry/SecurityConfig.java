@@ -29,7 +29,8 @@ public class SecurityConfig {
             "/v3/api-docs", // документация
             "/swagger-ui/**",
             "/v3/api-docs*/**",
-            "/image/**"// UI для Swagger
+            "/image/**",// UI для Swagger
+            "/post/**"
     };
 
     private static final String[] AUTH_AUTHORIZATION = {

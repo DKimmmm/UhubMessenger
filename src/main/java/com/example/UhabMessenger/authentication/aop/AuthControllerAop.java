@@ -1,7 +1,7 @@
 package com.example.UhabMessenger.authentication.aop;
 
-import com.example.UhabMessenger.authentication.dto.LoginDto;
-import com.example.UhabMessenger.authentication.service.authorization.TokenInjectionService;
+import com.example.UhabMessenger.userdata.dto.register.LoginDto;
+import com.example.UhabMessenger.userdata.service.user.authorization.TokenInjectionService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;

@@ -9,3 +9,7 @@ databaseChangeLog:
       file: db/liquibase/scripts/4-del-fk-image-user.sql
   - include:
       file: db/liquibase/scripts/5-create-user-image-table-connect.sql
+  - include:
+      file: db/liquibase/scripts/6-create-table-posts-and-userful-table.sql
+  - include:
+      file: db/liquibase/scripts/7-add-generate-post-image-table.sql

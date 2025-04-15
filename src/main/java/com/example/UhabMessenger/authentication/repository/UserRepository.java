@@ -1,6 +1,6 @@
 package com.example.UhabMessenger.authentication.repository;
 
-import com.example.UhabMessenger.authentication.model.UserModel;
+import com.example.UhabMessenger.userdata.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
