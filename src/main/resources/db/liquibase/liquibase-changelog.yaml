@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/liquibase/scripts/3-create-table-users.sql
   - include:
       file: db/liquibase/scripts/4-del-fk-image-user.sql
+  - include:
+      file: db/liquibase/scripts/5-create-user-image-table-connect.sql

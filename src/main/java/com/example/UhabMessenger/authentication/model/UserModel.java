@@ -33,7 +33,11 @@ public class UserModel {
     @Column(name = "approved_email", insertable = false)
     private Boolean approvedEmail;
     @OneToMany
-    @JoinColumn(name = "image_id")
+    @JoinTable(
+            name = "user_images", // Имя промежуточной таблицы
+            joinColumns = @JoinColumn(name = "user_id"), // Колонка для User
+            inverseJoinColumns = @JoinColumn(name = "image_id") // Колонка для Image
+    )
     private Set<ImageModel> images = new HashSet<>();
 
     public UserModel(String name, String lastname, String password, boolean approvedPhone, boolean approvedEmail) {

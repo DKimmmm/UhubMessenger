@@ -32,3 +32,12 @@ FROM
 WHERE
     tc.constraint_type = 'FOREIGN KEY'
     AND tc.table_name = 'images';
+
+
+SELECT i.image_id, i.content_type, i.file_name, i."size"
+FROM images i
+JOIN user_images ui ON i.image_id = ui.image_id
+WHERE ui.user_id = 'd1fd9008-2201-4223-b0c6-a9ce9914ace6';
+
+insert into user_images(user_image_id, image_id, user_id) values
+('5143597a-0370-4b39-a77e-b28a15f640a7', '06d44a7f-8ab8-49c4-9999-e19b6386d709', 'd1fd9008-2201-4223-b0c6-a9ce9914ace6');

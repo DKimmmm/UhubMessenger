@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -74,6 +75,8 @@ public class MainService {
         try {
 //            return imageRepository.findByUserModel(user).getFirst().get();
             log.info("---------------------------------------------- переделай поиск по юзеру");
+            List<ImageModel> allByUserId = imageRepository.findByUserId(user.getUserId());
+            log.info("list = {}", allByUserId.toString());
             throw new RuntimeException();
         } catch (Exception e) {
             log.warn("error in find image in postgres");
