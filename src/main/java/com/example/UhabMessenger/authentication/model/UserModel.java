@@ -1,11 +1,14 @@
 package com.example.UhabMessenger.authentication.model;
 
+import com.example.UhabMessenger.user_data.model.ImageModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +32,9 @@ public class UserModel {
     private Boolean approvedPhone;
     @Column(name = "approved_email", insertable = false)
     private Boolean approvedEmail;
+    @OneToMany
+    @JoinColumn(name = "image_id")
+    private Set<ImageModel> images = new HashSet<>();
 
     public UserModel(String name, String lastname, String password, boolean approvedPhone, boolean approvedEmail) {
         this.name = name;

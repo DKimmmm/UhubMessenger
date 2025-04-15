@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface ImageRepository extends JpaRepository<ImageModel, UUID> {
 
-    List<Optional<ImageModel>> findByUserModel(UserModel user);
+//    List<Optional<ImageModel>> findByUserModel(UserModel user);
 
 }

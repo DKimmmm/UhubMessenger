@@ -41,7 +41,7 @@ public class MainService {
                 .contentType(file.getContentType())
                 .size(file.getSize())
                 .fileName(file.getOriginalFilename())
-                .userModel(findUserById(userId))
+//                .userModel(findUserById(userId))
                 .build());
 
     }
@@ -72,7 +72,9 @@ public class MainService {
 
     private ImageModel findInPostgres(UserModel user) {
         try {
-            return imageRepository.findByUserModel(user).getFirst().get();
+//            return imageRepository.findByUserModel(user).getFirst().get();
+            log.info("---------------------------------------------- переделай поиск по юзеру");
+            throw new RuntimeException();
         } catch (Exception e) {
             log.warn("error in find image in postgres");
             return null;
@@ -82,10 +84,12 @@ public class MainService {
     @SneakyThrows
     public void deleteImage(UUID userId) {
         try {
-            ImageModel imageModel = imageRepository.findByUserModel(findUserById(userId)).getFirst().get();
-            String fileName = imageModel.getFileName();
-            minioInitializer.deleteFile(fileName);
-            imageRepository.delete(imageModel);
+            log.info("---------------------------------------------- переделай delete по юзеру");
+            throw new RuntimeException();
+//            ImageModel imageModel = imageRepository.findByUserModel(findUserById(userId)).getFirst().get();
+//            String fileName = imageModel.getFileName();
+//            minioInitializer.deleteFile(fileName);
+//            imageRepository.delete(imageModel);
         } catch (Throwable e) {
             log.info("file not found or delete error");
         }

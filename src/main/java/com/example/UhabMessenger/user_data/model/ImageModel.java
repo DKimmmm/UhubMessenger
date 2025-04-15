@@ -27,8 +27,8 @@ public class ImageModel {
     private String contentType;
     private Long size;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserModel userModel;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private UserModel userModel;
 
 }
