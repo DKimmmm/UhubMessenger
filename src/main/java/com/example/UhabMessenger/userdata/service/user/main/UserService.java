@@ -2,12 +2,22 @@ package com.example.UhabMessenger.userdata.service.user.main;
 
 import com.example.UhabMessenger.authentication.exception.AuthorizationErrorException;
 import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
+import com.example.UhabMessenger.userdata.config.MinioInitializer;
+import com.example.UhabMessenger.userdata.model.ImageModel;
+import com.example.UhabMessenger.userdata.model.PostModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
 import com.example.UhabMessenger.authentication.repository.UserRepository;
+import com.example.UhabMessenger.userdata.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -15,6 +25,8 @@ public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
+    private final ImageService imageService;
+    private final MinioInitializer minioInitializer;
 
     public UserModel getUserByUsername(String username) {
         if (usernameIsEmailFormat(username)) {
@@ -68,4 +80,41 @@ public class UserService {
         log.info("Checking if username '{}' is in email format: {}", username, isEmailFormat);
         return isEmailFormat;
     }
+
+    public void uploadUserImage(MultipartFile multipartFile, UUID userId) {
+        deleteIfAlreadyExists(userId);
+        ImageModel imageModel = imageService.uploadImage(multipartFile);
+        imageSaveInPostgres(userId, imageModel);
+    }
+
+    private void imageSaveInPostgres(UUID userId, ImageModel imageModel) {
+        UserModel userModel = userRepository.findById(userId).get();
+        Set<ImageModel> images = userModel.getImages();
+        images.add(imageModel);
+        userRepository.save(userModel);
+    }
+
+    @SneakyThrows
+    private void deleteIfAlreadyExists(UUID userId) {
+        try {
+            deleteFromMinio(userId);
+            deleteFromPostImageTable(userId);
+        } catch (Throwable e) {
+            log.info("file not found or delete error");
+        }
+    }
+    private void deleteFromPostImageTable(UUID userId) {
+        userRepository.deleteByUserId(userId);
+        log.info("delete from post_images repository by postId: {}", userId);
+    }
+
+    private void deleteFromMinio(UUID userId) {
+        List<String> fileNames = imageService.findByUserId(userId);
+        for (String fileName : fileNames) {
+            minioInitializer.deleteFile(fileName);
+            log.info("minio delete by filename: {}", fileName);
+        }
+    }
+
+
 }

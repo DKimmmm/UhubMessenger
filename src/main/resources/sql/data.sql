@@ -70,3 +70,6 @@ FROM images i
 JOIN post_images pi ON i.image_id = pi.image_id
 WHERE pi.post_id = '5143597a-0370-4b39-a77e-b28a15f640a7';
 
+SELECT i.file_name FROM images i JOIN user_images ui ON i.image_id = ui.image_id WHERE ui.user_id = 'd1fd9008-2201-4223-b0c6-a9ce9914ace6';
+
+DELETE FROM user_images ui WHERE user_id = 'd1fd9008-2201-4223-b0c6-a9ce9914ace6';

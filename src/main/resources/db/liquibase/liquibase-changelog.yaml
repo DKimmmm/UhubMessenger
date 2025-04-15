@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/liquibase/scripts/6-create-table-posts-and-userful-table.sql
   - include:
       file: db/liquibase/scripts/7-add-generate-post-image-table.sql
+  - include:
+      file: db/liquibase/scripts/8-add-generate-user-image-table.sql

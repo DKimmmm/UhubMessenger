@@ -29,7 +29,6 @@ public class ImageService {
 
     @SneakyThrows
     public ImageModel uploadImage(MultipartFile file) {
-//        deleteIfAlreadyExists(userId);
         minioInitializer.uploadFile(
                 file.getOriginalFilename(),
                 file.getInputStream(),
@@ -50,10 +49,10 @@ public class ImageService {
 
     }
 
-    @SneakyThrows
-    private void deleteIfAlreadyExists(UUID userId) {
-        deleteImage(userId);
-    }
+//    @SneakyThrows
+//    private void deleteIfAlreadyExists(UUID userId) {
+//        deleteImage(userId);
+//    }
 
     private UserModel findUserById(UUID userId) {
         return userRepository.findById(userId).get();
@@ -105,7 +104,8 @@ public class ImageService {
         }
     }
 
-    public ImageModel uploadPostImage(MultipartFile multipartFile) {
-        return uploadImage(multipartFile);
+    public List<String> findByUserId(UUID userId) {
+        return imageRepository.findFileNamesByUserId(userId);
     }
+
 }

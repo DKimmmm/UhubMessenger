@@ -19,13 +19,13 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @SneakyThrows
-    @PostMapping(value = "/create/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> save(@PathVariable UUID userId,
-                                  @RequestPart MultipartFile multipartFile) {
-//        imageService.uploadImage(multipartFile, userId);
-        return ResponseEntity.ok().build();
-    }
+//    @SneakyThrows
+//    @PostMapping(value = "/create/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<?> save(@PathVariable UUID userId,
+//                                  @RequestPart MultipartFile multipartFile) {
+////        imageService.uploadImage(multipartFile, userId);
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/download")
     public ResponseEntity<Void> downloadImage(@RequestParam UUID userId, HttpServletResponse response) {

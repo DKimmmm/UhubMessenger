@@ -37,7 +37,7 @@ public class PostService {
 
     public void uploadPostImage(MultipartFile multipartFile, UUID postId) {
         deleteIfAlreadyExists(postId);
-        ImageModel imageModel = imageService.uploadPostImage(multipartFile);
+        ImageModel imageModel = imageService.uploadImage(multipartFile);
         imageSaveInPostgres(postId, imageModel);
     }
 
