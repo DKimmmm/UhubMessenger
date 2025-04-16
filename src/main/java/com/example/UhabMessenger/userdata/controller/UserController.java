@@ -26,12 +26,24 @@ public class UserController {
     @SneakyThrows
     @PostMapping(value = "/add-image/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> save(@PathVariable UUID userId,
-                                  @RequestPart MultipartFile multipartFile) {
+                                     @RequestPart MultipartFile multipartFile) {
         try {
             userService.uploadUserImage(multipartFile, userId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.valueOf(414));
         }
+    }
+
+    @DeleteMapping("/image")
+    public ResponseEntity<?> deleteImage(@RequestParam UUID userId,
+                                         @RequestParam UUID imageId) {
+        try {
+            userService.deleteImage(userId, imageId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.valueOf(414));
+        }
+
     }
 }

@@ -114,4 +114,10 @@ public class UserService {
     }
 
 
+    public void deleteImage(UUID userId, UUID imageId) {
+        ImageModel imageModel = imageService.findByImageId(imageId);
+        UserModel userModel = userRepository.findById(userId).get();
+        userModel.getImages().remove(imageModel);
+        userRepository.save(userModel);
+    }
 }

@@ -108,4 +108,7 @@ public class ImageService {
         return imageRepository.findFileNamesByUserId(userId);
     }
 
+    public ImageModel findByImageId(UUID imageId) {
+        return imageRepository.findById(imageId).get();
+    }
 }
