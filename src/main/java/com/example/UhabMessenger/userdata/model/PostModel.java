@@ -24,13 +24,20 @@ public class PostModel {
     private String tittle;
     @Column(name = "description")
     private String description;
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinTable(
             name = "post_images", // Имя промежуточной таблицы
             joinColumns = @JoinColumn(name = "post_id"), // Колонка для post
             inverseJoinColumns = @JoinColumn(name = "image_id") // Колонка для Image
     )
     private List<ImageModel> images = new ArrayList<>();
+
+    public List<ImageModel> getImages() {
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        return images;
+    }
 
     public void setTittle(String tittle) {
         log.info("tittle is {}", tittle);

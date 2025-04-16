@@ -87,5 +87,27 @@ public class PostRepositoryTest extends BaseIntegrationTest {
     }
 
 
+    @Test
+    @Transactional
+    void imageSaveWithPost() {
+        imageRepository.deleteAll();
+        ImageModel imageModel = ImageModel.builder()
+                .contentType("ct")
+                .size(12345L)
+                .fileName("FName")
+                .build();
+        assertThat(imageRepository.findAll().size()).isEqualTo(0);
+        PostModel postBuilt = PostModel.builder()
+                .tittle("tt")
+                .description("des")
+                .build();
+
+        PostModel postFromBD = postRepository.save(postBuilt);
+        assertThat(imageRepository.findAll().size()).isEqualTo(0);
+        postFromBD.getImages().add(imageModel);
+        postRepository.save(postFromBD);
+        assertThat(imageRepository.findAll().size()).isEqualTo(1);
+    }
+
 
 }

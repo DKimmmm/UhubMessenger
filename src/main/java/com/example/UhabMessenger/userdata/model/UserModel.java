@@ -39,7 +39,7 @@ public class UserModel {
     @Column(name = "approved_email", insertable = false)
     private Boolean approvedEmail;
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_images", // Имя промежуточной таблицы
             joinColumns = @JoinColumn(name = "user_id"), // Колонка для User
