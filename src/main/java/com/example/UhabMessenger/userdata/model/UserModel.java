@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -45,7 +43,7 @@ public class UserModel {
             joinColumns = @JoinColumn(name = "user_id"), // Колонка для User
             inverseJoinColumns = @JoinColumn(name = "image_id")// Колонка для Image
     )
-    private Set<ImageModel> images = new HashSet<>();
+    private List<ImageModel> images = new ArrayList<>();
 
     public UserModel(String name, String lastname, String password, boolean approvedPhone, boolean approvedEmail) {
         this.name = name;
@@ -53,5 +51,12 @@ public class UserModel {
         this.password = password;
         this.approvedPhone = approvedPhone;
         this.approvedEmail = approvedEmail;
+    }
+
+    public List<ImageModel> getImages() {
+        if (images == null) {
+            images = new ArrayList<>();
+        }
+        return images;
     }
 }

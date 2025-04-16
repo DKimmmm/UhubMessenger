@@ -88,7 +88,7 @@ public class UserService {
 
     private void imageSaveInPostgres(UUID userId, ImageModel imageModel) {
         UserModel userModel = userRepository.findById(userId).get();
-        Set<ImageModel> images = userModel.getImages();
+        List<ImageModel> images = userModel.getImages();
         images.add(imageModel);
         userRepository.save(userModel);
     }
