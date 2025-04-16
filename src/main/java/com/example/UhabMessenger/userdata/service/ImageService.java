@@ -64,7 +64,9 @@ public class ImageService {
         if (image == null) {
             return;
         }
-        try (InputStream is = minioInitializer.downloadInputStream(image.getFileName()); OutputStream os = response.getOutputStream()) {
+        try (InputStream is = minioInitializer.downloadInputStream(image.getFileName());
+             OutputStream os = response.getOutputStream()) {
+
             response.setStatus(200);
             response.setContentType(image.getContentType());
             response.setContentLength(image.getSize().intValue());

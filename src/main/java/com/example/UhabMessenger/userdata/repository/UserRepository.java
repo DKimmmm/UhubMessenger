@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<UserModel, UUID> {
 
     @Query(value = "DELETE FROM user_images ui WHERE user_id = :userId", nativeQuery = true)
     void deleteByUserId(UUID userId);
+
+    Optional<UserModel> findByUserId(UUID userId);
 }

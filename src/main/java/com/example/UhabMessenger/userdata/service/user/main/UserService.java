@@ -7,6 +7,7 @@ import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
 import com.example.UhabMessenger.userdata.repository.UserRepository;
 import com.example.UhabMessenger.userdata.service.ImageService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,6 +46,7 @@ public class UserService {
             throw new UncorrectedPasswordException("uncorrected password");
         }
     }
+
     private UserModel findUserByPhone(String username) {
         return userRepository.findByPhone(username).get();
     }
@@ -100,6 +104,7 @@ public class UserService {
             log.info("file not found or delete error");
         }
     }
+
     private void deleteFromPostImageTable(UUID userId) {
         userRepository.deleteByUserId(userId);
         log.info("delete from post_images repository by postId: {}", userId);
@@ -119,5 +124,38 @@ public class UserService {
         UserModel userModel = userRepository.findById(userId).get();
         userModel.getImages().remove(imageModel);
         userRepository.save(userModel);
+    }
+
+    public void downloadImage(UUID imageId, UUID userId, HttpServletResponse response) {
+        try {
+            List<ImageModel> images = userRepository.findByUserId(userId).get().getImages();
+            if (images == null || images.isEmpty()) {
+                return;
+            }
+            ImageModel image = findImageByImageIdFromImageList(imageId, images);
+            if (image == null) {
+                return;
+            }
+
+            try (InputStream is = minioInitializer.downloadInputStream(image.getFileName());
+                 OutputStream os = response.getOutputStream()) {
+
+                response.setStatus(200);
+                response.setContentType(image.getContentType());
+                response.setContentLength(image.getSize().intValue());
+                is.transferTo(os);
+            }
+        } catch (Exception e) {
+            log.warn("error in download user image");
+        }
+    }
+
+    private ImageModel findImageByImageIdFromImageList(UUID imageId, List<ImageModel> images) {
+        for (ImageModel image : images) {
+            if (image.getImageId().equals(imageId)) {
+                return image;
+            }
+        }
+        return null;
     }
 }

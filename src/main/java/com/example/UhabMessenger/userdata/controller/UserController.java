@@ -1,6 +1,7 @@
 package com.example.UhabMessenger.userdata.controller;
 
 import com.example.UhabMessenger.userdata.service.user.main.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,15 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.valueOf(414));
         }
 
+    }
+
+    @GetMapping("/image-download")
+    public ResponseEntity<Void> downloadImage(@RequestParam UUID imageId, @RequestParam UUID userId, HttpServletResponse response) {
+        try {
+            userService.downloadImage(imageId, userId, response);
+            return ResponseEntity.ok().build();
+        } catch (Throwable e) {
+            return new ResponseEntity<>(HttpStatus.valueOf(415));
+        }
     }
 }
