@@ -4,9 +4,8 @@ import com.example.UhabMessenger.authentication.exception.AuthorizationErrorExce
 import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
 import com.example.UhabMessenger.userdata.config.MinioInitializer;
 import com.example.UhabMessenger.userdata.model.ImageModel;
-import com.example.UhabMessenger.userdata.model.PostModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.authentication.repository.UserRepository;
+import com.example.UhabMessenger.userdata.repository.UserRepository;
 import com.example.UhabMessenger.userdata.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

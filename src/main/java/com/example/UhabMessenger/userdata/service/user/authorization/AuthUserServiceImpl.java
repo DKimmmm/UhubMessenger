@@ -7,7 +7,7 @@ import com.example.UhabMessenger.authentication.exception.UserAlreadyExistsExcep
 import com.example.UhabMessenger.userdata.dto.register.SignUpDto;
 import com.example.UhabMessenger.userdata.mapper.UserMapstructService;
 import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.authentication.repository.UserRepository;
+import com.example.UhabMessenger.userdata.repository.UserRepository;
 import com.example.UhabMessenger.userdata.service.user.main.UserService;
 import com.example.UhabMessenger.authentication.validation.PhoneOrEmailValidator;
 import jakarta.servlet.http.HttpServletResponse;

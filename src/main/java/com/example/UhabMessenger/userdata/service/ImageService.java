@@ -1,7 +1,7 @@
 package com.example.UhabMessenger.userdata.service;
 
 import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.authentication.repository.UserRepository;
+import com.example.UhabMessenger.userdata.repository.UserRepository;
 import com.example.UhabMessenger.userdata.config.MinioInitializer;
 import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.repository.ImageRepository;
