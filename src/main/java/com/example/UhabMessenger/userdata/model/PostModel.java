@@ -1,19 +1,17 @@
 package com.example.UhabMessenger.userdata.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Entity
 @Table(name = "posts")
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostModel {
@@ -26,13 +24,13 @@ public class PostModel {
     private String tittle;
     @Column(name = "description")
     private String description;
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     @JoinTable(
             name = "post_images", // Имя промежуточной таблицы
             joinColumns = @JoinColumn(name = "post_id"), // Колонка для post
             inverseJoinColumns = @JoinColumn(name = "image_id") // Колонка для Image
     )
-    private Set<ImageModel> images = new HashSet<>();
+    private List<ImageModel> images = new ArrayList<>();
 
     public void setTittle(String tittle) {
         log.info("tittle is {}", tittle);

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -43,7 +42,7 @@ public class PostService {
 
     private void imageSaveInPostgres(UUID postId, ImageModel imageModel) {
         PostModel postModel = postRepository.findById(postId).get();
-        Set<ImageModel> images = postModel.getImages();
+        List<ImageModel> images = postModel.getImages();
         images.add(imageModel);
         postRepository.save(postModel);
     }
@@ -59,7 +58,7 @@ public class PostService {
     }
 
     private void deleteFromPostImageTable(UUID postId) {
-        postRepository.deleteByPostId(postId);
+        postRepository.deleteAttachByPostId(postId);
         log.info("delete from post_images repository by postId: {}", postId);
     }
 
