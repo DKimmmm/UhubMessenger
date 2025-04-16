@@ -35,17 +35,17 @@ public class ImageService {
                 file.getSize()
         );
 
-        return imageSaveInPostgres(file);
+        return imageModelBuilder(file);
     }
 
     @SneakyThrows
-    private ImageModel imageSaveInPostgres(MultipartFile file) {
+    private ImageModel imageModelBuilder(MultipartFile file) {
 
-        return imageRepository.save(ImageModel.builder()
+        return ImageModel.builder()
                 .contentType(file.getContentType())
                 .size(file.getSize())
                 .fileName(file.getOriginalFilename())
-                .build());
+                .build();
 
     }
 

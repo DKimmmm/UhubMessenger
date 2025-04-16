@@ -3,6 +3,7 @@ package com.example.UhabMessenger.userdata.controller;
 import com.example.UhabMessenger.userdata.service.user.main.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -23,10 +24,14 @@ public class UserController {
     }
 
     @SneakyThrows
-    @PostMapping(value = "/create/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> save(@PathVariable UUID userId,
+    @PostMapping(value = "/add-image/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> save(@PathVariable UUID userId,
                                   @RequestPart MultipartFile multipartFile) {
-        userService.uploadUserImage(multipartFile, userId);
-        return ResponseEntity.ok().build();
+        try {
+            userService.uploadUserImage(multipartFile, userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.valueOf(414));
+        }
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -81,15 +80,14 @@ public class UserService {
     }
 
     public void uploadUserImage(MultipartFile multipartFile, UUID userId) {
-        deleteIfAlreadyExists(userId);
+//        deleteIfAlreadyExists(userId);
         ImageModel imageModel = imageService.uploadImage(multipartFile);
-        imageSaveInPostgres(userId, imageModel);
+        addImageIntoUserImageList(userId, imageModel);
     }
 
-    private void imageSaveInPostgres(UUID userId, ImageModel imageModel) {
+    private void addImageIntoUserImageList(UUID userId, ImageModel imageModel) {
         UserModel userModel = userRepository.findById(userId).get();
-        List<ImageModel> images = userModel.getImages();
-        images.add(imageModel);
+        userModel.getImages().add(imageModel);
         userRepository.save(userModel);
     }
 
