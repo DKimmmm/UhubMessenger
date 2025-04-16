@@ -21,21 +21,29 @@ public class UserModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID userId;
+
     @Column(name = "\"name\"")
     private String name;
+
     private String lastname;
+
     private String phone;
+
     private String email;
+
     private String password;
+
     @Column(name = "approved_phone", insertable = false)
     private Boolean approvedPhone;
+
     @Column(name = "approved_email", insertable = false)
     private Boolean approvedEmail;
-    @OneToMany
+
+    @OneToMany(orphanRemoval = true)
     @JoinTable(
             name = "user_images", // Имя промежуточной таблицы
             joinColumns = @JoinColumn(name = "user_id"), // Колонка для User
-            inverseJoinColumns = @JoinColumn(name = "image_id") // Колонка для Image
+            inverseJoinColumns = @JoinColumn(name = "image_id")// Колонка для Image
     )
     private Set<ImageModel> images = new HashSet<>();
 
