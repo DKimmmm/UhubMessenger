@@ -28,19 +28,26 @@ public class PostService {
 
 
     public UUID save(String title, String description, MultipartFile multipartFile) {
-        return postRepository.save(mapperToModel(title, description)).getPostId();
+        PostModel beginnerPostModel = mapperToModel(title, description);
+        List<ImageModel> images = savePostImage(multipartFile);
+        beginnerPostModel.setImages(images);
+        return postRepository.save(beginnerPostModel).getPostId();
+    }
 
+    private List<ImageModel> savePostImage(MultipartFile multipartFile) {
+        ImageModel image = imageService.uploadImage(multipartFile);
+        return List.of(image);
     }
 
     private PostModel mapperToModel(String title, String description) {
         return postMapstructService.toPostModel(title, description);
     }
 
-    public void uploadPostImage(MultipartFile multipartFile, UUID postId) {
-        deleteIfAlreadyExists(postId);
-        ImageModel imageModel = imageService.uploadImage(multipartFile);
-        imageSaveInPostgres(postId, imageModel);
-    }
+//    public ImageModel uploadPostImage(MultipartFile multipartFile) {
+////        deleteIfAlreadyExists(postId);
+//        return
+////        imageSaveInPostgres(postId, imageModel);
+//    }
 
     private void imageSaveInPostgres(UUID postId, ImageModel imageModel) {
         PostModel postModel = postRepository.findById(postId).get();

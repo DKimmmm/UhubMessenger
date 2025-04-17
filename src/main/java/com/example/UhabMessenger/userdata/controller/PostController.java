@@ -45,12 +45,12 @@ public class PostController {
         }
     }
 
-    @SneakyThrows
-    @PostMapping(value = "/create/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> save(@PathVariable UUID postId,
-                                  @RequestPart MultipartFile multipartFile) {
-        postService.uploadPostImage(multipartFile, postId);
-        return ResponseEntity.ok().build();
-    }
+//    @SneakyThrows
+//    @PostMapping(value = "/create/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<?> save(@PathVariable UUID postId,
+//                                  @RequestPart MultipartFile multipartFile) {
+//        postService.uploadPostImage(multipartFile, postId);
+//        return ResponseEntity.ok().build();
+//    }
 
 }
