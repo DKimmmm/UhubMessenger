@@ -42,19 +42,26 @@ public class UserModel {
             inverseJoinColumns = @JoinColumn(name = "image_id")// Колонка для Image
     )
     private List<ImageModel> images = new ArrayList<>();
-//
-//    public UserModel(String name, String lastname, String password, boolean approvedPhone, boolean approvedEmail) {
-//        this.name = name;
-//        this.lastname = lastname;
-//        this.password = password;
-//        this.approvedPhone = approvedPhone;
-//        this.approvedEmail = approvedEmail;
-//    }
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_posts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private List<PostModel> posts = new ArrayList<>();
 
     public List<ImageModel> getImages() {
         if (images == null) {
             images = new ArrayList<>();
         }
         return images;
+    }
+
+    public List<PostModel> getPosts() {
+        if (posts == null) {
+            posts = new ArrayList<>();
+        }
+        return posts;
     }
 }
