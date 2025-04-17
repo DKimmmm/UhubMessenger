@@ -49,12 +49,14 @@ public class UserController {
     }
 
     @GetMapping("/image-download")
-    public ResponseEntity<Void> downloadImage(@RequestParam UUID imageId, @RequestParam UUID userId, HttpServletResponse response) {
+    public ResponseEntity<Void> downloadImage(@RequestParam UUID userId, @RequestParam UUID imageId, HttpServletResponse response) {
         try {
-            userService.downloadImage(imageId, userId, response);
+            userService.downloadImageByImageAndUserIds(imageId, userId, response);
             return ResponseEntity.ok().build();
         } catch (Throwable e) {
             return new ResponseEntity<>(HttpStatus.valueOf(415));
         }
     }
+
+
 }

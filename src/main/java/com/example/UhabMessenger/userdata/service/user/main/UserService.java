@@ -126,17 +126,20 @@ public class UserService {
         userRepository.save(userModel);
     }
 
-    public void downloadImage(UUID imageId, UUID userId, HttpServletResponse response) {
-        try {
-            List<ImageModel> images = userRepository.findByUserId(userId).get().getImages();
-            if (images == null || images.isEmpty()) {
-                return;
-            }
-            ImageModel image = findImageByImageIdFromImageList(imageId, images);
-            if (image == null) {
-                return;
-            }
+    public void downloadImageByImageAndUserIds(UUID imageId, UUID userId, HttpServletResponse response) {
+        List<ImageModel> images = userRepository.findByUserId(userId).get().getImages();
+        if (images == null || images.isEmpty()) {
+            return;
+        }
+        ImageModel image = findImageByImageIdFromImageList(imageId, images);
+        if (image == null) {
+            return;
+        }
+        downloadImage(image, response);
+    }
 
+    public void downloadImage(ImageModel image, HttpServletResponse response) {
+        try {
             try (InputStream is = minioInitializer.downloadInputStream(image.getFileName());
                  OutputStream os = response.getOutputStream()) {
 
