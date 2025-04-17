@@ -1,6 +1,7 @@
 package com.example.UhabMessenger.userdata.mapper;
 
 import com.example.UhabMessenger.userdata.dto.posts.PostDto;
+import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.model.PostModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,6 +13,8 @@ import javax.annotation.Nullable;
 public interface PostMapstructService {
 
     @Mapping(source = "title", target = "tittle")
-//    @Mapping(source = "description", target = "description")
     PostModel toPostModel(String title, String description);
+
+    @Mapping(source = "tittle", target = "title")
+    PostInfoDto toPostInfoDto(PostModel postModel);
 }

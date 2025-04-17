@@ -4,6 +4,7 @@ import com.example.UhabMessenger.userdata.model.PostModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<PostModel, UUID> {
@@ -11,4 +12,5 @@ public interface PostRepository extends JpaRepository<PostModel, UUID> {
     void deleteAttachByPostId(UUID postId);
 
 
+    Optional<PostModel> findByPostId(UUID postId);
 }

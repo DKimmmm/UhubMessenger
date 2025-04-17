@@ -1,7 +1,7 @@
 package com.example.UhabMessenger.userdata.service;
 
 import com.example.UhabMessenger.userdata.config.MinioInitializer;
-import com.example.UhabMessenger.userdata.dto.posts.PostDto;
+import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.mapper.PostMapstructService;
 import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.model.PostModel;
@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ public class PostService {
 
     public UUID save(String title, String description, MultipartFile multipartFile) {
         return postRepository.save(mapperToModel(title, description)).getPostId();
+
     }
 
     private PostModel mapperToModel(String title, String description) {
@@ -70,4 +72,26 @@ public class PostService {
         }
     }
 
+    public PostInfoDto getPostInfo(UUID postId) {
+        PostModel postModel = postRepository.findByPostId(postId).orElse(null);
+        log.info("add customer exception");
+        if (postModel == null) {
+            throw new RuntimeException();
+        }
+        PostInfoDto postInfoDto = postMapstructService.toPostInfoDto(postModel);
+        return addImagesIdsToDto(postModel, postInfoDto);
+    }
+
+    private PostInfoDto addImagesIdsToDto(PostModel postModel, PostInfoDto postInfoDto) {
+        postInfoDto.setImagesIds(getImagesIdsFromPostModel(postModel));
+        return postInfoDto;
+    }
+
+    private List<UUID> getImagesIdsFromPostModel(PostModel postModel) {
+        List<UUID> result = new ArrayList<>();
+        for (ImageModel image : postModel.getImages()) {
+            result.add(image.getImageId());
+        }
+        return result;
+    }
 }

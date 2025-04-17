@@ -1,6 +1,8 @@
 package com.example.UhabMessenger.userdata.controller;
 
 import com.example.UhabMessenger.userdata.dto.posts.PostDto;
+import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
+import com.example.UhabMessenger.userdata.dto.user.UserInfoDto;
 import com.example.UhabMessenger.userdata.service.ImageService;
 import com.example.UhabMessenger.userdata.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,15 @@ public class PostController {
             );
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.valueOf(418));
+        }
+    }
+
+    @GetMapping("/post-info/{postId}")
+    public ResponseEntity<PostInfoDto> getPostInfo(@PathVariable UUID postId) {
+        try {
+            return ResponseEntity.ok(postService.getPostInfo(postId));
+        } catch (Throwable e) {
+            return new ResponseEntity<>(HttpStatus.valueOf(414));
         }
     }
 
