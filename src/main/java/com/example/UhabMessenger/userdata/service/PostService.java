@@ -26,12 +26,12 @@ public class PostService {
     private final MinioInitializer minioInitializer;
 
 
-    public void save(PostDto postDto) {
-        postRepository.save(mapperToModel(postDto));
+    public UUID save(String title, String description, MultipartFile multipartFile) {
+        return postRepository.save(mapperToModel(title, description)).getPostId();
     }
 
-    private PostModel mapperToModel(PostDto postDto) {
-        return postMapstructService.toPostModel(postDto);
+    private PostModel mapperToModel(String title, String description) {
+        return postMapstructService.toPostModel(title, description);
     }
 
     public void uploadPostImage(MultipartFile multipartFile, UUID postId) {

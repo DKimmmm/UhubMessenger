@@ -39,13 +39,13 @@ public class PostModel {
         return images;
     }
 
-    public void setTittle(String tittle) {
-        log.info("tittle is {}", tittle);
-        this.tittle = tittle;
-    }
-
-    public void setDescription(String description) {
-        log.info("des = {}", description);
-        this.description = description;
-    }
+//    public void setTittle(String tittle) {
+//        log.info("tittle is {}", tittle);
+//        this.tittle = tittle;
+//    }
+//
+//    public void setDescription(String description) {
+//        log.info("des = {}", description);
+//        this.description = description;
+//    }
 }

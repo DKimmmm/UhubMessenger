@@ -21,11 +21,14 @@ public class PostController {
     private final PostService postService;
 
 
-    @PostMapping
-    public ResponseEntity<?> postSave(@RequestBody PostDto postDto) {
+    @PostMapping(value = "two-param", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> postSave(@RequestParam("title") String title,
+                                      @RequestParam("description") String description,
+                                      @RequestPart("file") MultipartFile multipartFile) {
         try {
-            postService.save(postDto);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(
+                    postService.save(title, description, multipartFile)
+            );
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.valueOf(418));
         }
@@ -34,7 +37,7 @@ public class PostController {
     @SneakyThrows
     @PostMapping(value = "/create/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> save(@PathVariable UUID postId,
-                                  @RequestPart() MultipartFile multipartFile) {
+                                  @RequestPart MultipartFile multipartFile) {
         postService.uploadPostImage(multipartFile, postId);
         return ResponseEntity.ok().build();
     }
