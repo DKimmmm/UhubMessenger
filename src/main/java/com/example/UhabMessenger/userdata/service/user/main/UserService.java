@@ -3,6 +3,8 @@ package com.example.UhabMessenger.userdata.service.user.main;
 import com.example.UhabMessenger.authentication.exception.AuthorizationErrorException;
 import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
 import com.example.UhabMessenger.userdata.config.MinioInitializer;
+import com.example.UhabMessenger.userdata.dto.user.UserInfoDto;
+import com.example.UhabMessenger.userdata.mapper.UserMapstructService;
 import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
 import com.example.UhabMessenger.userdata.repository.UserRepository;
@@ -17,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -28,6 +32,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ImageService imageService;
     private final MinioInitializer minioInitializer;
+    private final UserMapstructService userMapstructService;
 
     public UserModel getUserByUsername(String username) {
         if (usernameIsEmailFormat(username)) {
@@ -161,4 +166,34 @@ public class UserService {
         }
         return null;
     }
+
+    public UserInfoDto getUserInfo(UUID userId) {
+        UserModel userModel = userRepository.findByUserId(userId).orElse(null);
+        log.info("добавить кастомное искючение");
+        if (userModel == null) {
+            throw new RuntimeException("error in find user by id");
+        }
+        UserInfoDto userInfoDto = userMapstructService.toUserInfoDto(
+                userModel
+        );
+
+        return addImagesIdsToDto(userModel, userInfoDto);
+    }
+
+    private UserInfoDto addImagesIdsToDto(UserModel userModel, UserInfoDto userInfoDto) {
+        if (userInfoDto != null) {
+            userInfoDto.setImagesIds(collectImagesIdsFromUserModel(userModel));
+            return userInfoDto;
+        }
+        return null;
+    }
+
+    private List<UUID> collectImagesIdsFromUserModel(UserModel userModel) {
+        List<UUID> result = new ArrayList<>();
+        for (ImageModel image : userModel.getImages()) {
+            result.add(image.getImageId());
+        }
+        return result;
+    }
+
 }

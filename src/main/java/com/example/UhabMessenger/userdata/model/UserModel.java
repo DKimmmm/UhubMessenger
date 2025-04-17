@@ -1,10 +1,7 @@
 package com.example.UhabMessenger.userdata.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.*;
 
@@ -13,7 +10,8 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -44,14 +42,14 @@ public class UserModel {
             inverseJoinColumns = @JoinColumn(name = "image_id")// Колонка для Image
     )
     private List<ImageModel> images = new ArrayList<>();
-
-    public UserModel(String name, String lastname, String password, boolean approvedPhone, boolean approvedEmail) {
-        this.name = name;
-        this.lastname = lastname;
-        this.password = password;
-        this.approvedPhone = approvedPhone;
-        this.approvedEmail = approvedEmail;
-    }
+//
+//    public UserModel(String name, String lastname, String password, boolean approvedPhone, boolean approvedEmail) {
+//        this.name = name;
+//        this.lastname = lastname;
+//        this.password = password;
+//        this.approvedPhone = approvedPhone;
+//        this.approvedEmail = approvedEmail;
+//    }
 
     public List<ImageModel> getImages() {
         if (images == null) {

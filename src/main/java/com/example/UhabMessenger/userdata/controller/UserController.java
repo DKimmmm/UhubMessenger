@@ -1,5 +1,6 @@
 package com.example.UhabMessenger.userdata.controller;
 
+import com.example.UhabMessenger.userdata.dto.user.UserInfoDto;
 import com.example.UhabMessenger.userdata.service.user.main.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,15 @@ public class UserController {
             return ResponseEntity.ok().build();
         } catch (Throwable e) {
             return new ResponseEntity<>(HttpStatus.valueOf(415));
+        }
+    }
+
+    @GetMapping("/user-info/{userId}")
+    public ResponseEntity<UserInfoDto> getUserInfo(@PathVariable UUID userId) {
+        try {
+            return ResponseEntity.ok(userService.getUserInfo(userId));
+        } catch (Throwable e) {
+            return new ResponseEntity<>(HttpStatus.valueOf(414));
         }
     }
 
