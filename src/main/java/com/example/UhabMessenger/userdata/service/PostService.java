@@ -27,16 +27,19 @@ public class PostService {
     private final MinioInitializer minioInitializer;
 
 
-    public UUID save(String title, String description, MultipartFile multipartFile) {
+    public UUID save(String title, String description, List<MultipartFile> multipartFiles) {
         PostModel beginnerPostModel = mapperToModel(title, description);
-        List<ImageModel> images = savePostImage(multipartFile);
+        List<ImageModel> images = savePostImages(multipartFiles);
         beginnerPostModel.setImages(images);
         return postRepository.save(beginnerPostModel).getPostId();
     }
 
-    private List<ImageModel> savePostImage(MultipartFile multipartFile) {
-        ImageModel image = imageService.uploadImage(multipartFile);
-        return List.of(image);
+    private List<ImageModel> savePostImages(List<MultipartFile> multipartFiles) {
+        List<ImageModel> result = new ArrayList<>();
+        for (MultipartFile multipartFile : multipartFiles) {
+            result.add(imageService.uploadImage(multipartFile));
+        }
+        return result;
     }
 
     private PostModel mapperToModel(String title, String description) {
@@ -46,9 +49,9 @@ public class PostService {
 //    public ImageModel uploadPostImage(MultipartFile multipartFile) {
 ////        deleteIfAlreadyExists(postId);
 //        return
-////        imageSaveInPostgres(postId, imageModel);
-//    }
 
+    /// /        imageSaveInPostgres(postId, imageModel);
+//    }
     private void imageSaveInPostgres(UUID postId, ImageModel imageModel) {
         PostModel postModel = postRepository.findById(postId).get();
         List<ImageModel> images = postModel.getImages();

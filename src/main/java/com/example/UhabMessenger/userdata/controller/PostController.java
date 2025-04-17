@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,13 +24,13 @@ public class PostController {
     private final PostService postService;
 
 
-    @PostMapping(value = "two-param", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> postSave(@RequestParam("title") String title,
                                       @RequestParam("description") String description,
-                                      @RequestPart("file") MultipartFile multipartFile) {
+                                      @RequestPart("files") List<MultipartFile> multipartFiles) {
         try {
             return ResponseEntity.ok(
-                    postService.save(title, description, multipartFile)
+                    postService.save(title, description, multipartFiles)
             );
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.valueOf(418));
