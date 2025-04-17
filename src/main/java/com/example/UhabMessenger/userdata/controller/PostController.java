@@ -25,9 +25,9 @@ public class PostController {
 
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> postSave(@RequestParam("title") String title,
-                                      @RequestParam("description") String description,
-                                      @RequestPart("files") List<MultipartFile> multipartFiles) {
+    public ResponseEntity<?> postSave(@RequestParam(value = "title", required = false) String title,
+                                      @RequestParam(value = "description", required = false) String description,
+                                      @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
         try {
             return ResponseEntity.ok(
                     postService.save(title, description, multipartFiles)
@@ -46,12 +46,5 @@ public class PostController {
         }
     }
 
-//    @SneakyThrows
-//    @PostMapping(value = "/create/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<?> save(@PathVariable UUID postId,
-//                                  @RequestPart MultipartFile multipartFile) {
-//        postService.uploadPostImage(multipartFile, postId);
-//        return ResponseEntity.ok().build();
-//    }
 
 }

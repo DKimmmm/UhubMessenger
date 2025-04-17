@@ -1,6 +1,7 @@
 package com.example.UhabMessenger.userdata.service;
 
 import com.example.UhabMessenger.userdata.config.MinioInitializer;
+import com.example.UhabMessenger.userdata.dto.posts.PostDto;
 import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.mapper.PostMapstructService;
 import com.example.UhabMessenger.userdata.model.ImageModel;
@@ -28,14 +29,25 @@ public class PostService {
 
 
     public UUID save(String title, String description, List<MultipartFile> multipartFiles) {
+        checkForOneNotNullField(title, multipartFiles);
         PostModel beginnerPostModel = mapperToModel(title, description);
         List<ImageModel> images = savePostImages(multipartFiles);
         beginnerPostModel.setImages(images);
         return postRepository.save(beginnerPostModel).getPostId();
     }
 
+    private void checkForOneNotNullField(String title, List<MultipartFile> multipartFiles) {
+        log.info("add custom exception");
+        if ((title == null || title.isBlank()) && (multipartFiles == null || multipartFiles.isEmpty())) {
+            throw new RuntimeException();
+        }
+    }
+
     private List<ImageModel> savePostImages(List<MultipartFile> multipartFiles) {
         List<ImageModel> result = new ArrayList<>();
+        if (multipartFiles == null || multipartFiles.isEmpty()) {
+            return null;
+        }
         for (MultipartFile multipartFile : multipartFiles) {
             result.add(imageService.uploadImage(multipartFile));
         }
@@ -43,7 +55,7 @@ public class PostService {
     }
 
     private PostModel mapperToModel(String title, String description) {
-        return postMapstructService.toPostModel(title, description);
+        return postMapstructService.toPostModel(new PostDto(title, description));
     }
 
 //    public ImageModel uploadPostImage(MultipartFile multipartFile) {
