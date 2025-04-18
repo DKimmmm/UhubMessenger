@@ -51,6 +51,17 @@ public class UserModel {
     )
     private List<PostModel> posts = new ArrayList<>();
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "group_users",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    private List<GroupModel> groups = new ArrayList<>();
+
+
+
+
     public List<ImageModel> getImages() {
         if (images == null) {
             images = new ArrayList<>();

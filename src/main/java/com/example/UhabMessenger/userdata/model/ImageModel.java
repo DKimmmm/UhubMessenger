@@ -20,14 +20,12 @@ public class ImageModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "image_id")
     private UUID imageId;
+
     @Column(name = "file_name")
     private String fileName;
+
     @Column(name = "content_type")
     private String contentType;
     private Long size;
-
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private UserModel userModel;
 
 }

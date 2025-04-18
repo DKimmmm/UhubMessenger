@@ -17,3 +17,7 @@ databaseChangeLog:
       file: db/liquibase/scripts/8-add-generate-user-image-table.sql
   - include:
       file: db/liquibase/scripts/9-create-table-user-posts.sql
+  - include:
+      file: db/liquibase/scripts/10-create-tables-groups-and-attitude-users-posts.sql
+  - include:
+      file: db/liquibase/scripts/11-create-tables-groups-attitude.sql

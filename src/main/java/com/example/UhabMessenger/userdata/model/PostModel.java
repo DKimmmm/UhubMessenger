@@ -20,10 +20,13 @@ public class PostModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "post_id")
     private UUID postId;
+
     @Column(name = "tittle")
     private String tittle;
+
     @Column(name = "description")
     private String description;
+
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinTable(
             name = "post_images", // Имя промежуточной таблицы
@@ -39,13 +42,5 @@ public class PostModel {
         return images;
     }
 
-//    public void setTittle(String tittle) {
-//        log.info("tittle is {}", tittle);
-//        this.tittle = tittle;
-//    }
-//
-//    public void setDescription(String description) {
-//        log.info("des = {}", description);
-//        this.description = description;
-//    }
+
 }
