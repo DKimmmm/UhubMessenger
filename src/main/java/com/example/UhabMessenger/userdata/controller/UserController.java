@@ -68,5 +68,12 @@ public class UserController {
         }
     }
 
-
+    @GetMapping("/my-posts/{userId}")
+    public ResponseEntity<?> getMyPostsInfo(@PathVariable UUID userId) {
+        try {
+            return ResponseEntity.ok(userService.findPostsInfoListByUserId(userId));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

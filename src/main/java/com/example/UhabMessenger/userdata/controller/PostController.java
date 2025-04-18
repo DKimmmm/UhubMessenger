@@ -25,15 +25,15 @@ public class PostController {
 
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> postSave(@RequestParam(value = "title", required = false) String title,
+    public ResponseEntity<?> postSave(@RequestParam(value = "userId") UUID userId,
+                                      @RequestParam(value = "title", required = false) String title,
                                       @RequestParam(value = "description", required = false) String description,
                                       @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
         try {
-            return ResponseEntity.ok(
-                    postService.save(title, description, multipartFiles)
-            );
+            postService.save(userId, title, description, multipartFiles);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.valueOf(418));
+            return new ResponseEntity<>(HttpStatus.valueOf(414));
         }
     }
 

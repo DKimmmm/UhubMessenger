@@ -6,7 +6,9 @@ import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.mapper.PostMapstructService;
 import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.model.PostModel;
+import com.example.UhabMessenger.userdata.model.UserModel;
 import com.example.UhabMessenger.userdata.repository.PostRepository;
+import com.example.UhabMessenger.userdata.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,17 +25,24 @@ import java.util.UUID;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final PostMapstructService postMapstructService;
     private final ImageService imageService;
     private final MinioInitializer minioInitializer;
 
 
-    public UUID save(String title, String description, List<MultipartFile> multipartFiles) {
+    public void save(UUID userId, String title, String description, List<MultipartFile> multipartFiles) {
         checkForOneNotNullField(title, multipartFiles);
         PostModel beginnerPostModel = mapperToModel(title, description);
         List<ImageModel> images = savePostImages(multipartFiles);
         beginnerPostModel.setImages(images);
-        return postRepository.save(beginnerPostModel).getPostId();
+        userPostSaveIntoUser(userId, beginnerPostModel);
+    }
+
+    private void userPostSaveIntoUser(UUID userId, PostModel beginnerPostModel) {
+        UserModel userModel = userRepository.findByUserId(userId).orElseThrow();
+        userModel.getPosts().add(beginnerPostModel);
+        userRepository.save(userModel);
     }
 
     private void checkForOneNotNullField(String title, List<MultipartFile> multipartFiles) {
@@ -95,13 +104,17 @@ public class PostService {
     }
 
     public PostInfoDto getPostInfo(UUID postId) {
-        PostModel postModel = postRepository.findByPostId(postId).orElse(null);
+        PostModel postModel = postRepository.findByPostId(postId).orElseThrow();
         log.info("add customer exception");
-        if (postModel == null) {
-            throw new RuntimeException();
-        }
-        PostInfoDto postInfoDto = postMapstructService.toPostInfoDto(postModel);
-        return addImagesIdsToDto(postModel, postInfoDto);
+//        if (postModel == null) {
+//            throw new RuntimeException();
+//        }
+        return modelToInfoDtoWithListImageIds(postModel);
+    }
+
+    public PostInfoDto modelToInfoDtoWithListImageIds(PostModel model) {
+        PostInfoDto postInfoDto = postMapstructService.toPostInfoDto(model);
+        return addImagesIdsToDto(model, postInfoDto);
     }
 
     private PostInfoDto addImagesIdsToDto(PostModel postModel, PostInfoDto postInfoDto) {

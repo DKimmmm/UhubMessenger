@@ -3,12 +3,15 @@ package com.example.UhabMessenger.userdata.service.user.main;
 import com.example.UhabMessenger.authentication.exception.AuthorizationErrorException;
 import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
 import com.example.UhabMessenger.userdata.config.MinioInitializer;
+import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.dto.user.UserInfoDto;
 import com.example.UhabMessenger.userdata.mapper.UserMapstructService;
 import com.example.UhabMessenger.userdata.model.ImageModel;
+import com.example.UhabMessenger.userdata.model.PostModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
 import com.example.UhabMessenger.userdata.repository.UserRepository;
 import com.example.UhabMessenger.userdata.service.ImageService;
+import com.example.UhabMessenger.userdata.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -21,7 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class UserService {
     private final ImageService imageService;
     private final MinioInitializer minioInitializer;
     private final UserMapstructService userMapstructService;
+    private final PostService postService;
 
     public UserModel getUserByUsername(String username) {
         if (usernameIsEmailFormat(username)) {
@@ -196,4 +199,16 @@ public class UserService {
         return result;
     }
 
+    public List<PostInfoDto> findPostsInfoListByUserId(UUID userId) {
+        UserModel userModel = userRepository.findByUserId(userId).orElseThrow();
+        return createPostInfoDtosByPostModelList(userModel.getPosts());
+    }
+
+    private List<PostInfoDto> createPostInfoDtosByPostModelList(List<PostModel> posts) {
+        List<PostInfoDto> result = new ArrayList<>();
+        for (PostModel post : posts) {
+            result.add(postService.modelToInfoDtoWithListImageIds(post));
+        }
+        return result;
+    }
 }
