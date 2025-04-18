@@ -1,7 +1,7 @@
 package com.example.UhabMessenger.userdata.controller;
 
 import com.example.UhabMessenger.userdata.dto.user.UserInfoDto;
-import com.example.UhabMessenger.userdata.service.user.main.UserService;
+import com.example.UhabMessenger.userdata.service.user.other.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

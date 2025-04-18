@@ -1,14 +1,14 @@
 package com.example.UhabMessenger.userdata.service.user.authorization;
 
 import com.example.UhabMessenger.userdata.dto.register.LoginDto;
-import com.example.UhabMessenger.authentication.exception.AuthorizationErrorException;
-import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
-import com.example.UhabMessenger.authentication.exception.UserAlreadyExistsException;
+import com.example.UhabMessenger.userdata.exception.AuthorizationErrorException;
+import com.example.UhabMessenger.userdata.exception.UncorrectedPasswordException;
+import com.example.UhabMessenger.userdata.exception.UserAlreadyExistsException;
 import com.example.UhabMessenger.userdata.dto.register.SignUpDto;
 import com.example.UhabMessenger.userdata.mapper.UserMapstructService;
 import com.example.UhabMessenger.userdata.model.UserModel;
 import com.example.UhabMessenger.userdata.repository.UserRepository;
-import com.example.UhabMessenger.userdata.service.user.main.UserService;
+import com.example.UhabMessenger.userdata.service.user.other.UserService;
 import com.example.UhabMessenger.authentication.validation.PhoneOrEmailValidator;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

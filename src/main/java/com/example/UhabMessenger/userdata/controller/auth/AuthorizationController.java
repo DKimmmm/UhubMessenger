@@ -2,9 +2,9 @@ package com.example.UhabMessenger.userdata.controller.auth;
 
 import com.example.UhabMessenger.userdata.dto.register.LoginDto;
 import com.example.UhabMessenger.userdata.dto.register.SignUpDto;
-import com.example.UhabMessenger.authentication.exception.AuthorizationErrorException;
-import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
-import com.example.UhabMessenger.authentication.exception.UserAlreadyExistsException;
+import com.example.UhabMessenger.userdata.exception.AuthorizationErrorException;
+import com.example.UhabMessenger.userdata.exception.UncorrectedPasswordException;
+import com.example.UhabMessenger.userdata.exception.UserAlreadyExistsException;
 import com.example.UhabMessenger.userdata.service.user.authorization.AuthUserService;
 import com.example.UhabMessenger.authentication.statusCodes.HttpCodes;
 import jakarta.servlet.http.HttpServletResponse;

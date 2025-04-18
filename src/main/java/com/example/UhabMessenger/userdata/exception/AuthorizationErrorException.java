@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.authentication.exception;
+package com.example.UhabMessenger.userdata.exception;
 
 public class AuthorizationErrorException extends RuntimeException {
     public AuthorizationErrorException(String message) {

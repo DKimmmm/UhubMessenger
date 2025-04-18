@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.authentication.exception;
+package com.example.UhabMessenger.userdata.exception;
 
 public class UncorrectedPasswordException extends RuntimeException {
     public UncorrectedPasswordException(String message) {

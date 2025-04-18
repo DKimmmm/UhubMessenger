@@ -1,7 +1,7 @@
 package com.example.UhabMessenger.authentication.secutiry;
 
 import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.userdata.service.user.main.UserService;
+import com.example.UhabMessenger.userdata.service.user.other.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

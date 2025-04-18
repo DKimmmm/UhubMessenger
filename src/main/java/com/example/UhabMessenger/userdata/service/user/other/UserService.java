@@ -1,7 +1,7 @@
-package com.example.UhabMessenger.userdata.service.user.main;
+package com.example.UhabMessenger.userdata.service.user.other;
 
-import com.example.UhabMessenger.authentication.exception.AuthorizationErrorException;
-import com.example.UhabMessenger.authentication.exception.UncorrectedPasswordException;
+import com.example.UhabMessenger.userdata.exception.AuthorizationErrorException;
+import com.example.UhabMessenger.userdata.exception.UncorrectedPasswordException;
 import com.example.UhabMessenger.userdata.config.MinioInitializer;
 import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.dto.user.UserInfoDto;
