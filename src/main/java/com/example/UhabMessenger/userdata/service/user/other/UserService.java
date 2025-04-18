@@ -5,7 +5,9 @@ import com.example.UhabMessenger.userdata.exception.UncorrectedPasswordException
 import com.example.UhabMessenger.userdata.config.MinioInitializer;
 import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.dto.user.UserInfoDto;
+import com.example.UhabMessenger.userdata.exception.UserNotFoundException;
 import com.example.UhabMessenger.userdata.mapper.UserMapstructService;
+import com.example.UhabMessenger.userdata.model.GroupModel;
 import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.model.PostModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
@@ -171,16 +173,24 @@ public class UserService {
     }
 
     public UserInfoDto getUserInfo(UUID userId) {
-        UserModel userModel = userRepository.findByUserId(userId).orElse(null);
-        log.info("добавить кастомное искючение");
-        if (userModel == null) {
-            throw new RuntimeException("error in find user by id");
-        }
-        UserInfoDto userInfoDto = userMapstructService.toUserInfoDto(
-                userModel
-        );
+        UserModel userModel = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("not found by id"));
 
-        return addImagesIdsToDto(userModel, userInfoDto);
+        UserInfoDto userInfoDto = userMapstructService.toUserInfoDto(userModel);
+
+        return addGroupIdsIntoDto(
+                addImagesIdsToDto(userModel, userInfoDto),
+                userModel.getGroups()
+        );
+    }
+
+    private UserInfoDto addGroupIdsIntoDto(UserInfoDto userInfoDto, List<GroupModel> groups) {
+        List<UUID> groupIds = new ArrayList<>();
+        for (GroupModel group : groups) {
+            groupIds.add(group.getGroupId());
+        }
+        userInfoDto.setGroupsIds(groupIds);
+        return userInfoDto;
     }
 
     private UserInfoDto addImagesIdsToDto(UserModel userModel, UserInfoDto userInfoDto) {

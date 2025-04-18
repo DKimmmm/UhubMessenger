@@ -19,6 +19,7 @@ public class UserInfoDto {
     private Boolean approvedPhone;
     private Boolean approvedEmail;
     private List<UUID> imagesIds;
+    private List<UUID> groupsIds;
 
 }
 // Конструктор по умолчанию
