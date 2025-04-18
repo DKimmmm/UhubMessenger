@@ -1,5 +1,6 @@
 package com.example.UhabMessenger.userdata.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -51,16 +52,10 @@ public class UserModel {
     )
     private List<PostModel> posts = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "group_users",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id")
-    )
+
+    @ManyToMany(mappedBy = "users")
+    @JsonBackReference // Для предотвращения рекурсии
     private List<GroupModel> groups = new ArrayList<>();
-
-
-
 
     public List<ImageModel> getImages() {
         if (images == null) {
@@ -74,5 +69,12 @@ public class UserModel {
             posts = new ArrayList<>();
         }
         return posts;
+    }
+
+    public List<GroupModel> getGroups() {
+        if (groups == null) {
+            groups = new ArrayList<>();
+        }
+        return groups;
     }
 }

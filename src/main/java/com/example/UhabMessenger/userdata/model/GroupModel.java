@@ -1,5 +1,6 @@
 package com.example.UhabMessenger.userdata.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,12 +26,13 @@ public class GroupModel {
 
     private String description;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "group_users",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    @JsonManagedReference // Для предотвращения рекурсии при сериализации
     private List<UserModel> users = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
@@ -49,6 +51,15 @@ public class GroupModel {
     )
     private List<ImageModel> images = new ArrayList<>();
 
+    //методы сериализации которые необходимы для связи многие к многим
+    public void addUser(UserModel user){
+        this.getUsers().add(user);
+        user.getGroups().add(this);
+    }
+    public void removeBook(UserModel user){
+        this.getUsers().remove(user);
+        user.getGroups().remove(this);
+    }
 
     public List<UserModel> getUsers() {
         if (users == null) {
