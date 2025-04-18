@@ -3,10 +3,13 @@ package com.example.UhabMessenger.userdata.repository;
 import com.example.UhabMessenger.bd.init.BaseIntegrationTest;
 import com.example.UhabMessenger.userdata.model.GroupModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +26,6 @@ public class GroupAttitudeTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void saveAndFindByIdTest() {
-        groupRepository.deleteAll();
         UUID uuid = saveTwoGroups();
         assertThat(groupRepository.count()).isEqualTo(2);
         assertThat(groupRepository.findByGroupId(uuid).orElse(null)).isNotNull();
@@ -48,9 +50,44 @@ public class GroupAttitudeTest extends BaseIntegrationTest {
         UserModel userWithGroup = userRepository.findByUserId(userModel.getUserId()).orElse(null);
         assertThat(userWithGroup).isNotNull();
 
-        boolean isEmpty = userWithGroup.getGroups().isEmpty();
-        assertThat(isEmpty).isEqualTo(false);
+        Assertions.assertThat(userWithGroup).isNotNull();
+        assertThat(userWithGroup.getGroups().isEmpty()).isEqualTo(false);
         assertThat(userWithGroup.getGroups().getFirst().getGroupId()).isEqualTo(groupModel.getGroupId());
+    }
+
+    @BeforeEach
+    public void deleteData() {
+        groupRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
+    @Test
+    @Transactional
+    void deleteCascadeUserFromBd() {
+
+        List<UserModel> users = createUserList();
+        UserModel firstUser = users.getFirst();
+        UserModel secondUser = users.get(1);
+
+        GroupModel group1 = createGroupByUser(firstUser);
+
+        GroupModel build = GroupModel.builder().title("titile").description("ddddees").build();
+        build.addUser(firstUser);
+        build.addUser(secondUser);
+
+        GroupModel group2 = groupRepository.save(build);
+
+        Assertions.assertThat(group1.getUsers().size()).isEqualTo(1);
+        Assertions.assertThat(group2.getUsers().size()).isEqualTo(2);
+        Assertions.assertThat(userRepository.count()).isEqualTo(2);
+
+        group2.removeUser(secondUser);
+        groupRepository.save(group2);
+
+        Assertions.assertThat(firstUser.getGroups().size()).isEqualTo(2);
+        Assertions.assertThat(secondUser.getGroups().size()).isEqualTo(0);
+        Assertions.assertThat(group2.getUsers().size()).isEqualTo(1);
+
     }
 
     private GroupModel createGroupByUser(UserModel userModel) {
@@ -64,10 +101,20 @@ public class GroupAttitudeTest extends BaseIntegrationTest {
 
     private UserModel createUser() {
         return UserModel.builder()
-                        .name("Name")
-                        .lastname("LName")
-                        .password("pass")
-                        .build();
+                .name("Name")
+                .lastname("LName")
+                .password("pass")
+                .build();
+    }
+
+    private List<UserModel> createUserList() {
+        List<UserModel> result = new ArrayList<>();
+        result.add(createUser());
+        result.add(UserModel.builder()
+                .name("Name1")
+                .lastname("LName1")
+                .password("pass1").build());
+        return result;
     }
 
 }

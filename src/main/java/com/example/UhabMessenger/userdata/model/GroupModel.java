@@ -56,7 +56,7 @@ public class GroupModel {
         this.getUsers().add(user);
         user.getGroups().add(this);
     }
-    public void removeBook(UserModel user){
+    public void removeUser(UserModel user){
         this.getUsers().remove(user);
         user.getGroups().remove(this);
     }
