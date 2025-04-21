@@ -6,6 +6,7 @@ import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.repository.entity.ImageRepository;
 import com.example.uhabmessenger.repository.entity.PostRepository;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +23,12 @@ public class PostRepositoryTest extends BaseIntegrationTest {
     @Autowired
     private ImageRepository imageRepository;
 
+    @BeforeEach
+    public void repositoryDel() {
+        postRepository.deleteAll();
+        imageRepository.deleteAll();
+    }
+
     @Test
     void saveAndFindTest() {
         PostModel postModel = postRepository.save(
@@ -35,7 +42,6 @@ public class PostRepositoryTest extends BaseIntegrationTest {
 
     @Test
     void saveAndDelete() {
-        postRepository.deleteAll();
         PostModel postModel = postRepository.save(
                 PostModel.builder()
                         .tittle("tt")
@@ -92,7 +98,6 @@ public class PostRepositoryTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void imageSaveWithPost() {
-        imageRepository.deleteAll();
         ImageModel imageModel = ImageModel.builder()
                 .contentType("ct")
                 .size(12345L)

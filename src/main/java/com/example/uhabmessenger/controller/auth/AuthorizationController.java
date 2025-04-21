@@ -6,7 +6,7 @@ import com.example.uhabmessenger.exception.AuthorizationErrorException;
 import com.example.uhabmessenger.exception.UncorrectedPasswordException;
 import com.example.uhabmessenger.exception.UserAlreadyExistsException;
 import com.example.uhabmessenger.service.user.authorization.AuthUserService;
-import com.example.uhabmessenger.statusCodes.HttpCodes;
+import com.example.uhabmessenger.statusсodes.HttpCodes;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

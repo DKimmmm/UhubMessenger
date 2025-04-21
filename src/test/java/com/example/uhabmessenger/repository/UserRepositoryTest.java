@@ -5,6 +5,7 @@ import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.ImageRepository;
 import com.example.uhabmessenger.repository.entity.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,12 @@ class UserRepositoryTest extends BaseIntegrationTest {
     private UserRepository userRepository;
     @Autowired
     private ImageRepository imageRepository;
+
+    @BeforeEach
+    public void repositoryDel() {
+        imageRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     void shouldSaveAndFindUser() {
@@ -35,7 +42,6 @@ class UserRepositoryTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void shouldImageSaveWithUserSaving() {
-        imageRepository.deleteAll();
 
         assertThat(imageRepository.findAll().size()).isEqualTo(0);
 
