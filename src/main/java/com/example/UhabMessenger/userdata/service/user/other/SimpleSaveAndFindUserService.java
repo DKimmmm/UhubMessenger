@@ -2,7 +2,7 @@ package com.example.UhabMessenger.userdata.service.user.other;
 
 import com.example.UhabMessenger.userdata.exception.UserNotFoundException;
 import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.userdata.repository.UserRepository;
+import com.example.UhabMessenger.userdata.repository.entity.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

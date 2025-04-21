@@ -1,17 +1,17 @@
 package com.example.UhabMessenger.userdata.service.user.other;
 
-import com.example.UhabMessenger.userdata.exception.AuthorizationErrorException;
-import com.example.UhabMessenger.userdata.exception.UncorrectedPasswordException;
-import com.example.UhabMessenger.userdata.config.MinioInitializer;
 import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.dto.user.UserInfoDto;
+import com.example.UhabMessenger.userdata.exception.AuthorizationErrorException;
+import com.example.UhabMessenger.userdata.exception.UncorrectedPasswordException;
 import com.example.UhabMessenger.userdata.exception.UserNotFoundException;
 import com.example.UhabMessenger.userdata.mapper.UserMapstructService;
 import com.example.UhabMessenger.userdata.model.GroupModel;
 import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.model.PostModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.userdata.repository.UserRepository;
+import com.example.UhabMessenger.userdata.repository.MinioService;
+import com.example.UhabMessenger.userdata.repository.entity.UserRepository;
 import com.example.UhabMessenger.userdata.service.ImageService;
 import com.example.UhabMessenger.userdata.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +35,7 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final ImageService imageService;
-    private final MinioInitializer minioInitializer;
+    private final MinioService minioService;
     private final UserMapstructService userMapstructService;
     private final PostService postService;
 
@@ -123,7 +123,7 @@ public class UserService {
     private void deleteFromMinio(UUID userId) {
         List<String> fileNames = imageService.findByUserId(userId);
         for (String fileName : fileNames) {
-            minioInitializer.deleteFile(fileName);
+            minioService.deleteFile(fileName);
             log.info("minio delete by filename: {}", fileName);
         }
     }
@@ -150,7 +150,7 @@ public class UserService {
 
     public void downloadImage(ImageModel image, HttpServletResponse response) {
         try {
-            try (InputStream is = minioInitializer.downloadInputStream(image.getFileName());
+            try (InputStream is = minioService.downloadInputStream(image.getFileName());
                  OutputStream os = response.getOutputStream()) {
 
                 response.setStatus(200);

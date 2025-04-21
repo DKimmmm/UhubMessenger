@@ -3,6 +3,8 @@ package com.example.UhabMessenger.userdata.repository;
 import com.example.UhabMessenger.bd.init.BaseIntegrationTest;
 import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
+import com.example.UhabMessenger.userdata.repository.entity.ImageRepository;
+import com.example.UhabMessenger.userdata.repository.entity.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,10 +1,10 @@
 package com.example.UhabMessenger.userdata.service;
 
-import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.userdata.repository.UserRepository;
-import com.example.UhabMessenger.userdata.config.MinioInitializer;
 import com.example.UhabMessenger.userdata.model.ImageModel;
-import com.example.UhabMessenger.userdata.repository.ImageRepository;
+import com.example.UhabMessenger.userdata.model.UserModel;
+import com.example.UhabMessenger.userdata.repository.MinioService;
+import com.example.UhabMessenger.userdata.repository.entity.ImageRepository;
+import com.example.UhabMessenger.userdata.repository.entity.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,13 +23,13 @@ import java.util.UUID;
 public class ImageService {
 
     private static final Logger log = LoggerFactory.getLogger(ImageService.class);
-    private final MinioInitializer minioInitializer;
+    private final MinioService minioService;
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
 
     @SneakyThrows
     public ImageModel uploadImage(MultipartFile file) {
-        minioInitializer.uploadFile(
+        minioService.uploadFile(
                 file.getOriginalFilename(),
                 file.getInputStream(),
                 file.getSize()
@@ -64,7 +64,7 @@ public class ImageService {
         if (image == null) {
             return;
         }
-        try (InputStream is = minioInitializer.downloadInputStream(image.getFileName());
+        try (InputStream is = minioService.downloadInputStream(image.getFileName());
              OutputStream os = response.getOutputStream()) {
 
             response.setStatus(200);

@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.authentication.statusCodes;
+package com.example.UhabMessenger.userdata.statusCodes;
 
 public enum HttpCodes {
     AlreadyUserExists(420),

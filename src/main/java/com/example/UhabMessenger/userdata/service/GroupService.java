@@ -4,9 +4,8 @@ import com.example.UhabMessenger.userdata.dto.groups.GroupInfoDto;
 import com.example.UhabMessenger.userdata.mapper.GroupMapstructService;
 import com.example.UhabMessenger.userdata.model.GroupModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.userdata.repository.GroupRepository;
+import com.example.UhabMessenger.userdata.repository.entity.GroupRepository;
 import com.example.UhabMessenger.userdata.service.user.other.SimpleSaveAndFindUserService;
-import com.example.UhabMessenger.userdata.service.user.other.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

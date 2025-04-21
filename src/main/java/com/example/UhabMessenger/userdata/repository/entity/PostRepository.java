@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.userdata.repository;
+package com.example.UhabMessenger.userdata.repository.entity;
 
 import com.example.UhabMessenger.userdata.model.PostModel;
 import org.springframework.data.jpa.repository.JpaRepository;

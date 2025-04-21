@@ -1,4 +1,4 @@
-package com.example.UhabMessenger.authentication.validation;
+package com.example.UhabMessenger.userdata.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

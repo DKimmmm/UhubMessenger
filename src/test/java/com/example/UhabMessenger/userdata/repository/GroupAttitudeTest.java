@@ -3,6 +3,8 @@ package com.example.UhabMessenger.userdata.repository;
 import com.example.UhabMessenger.bd.init.BaseIntegrationTest;
 import com.example.UhabMessenger.userdata.model.GroupModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
+import com.example.UhabMessenger.userdata.repository.entity.GroupRepository;
+import com.example.UhabMessenger.userdata.repository.entity.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

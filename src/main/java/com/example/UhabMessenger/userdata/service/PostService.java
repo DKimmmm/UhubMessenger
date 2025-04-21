@@ -1,14 +1,14 @@
 package com.example.UhabMessenger.userdata.service;
 
-import com.example.UhabMessenger.userdata.config.MinioInitializer;
 import com.example.UhabMessenger.userdata.dto.posts.PostDto;
 import com.example.UhabMessenger.userdata.dto.posts.PostInfoDto;
 import com.example.UhabMessenger.userdata.mapper.PostMapstructService;
 import com.example.UhabMessenger.userdata.model.ImageModel;
 import com.example.UhabMessenger.userdata.model.PostModel;
 import com.example.UhabMessenger.userdata.model.UserModel;
-import com.example.UhabMessenger.userdata.repository.PostRepository;
-import com.example.UhabMessenger.userdata.repository.UserRepository;
+import com.example.UhabMessenger.userdata.repository.MinioService;
+import com.example.UhabMessenger.userdata.repository.entity.PostRepository;
+import com.example.UhabMessenger.userdata.repository.entity.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final PostMapstructService postMapstructService;
     private final ImageService imageService;
-    private final MinioInitializer minioInitializer;
+    private final MinioService minioService;
 
 
     public void save(UUID userId, String title, String description, List<MultipartFile> multipartFiles) {
@@ -98,7 +98,7 @@ public class PostService {
     private void deleteFromMinio(UUID postId) {
         List<String> fileNames = imageService.findByPostId(postId);
         for (String fileName : fileNames) {
-            minioInitializer.deleteFile(fileName);
+            minioService.deleteFile(fileName);
             log.info("minio delete by filename: {}", fileName);
         }
     }
