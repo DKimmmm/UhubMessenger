@@ -5,6 +5,7 @@ import com.example.uhabmessenger.dto.register.SignUpDto;
 import com.example.uhabmessenger.exception.AuthorizationErrorException;
 import com.example.uhabmessenger.exception.UncorrectedPasswordException;
 import com.example.uhabmessenger.exception.UserAlreadyExistsException;
+import com.example.uhabmessenger.exception.UsernameIncorrectException;
 import com.example.uhabmessenger.service.user.authorization.AuthUserService;
 import com.example.uhabmessenger.statusсodes.HttpCodes;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,16 +48,16 @@ public class AuthorizationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
+
         try {
             return ResponseEntity.ok(authUserService.login(loginDto, response));
-        } catch (UncorrectedPasswordException e) {
-            return new ResponseEntity<>(HttpStatus.valueOf(
-                    HttpCodes.UncorrectedPassword.getCode()
-            ));
+
         } catch (AuthorizationErrorException e) {
             return new ResponseEntity<>(HttpStatus.valueOf(
                     HttpCodes.AuthorizationError.getCode()
             ));
+        } catch (UsernameIncorrectException e) {
+            return new ResponseEntity<>(HttpStatus.valueOf(414));
         }
     }
 

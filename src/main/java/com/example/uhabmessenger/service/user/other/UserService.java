@@ -5,6 +5,7 @@ import com.example.uhabmessenger.dto.user.UserInfoDto;
 import com.example.uhabmessenger.exception.AuthorizationErrorException;
 import com.example.uhabmessenger.exception.UncorrectedPasswordException;
 import com.example.uhabmessenger.exception.UserNotFoundException;
+import com.example.uhabmessenger.exception.UsernameIncorrectException;
 import com.example.uhabmessenger.mapper.UserMapstructService;
 import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
@@ -53,12 +54,16 @@ public class UserService {
         try {
             return userRepository.findByEmail(username).get();
         } catch (Exception e) {
-            throw new UncorrectedPasswordException("uncorrected password");
+            throw new UsernameIncorrectException("uncorrected email");
         }
     }
 
     private UserModel findUserByPhone(String username) {
-        return userRepository.findByPhone(username).get();
+        try {
+            return userRepository.findByPhone(username).get();
+        } catch (Exception e) {
+            throw new UsernameIncorrectException("incorrect phone");
+        }
     }
 
     // Проверка, соответствует ли username формату номера телефона

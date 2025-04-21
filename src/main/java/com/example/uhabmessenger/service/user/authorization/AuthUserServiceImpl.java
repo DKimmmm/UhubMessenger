@@ -48,7 +48,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     @Transactional(readOnly = true)
     public UUID login(LoginDto loginDto, HttpServletResponse response) {
         if (!checkForAlreadyExists(loginDto.username())) {
-            throw new UncorrectedPasswordException("user login fail with username: " + loginDto.username());
+            throw new AuthorizationErrorException("user login fail with username: " + loginDto.username());
         }
         return findIdByUsername(loginDto.username());
     }
