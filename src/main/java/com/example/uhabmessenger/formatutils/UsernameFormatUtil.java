@@ -2,18 +2,11 @@ package com.example.uhabmessenger.formatutils;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.example.uhabmessenger.formatutils.RegexUtils.EMAIL_REGEX;
+import static com.example.uhabmessenger.formatutils.RegexUtils.PHONE_REGEX;
+
 @Slf4j
-public class UsernameFormatUtil {
-
-    /** Регулярное выражение для номера телефона
-    * Поддерживает: +12345678901, +1 (123) 456-7890, +7 999 123-45-67, и т.д.
-     */
-    private final static String phoneRegex = "^\\+?[1-9]\\d{1,14}([\\s-]?\\d{2,4})*$|^\\+?[1-9]\\d{1,14}(\\(\\d{1,4}\\))?([\\s-]?\\d{2,4})*$";
-
-    /** Регулярное выражение для email
-    * Поддерживает: user@domain.com, user.name@sub.domain.co, и т.д.
-    */
-    private final static String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+public final class UsernameFormatUtil {
 
     private UsernameFormatUtil() {
     }
@@ -27,7 +20,7 @@ public class UsernameFormatUtil {
             return false;
         }
 
-        boolean isPhoneFormat = username.matches(phoneRegex);
+        boolean isPhoneFormat = username.matches(PHONE_REGEX);
         log.info("Checking if username '{}' is in phone format: {}", username, isPhoneFormat);
         return isPhoneFormat;
     }
@@ -41,7 +34,7 @@ public class UsernameFormatUtil {
             return false;
         }
 
-        boolean isEmailFormat = username.matches(emailRegex);
+        boolean isEmailFormat = username.matches(EMAIL_REGEX);
         log.info("Checking if username '{}' is in email format: {}", username, isEmailFormat);
         return isEmailFormat;
     }

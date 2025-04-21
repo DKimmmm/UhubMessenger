@@ -5,11 +5,13 @@ import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SimpleSaveAndFindUserService {
 
     private final UserRepository userRepository;

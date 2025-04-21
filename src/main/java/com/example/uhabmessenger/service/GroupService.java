@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -28,7 +29,7 @@ public class GroupService {
     }
 
     private List<UserModel> findUsersByUserIds(List<UUID> userIds) {
-        if (userIds == null || userIds.isEmpty()) {
+        if (Objects.isNull(userIds) || userIds.isEmpty()) {
             return new ArrayList<>();
         }
         List<UserModel> result = new ArrayList<>();

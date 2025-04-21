@@ -5,14 +5,11 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.example.uhabmessenger.formatutils.RegexUtils.PASSWORD_REGEX;
+
 public class PasswordValidator implements ConstraintValidator<Password, String> {
 
-    // Регулярное выражение для проверки:
-    // - минимум 8 символов
-    // - минимум 1 заглавная буква (A-Z)
-    // - минимум 1 строчная буква (a-z)
-    // - минимум 1 цифра (0-9)
-    private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$";
+
     private static final Logger log = LoggerFactory.getLogger(PasswordValidator.class);
 
     @Override
