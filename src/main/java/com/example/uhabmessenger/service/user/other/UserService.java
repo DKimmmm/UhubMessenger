@@ -6,6 +6,7 @@ import com.example.uhabmessenger.exception.AuthorizationErrorException;
 import com.example.uhabmessenger.exception.UncorrectedPasswordException;
 import com.example.uhabmessenger.exception.UserNotFoundException;
 import com.example.uhabmessenger.exception.UsernameIncorrectException;
+import com.example.uhabmessenger.formatutils.UsernameFormatUtil;
 import com.example.uhabmessenger.mapper.UserMapstructService;
 import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
@@ -41,9 +42,9 @@ public class UserService {
     private final PostService postService;
 
     public UserModel getUserByUsername(String username) {
-        if (usernameIsEmailFormat(username)) {
+        if (UsernameFormatUtil.usernameIsEmailFormat(username)) {
             return findUserByEmail(username);
-        } else if (usernameIsPhoneFormat(username)) {
+        } else if (UsernameFormatUtil.usernameIsPhoneFormat(username)) {
             return findUserByPhone(username);
         } else {
             throw new AuthorizationErrorException("username is not correct format");
@@ -51,55 +52,24 @@ public class UserService {
     }
 
     private UserModel findUserByEmail(String username) {
-        try {
-            return userRepository.findByEmail(username).get();
-        } catch (Exception e) {
-            throw new UsernameIncorrectException("uncorrected email");
-        }
+
+            return userRepository.findByEmail(username).orElseThrow(
+                            () -> new UsernameIncorrectException("uncorrected email")
+                    );
+
     }
 
     private UserModel findUserByPhone(String username) {
-        try {
-            return userRepository.findByPhone(username).get();
-        } catch (Exception e) {
-            throw new UsernameIncorrectException("incorrect phone");
-        }
+
+            return userRepository.findByPhone(username).orElseThrow(
+                    () -> new UsernameIncorrectException("uncorrected phone")
+            );
+
     }
 
-    // Проверка, соответствует ли username формату номера телефона
-    private boolean usernameIsPhoneFormat(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            log.info("Username is null or empty, cannot validate as phone format");
-            return false;
-        }
 
-        // Регулярное выражение для номера телефона
-        // Поддерживает: +12345678901, +1 (123) 456-7890, +7 999 123-45-67, и т.д.
-        String phoneRegex = "^\\+?[1-9]\\d{1,14}([\\s-]?\\d{2,4})*$|^\\+?[1-9]\\d{1,14}(\\(\\d{1,4}\\))?([\\s-]?\\d{2,4})*$";
-
-        boolean isPhoneFormat = username.matches(phoneRegex);
-        log.info("Checking if username '{}' is in phone format: {}", username, isPhoneFormat);
-        return isPhoneFormat;
-    }
-
-    // Проверка, соответствует ли username формату email
-    private boolean usernameIsEmailFormat(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            log.info("Username is null or empty, cannot validate as email format");
-            return false;
-        }
-
-        // Регулярное выражение для email
-        // Поддерживает: user@domain.com, user.name@sub.domain.co, и т.д.
-        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-
-        boolean isEmailFormat = username.matches(emailRegex);
-        log.info("Checking if username '{}' is in email format: {}", username, isEmailFormat);
-        return isEmailFormat;
-    }
 
     public void uploadUserImage(MultipartFile multipartFile, UUID userId) {
-//        deleteIfAlreadyExists(userId);
         ImageModel imageModel = imageService.uploadImage(multipartFile);
         addImageIntoUserImageList(userId, imageModel);
     }

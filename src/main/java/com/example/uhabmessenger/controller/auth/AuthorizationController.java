@@ -51,7 +51,6 @@ public class AuthorizationController {
 
         try {
             return ResponseEntity.ok(authUserService.login(loginDto, response));
-
         } catch (AuthorizationErrorException e) {
             return new ResponseEntity<>(HttpStatus.valueOf(
                     HttpCodes.AuthorizationError.getCode()
