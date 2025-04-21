@@ -1,5 +1,10 @@
 server:
   port: ${SERVER_PORT}
+  servlet:
+    context-path: ${PROJECT_API}
+#
+#project:
+#  api: ${PROJECT_API}
 
 minio:
   url: ${MINIO_URL}

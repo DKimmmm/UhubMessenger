@@ -47,9 +47,9 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorization -> authorization
-                                .requestMatchers(AUTH_WHITELIST).permitAll()
-                                .requestMatchers(AUTH_AUTHORIZATION).authenticated()// Любой аутентифицированный пользователь
-                                .anyRequest().denyAll() // Запрещаем все остальное
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(AUTH_AUTHORIZATION).authenticated()// Любой аутентифицированный пользователь
+                        .anyRequest().denyAll() // Запрещаем все остальное
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
