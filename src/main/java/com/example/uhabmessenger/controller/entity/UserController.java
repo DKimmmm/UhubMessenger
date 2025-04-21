@@ -1,4 +1,4 @@
-package com.example.uhabmessenger.controller;
+package com.example.uhabmessenger.controller.entity;
 
 import com.example.uhabmessenger.dto.user.UserInfoDto;
 import com.example.uhabmessenger.service.user.other.UserService;
