@@ -25,6 +25,12 @@ public class GroupAttitudeTest extends BaseIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @BeforeEach
+    public void deleteData() {
+        groupRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
     @Test
     @Transactional
     void saveAndFindByIdTest() {
@@ -55,12 +61,6 @@ public class GroupAttitudeTest extends BaseIntegrationTest {
         Assertions.assertThat(userWithGroup).isNotNull();
         assertThat(userWithGroup.getGroups().isEmpty()).isEqualTo(false);
         assertThat(userWithGroup.getGroups().getFirst().getGroupId()).isEqualTo(groupModel.getGroupId());
-    }
-
-    @BeforeEach
-    public void deleteData() {
-        groupRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test
