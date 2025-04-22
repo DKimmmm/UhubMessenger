@@ -16,5 +16,6 @@ public class GroupInfoDto {
     private String title;
     private String description;
     private List<UUID> userIds;
+    private List<UUID> photoIds;
 
 }

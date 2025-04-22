@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +28,14 @@ public class GroupController {
         return ResponseEntity.ok().build();
 
     }
+
+    @PostMapping(value = "/photo-update/{groupId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> photoUpdate(@PathVariable UUID groupId,
+                                            @RequestPart MultipartFile multipartFile) {
+        groupService.photoUpdate(groupId, multipartFile);
+        return ResponseEntity.ok().build();
+    }
+
 
     @GetMapping("/all-info")
     public ResponseEntity<List<GroupInfoDto>> getAllInfo() {

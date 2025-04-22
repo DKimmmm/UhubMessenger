@@ -4,17 +4,17 @@ import com.example.uhabmessenger.dto.groups.GroupCreateDto;
 import com.example.uhabmessenger.dto.groups.GroupInfoDto;
 import com.example.uhabmessenger.exception.GroupNotFoundException;
 import com.example.uhabmessenger.exception.GroupSaveException;
-import com.example.uhabmessenger.exception.UserNotFoundException;
+import com.example.uhabmessenger.exception.ImageSaveException;
 import com.example.uhabmessenger.mapper.GroupMapstructService;
 import com.example.uhabmessenger.model.GroupModel;
+import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.GroupRepository;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,7 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final SimpleUserService simpleUserService;
     private final GroupMapstructService groupMapstructService;
+    private final ImageService imageService;
 
     public void save(GroupCreateDto groupCreateDto) {
         checkExistByTitle(groupCreateDto.title());
@@ -104,16 +105,25 @@ public class GroupService {
 
     private GroupInfoDto groupToInfoDto(GroupModel group) {
         GroupInfoDto result = groupMapstructService.toInfoDto(group);
-        return addUserIdsIntoInfoDtos(result, group.getUsers());
+        addUserIdsIntoInfoDto(result, group.getUsers());
+        addImageIdsToGroupInfoDto(result, group.getImages());
+        return result;
     }
 
-    private GroupInfoDto addUserIdsIntoInfoDtos(GroupInfoDto result, List<UserModel> users) {
+    private void addImageIdsToGroupInfoDto(GroupInfoDto result, List<ImageModel> images) {
+        List<UUID> imagesIds = new ArrayList<>();
+        for (ImageModel image : images) {
+            imagesIds.add(image.getImageId());
+        }
+        result.setPhotoIds(imagesIds);
+    }
+
+    private void addUserIdsIntoInfoDto(GroupInfoDto result, List<UserModel> users) {
         List<UUID> userIds = new ArrayList<>();
         for (UserModel user : users) {
             userIds.add(user.getUserId());
         }
         result.setUserIds(userIds);
-        return result;
     }
 
     public GroupInfoDto getInfo(UUID groupId) {
@@ -147,5 +157,28 @@ public class GroupService {
 
     public void removeById(UUID groupId) {
         groupRepository.deleteById(groupId);
+    }
+
+    public void photoUpdate(UUID groupId, MultipartFile multipartFile) {
+        try {
+            GroupModel groupModel = groupRepository.findByGroupId(groupId).get();
+            removeOldPhoto(groupModel);
+            addNewPhoto(groupModel, multipartFile);
+        } catch (Exception e) {
+            throw new ImageSaveException("error in photo save");
+        }
+    }
+
+    private void addNewPhoto(GroupModel groupModel, MultipartFile multipartFile) {
+        ImageModel imageModel = imageService.uploadImage(multipartFile);
+        groupModel.getImages().add(imageModel);
+        groupRepository.save(groupModel);
+    }
+
+    private void removeOldPhoto(GroupModel groupModel) {
+        if (!groupModel.getImages().isEmpty()) {
+            ImageModel remove = groupModel.getImages().removeFirst();
+            imageService.deleteFromMinio(remove.getFileName());
+        }
     }
 }
