@@ -48,11 +48,6 @@ public class SimpleUserService {
 
     }
 
-    public void deleteUserModel(UserModel userModel) {
-
-        userRepository.delete(userModel);
-
-    }
 
     public boolean isExistByUsername(String username) {
         return userRepository.existsByPhone(username) || userRepository.existsByEmail(username);

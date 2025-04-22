@@ -8,9 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<PostModel, UUID> {
-    @Query(value = "DELETE FROM post_images pi WHERE post_id = :postId", nativeQuery = true)
-    void deleteAttachByPostId(UUID postId);
-
 
     Optional<PostModel> findByPostId(UUID postId);
+
 }

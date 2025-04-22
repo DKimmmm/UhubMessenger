@@ -8,12 +8,10 @@ import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.model.UserModel;
-import com.example.uhabmessenger.repository.MinioService;
 import com.example.uhabmessenger.repository.entity.PostRepository;
-import com.example.uhabmessenger.repository.entity.UserRepository;
 import com.example.uhabmessenger.service.groups.SimpleGroupService;
+import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,11 +25,11 @@ import java.util.UUID;
 @Slf4j
 public class PostService {
 
-    private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final PostMapstructService postMapstructService;
-    private final ImageService imageService;
+    private final SimpleUserService simpleUserService;
     private final SimpleGroupService simpleGroupService;
+    private final PostRepository postRepository;
+    private final ImageService imageService;
 
 
     public void userPostSave(UUID userId, String title, String description, List<MultipartFile> multipartFiles) {
@@ -60,9 +58,9 @@ public class PostService {
     }
 
     private void userPostSaveIntoUser(UUID userId, PostModel beginnerPostModel) {
-        UserModel userModel = userRepository.findByUserId(userId).orElseThrow();
+        UserModel userModel = simpleUserService.findById(userId);
         userModel.getPosts().add(beginnerPostModel);
-        userRepository.save(userModel);
+        simpleUserService.save(userModel);
     }
 
     private void checkForOneNotNullField(String title, List<MultipartFile> multipartFiles) {
@@ -85,36 +83,6 @@ public class PostService {
 
     private PostModel mapperToModel(String title, String description) {
         return postMapstructService.toPostModel(new PostDto(title, description));
-    }
-
-    private void imageSaveInPostgres(UUID postId, ImageModel imageModel) {
-        PostModel postModel = postRepository.findById(postId).get();
-        List<ImageModel> images = postModel.getImages();
-        images.add(imageModel);
-        postRepository.save(postModel);
-    }
-
-    @SneakyThrows
-    private void deleteIfAlreadyExists(UUID postId) {
-        try {
-            deleteFromMinio(postId);
-            deleteFromPostImageTable(postId);
-        } catch (Throwable e) {
-            log.info("file not found or delete error");
-        }
-    }
-
-    private void deleteFromPostImageTable(UUID postId) {
-        postRepository.deleteAttachByPostId(postId);
-        log.info("delete from post_images repository by postId: {}", postId);
-    }
-
-    private void deleteFromMinio(UUID postId) {
-        List<String> fileNames = imageService.findByPostId(postId);
-        for (String fileName : fileNames) {
-            imageService.deleteFromMinio(fileName);
-            log.info("minio delete by filename: {}", fileName);
-        }
     }
 
     public PostInfoDto getPostInfo(UUID postId) {
