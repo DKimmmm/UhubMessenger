@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.controller.entity;
 
+import com.example.uhabmessenger.dto.groups.GroupInfoDto;
 import com.example.uhabmessenger.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -21,15 +22,38 @@ public class GroupController {
                                     @RequestParam(required = false) String description,
                                     @RequestPart(required = false) List<UUID> userIds) {
 
-            groupService.save(title, description, userIds);
-            return ResponseEntity.ok().build();
+        groupService.save(title, description, userIds);
+        return ResponseEntity.ok().build();
 
     }
 
     @GetMapping("/all-info")
-    public ResponseEntity<?> getAllInfo() {
+    public ResponseEntity<List<GroupInfoDto>> getAllInfo() {
+        return ResponseEntity.ok(groupService.getAllInfo());
+    }
 
-            return ResponseEntity.ok(groupService.getAllInfo());
+    @GetMapping("/info/{groupId}")
+    public ResponseEntity<GroupInfoDto> getInfo(@PathVariable UUID groupId) {
+        return ResponseEntity.ok(groupService.getInfo(groupId));
+    }
 
+    @PostMapping("/add-members")
+    public ResponseEntity<Void> addMembers(@RequestParam UUID groupId,
+            @RequestBody List<UUID> membersIds) {
+        groupService.addMembers(groupId, membersIds);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/member-remove")
+    public ResponseEntity<Void> removeMember(@RequestParam UUID groupId,
+            @RequestParam UUID memberId) {
+        groupService.removeMember(groupId, memberId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/remove/{groupId}")
+    public ResponseEntity<Void> groupRemove(@PathVariable UUID groupId) {
+        groupService.removeById(groupId);
+        return ResponseEntity.ok().build();
     }
 }

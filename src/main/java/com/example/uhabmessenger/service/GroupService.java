@@ -1,12 +1,16 @@
 package com.example.uhabmessenger.service;
 
 import com.example.uhabmessenger.dto.groups.GroupInfoDto;
+import com.example.uhabmessenger.exception.GroupNotFoundException;
+import com.example.uhabmessenger.exception.GroupSaveException;
+import com.example.uhabmessenger.exception.UserNotFoundException;
 import com.example.uhabmessenger.mapper.GroupMapstructService;
 import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.GroupRepository;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,9 +27,20 @@ public class GroupService {
     private final GroupMapstructService groupMapstructService;
 
     public void save(String title, String description, List<UUID> userIds) {
-        GroupModel groupBuild = GroupModel.builder().title(title).description(description).build();
-        List<UserModel> users = findUsersByUserIds(userIds);
-        groupRepository.save(addUsersIntoGroup(groupBuild, users));
+        checkExistByTitle(title);
+        try {
+            GroupModel groupBuild = GroupModel.builder().title(title).description(description).build();
+            List<UserModel> users = findUsersByUserIds(userIds);
+            groupRepository.save(addUsersIntoGroup(groupBuild, users));
+        } catch (Exception e) {
+            throw new GroupSaveException("Group save error" + e.getMessage());
+        }
+    }
+
+    private void checkExistByTitle(String title) {
+        if (groupRepository.existsByTitle(title)) {
+            throw new GroupSaveException("Group with title '" + title + "' already exists");
+        }
     }
 
     private List<UserModel> findUsersByUserIds(List<UUID> userIds) {
@@ -74,5 +89,37 @@ public class GroupService {
         }
         result.setUserIds(userIds);
         return result;
+    }
+
+    public GroupInfoDto getInfo(UUID groupId) {
+        GroupModel groupModel = groupRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("group not found by " + groupId));
+
+        return groupToInfoDto(groupModel);
+
+    }
+
+    public void addMembers(UUID groupId, List<UUID> membersIds) {
+
+        GroupModel groupModel = groupRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("group not found by " + groupId));
+
+        List<UserModel> usersByUserIds = findUsersByUserIds(membersIds);
+
+        groupRepository.save(addUsersIntoGroup(groupModel, usersByUserIds));
+
+    }
+
+    public void removeMember(UUID groupId, UUID memberId) {
+        GroupModel groupModel = groupRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("group not found by " + groupId));
+
+        groupModel.removeUser(simpleUserService.findById(memberId));
+
+        groupRepository.save(groupModel);
+    }
+
+    public void removeById(UUID groupId) {
+        groupRepository.deleteById(groupId);
     }
 }

@@ -23,3 +23,5 @@ databaseChangeLog:
       file: db/liquibase/scripts/11-create-tables-groups-attitude.sql
   - include:
       file: db/liquibase/scripts/12-drop-not-null-description-group.sql
+  - include:
+      file: db/liquibase/scripts/13-add-unique-group-title.sql

@@ -33,7 +33,7 @@ spring:
 
 logging:
   level:
-    org.springframework.transaction: DEBUG
-    org.springframework.orm.jpa: DEBUG
-    org.springframework.jdbc: DEBUG
-    org.springframework.aop: DEBUG
+    org.springframework.transaction: ERROR
+    org.springframework.orm.jpa: ERROR
+    org.springframework.jdbc: ERROR
+    org.springframework.aop: ERROR

@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class UhubRestControllerAdvice {
 
-    @ExceptionHandler(value = {AuthorizationErrorException.class, UserAlreadyExistsException.class, UsernameIncorrectException.class})
-    public ResponseEntity<String> handleAuthorizationErrorException(Exception e) {
+    @ExceptionHandler(value = {AuthorizationErrorException.class, UserAlreadyExistsException.class, UsernameIncorrectException.class,
+            GroupNotFoundException.class, PostNotFoundException.class, GroupSaveException.class})
 
+    public ResponseEntity<String> handleAuthorizationErrorException(Exception e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("К сожалению, произошла ошибка. Error: \n" + e.getMessage());
