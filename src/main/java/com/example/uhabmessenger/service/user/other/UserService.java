@@ -3,7 +3,7 @@ package com.example.uhabmessenger.service.user.other;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.dto.user.UserInfoDto;
 import com.example.uhabmessenger.exception.AuthorizationErrorException;
-import com.example.uhabmessenger.exception.UncorrectedPasswordException;
+import com.example.uhabmessenger.exception.DownloadImageException;
 import com.example.uhabmessenger.exception.UserNotFoundException;
 import com.example.uhabmessenger.exception.UsernameIncorrectException;
 import com.example.uhabmessenger.formatutils.UsernameFormatUtil;
@@ -12,20 +12,16 @@ import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.model.UserModel;
-import com.example.uhabmessenger.repository.MinioService;
 import com.example.uhabmessenger.repository.entity.UserRepository;
 import com.example.uhabmessenger.service.ImageService;
 import com.example.uhabmessenger.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +33,6 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final ImageService imageService;
-    private final MinioService minioService;
     private final UserMapstructService userMapstructService;
     private final PostService postService;
 
@@ -53,21 +48,17 @@ public class UserService {
 
     private UserModel findUserByEmail(String username) {
 
-            return userRepository.findByEmail(username).orElseThrow(
-                            () -> new UsernameIncorrectException("uncorrected email")
-                    );
+        return userRepository.findByEmail(username).orElseThrow(
+                () -> new UsernameIncorrectException("uncorrected email"));
 
     }
 
     private UserModel findUserByPhone(String username) {
 
-            return userRepository.findByPhone(username).orElseThrow(
-                    () -> new UsernameIncorrectException("uncorrected phone")
-            );
+        return userRepository.findByPhone(username).orElseThrow(
+                () -> new UsernameIncorrectException("uncorrected phone"));
 
     }
-
-
 
     public void uploadUserImage(MultipartFile multipartFile, UUID userId) {
         ImageModel imageModel = imageService.uploadImage(multipartFile);
@@ -80,29 +71,13 @@ public class UserService {
         userRepository.save(userModel);
     }
 
-    @SneakyThrows
-    private void deleteIfAlreadyExists(UUID userId) {
-        try {
-            deleteFromMinio(userId);
-            deleteFromPostImageTable(userId);
-        } catch (Throwable e) {
-            log.info("file not found or delete error");
-        }
-    }
-
-    private void deleteFromPostImageTable(UUID userId) {
-        userRepository.deleteByUserId(userId);
-        log.info("delete from post_images repository by postId: {}", userId);
-    }
-
     private void deleteFromMinio(UUID userId) {
         List<String> fileNames = imageService.findByUserId(userId);
         for (String fileName : fileNames) {
-            minioService.deleteFile(fileName);
+            imageService.deleteFromMinio(fileName);
             log.info("minio delete by filename: {}", fileName);
         }
     }
-
 
     public void deleteImage(UUID userId, UUID imageId) {
         ImageModel imageModel = imageService.findByImageId(imageId);
@@ -112,29 +87,20 @@ public class UserService {
     }
 
     public void downloadImageByImageAndUserIds(UUID imageId, UUID userId, HttpServletResponse response) {
-        List<ImageModel> images = userRepository.findByUserId(userId).get().getImages();
-        if (images == null || images.isEmpty()) {
-            return;
+        try {
+            List<ImageModel> images = userRepository.findByUserId(userId).get().getImages();
+            ImageModel image = findImageByImageIdFromImageList(imageId, images);
+            downloadImage(image, response);
+        } catch (Exception e) {
+            throw new DownloadImageException("error in download your needed image");
         }
-        ImageModel image = findImageByImageIdFromImageList(imageId, images);
-        if (image == null) {
-            return;
-        }
-        downloadImage(image, response);
     }
 
     public void downloadImage(ImageModel image, HttpServletResponse response) {
         try {
-            try (InputStream is = minioService.downloadInputStream(image.getFileName());
-                 OutputStream os = response.getOutputStream()) {
-
-                response.setStatus(200);
-                response.setContentType(image.getContentType());
-                response.setContentLength(image.getSize().intValue());
-                is.transferTo(os);
-            }
+            imageService.downloadFromMinio(image, response);
         } catch (Exception e) {
-            log.warn("error in download user image");
+            throw new DownloadImageException("error in download your needed image");
         }
     }
 
@@ -144,7 +110,7 @@ public class UserService {
                 return image;
             }
         }
-        return null;
+        throw new DownloadImageException("image not found");
     }
 
     public UserInfoDto getUserInfo(UUID userId) {

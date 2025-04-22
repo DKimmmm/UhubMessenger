@@ -29,51 +29,31 @@ public class UserController {
     @PostMapping(value = "/add-image/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> save(@PathVariable UUID userId,
                                      @RequestPart MultipartFile multipartFile) {
-        try {
             userService.uploadUserImage(multipartFile, userId);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.valueOf(414));
-        }
     }
 
     @DeleteMapping("/image")
     public ResponseEntity<?> deleteImage(@RequestParam UUID userId,
                                          @RequestParam UUID imageId) {
-        try {
             userService.deleteImage(userId, imageId);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.valueOf(414));
-        }
 
     }
 
     @GetMapping("/image-download")
     public ResponseEntity<Void> downloadImage(@RequestParam UUID userId, @RequestParam UUID imageId, HttpServletResponse response) {
-        try {
             userService.downloadImageByImageAndUserIds(imageId, userId, response);
             return ResponseEntity.ok().build();
-        } catch (Throwable e) {
-            return new ResponseEntity<>(HttpStatus.valueOf(415));
-        }
     }
 
     @GetMapping("/user-info/{userId}")
     public ResponseEntity<UserInfoDto> getUserInfo(@PathVariable UUID userId) {
-        try {
             return ResponseEntity.ok(userService.getUserInfo(userId));
-        } catch (Throwable e) {
-            return new ResponseEntity<>(HttpStatus.valueOf(414));
-        }
     }
 
     @GetMapping("/my-posts/{userId}")
     public ResponseEntity<?> getMyPostsInfo(@PathVariable UUID userId) {
-        try {
             return ResponseEntity.ok(userService.findPostsInfoListByUserId(userId));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
     }
 }

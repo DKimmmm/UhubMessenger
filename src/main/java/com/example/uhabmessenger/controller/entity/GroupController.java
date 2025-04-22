@@ -21,20 +21,12 @@ public class GroupController {
     public ResponseEntity<?> create(@RequestParam String title,
                                     @RequestParam(required = false) String description,
                                     @RequestPart(required = false) List<UUID> userIds) {
-        try {
             groupService.save(title, description, userIds);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
     }
 
     @GetMapping("/all-info")
     public ResponseEntity<?> getAllInfo() {
-        try {
             return ResponseEntity.ok(groupService.getAllInfo());
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
     }
 }

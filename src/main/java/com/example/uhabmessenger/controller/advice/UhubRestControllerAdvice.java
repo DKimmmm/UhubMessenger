@@ -1,4 +1,4 @@
-package com.example.uhabmessenger.controller;
+package com.example.uhabmessenger.controller.advice;
 
 import com.example.uhabmessenger.exception.*;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +35,13 @@ public class UhubRestControllerAdvice {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("К сожалению, произошла ошибка с паролем. Error: \n" + e.getMessage());
+    }
+
+    @ExceptionHandler(DownloadImageException.class)
+    public ResponseEntity<String> handleDownloadImageException(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("К сожалению, произошла ошибка получения изображения. \nError: " + e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
