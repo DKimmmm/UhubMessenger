@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.service;
 
+import com.example.uhabmessenger.dto.groups.GroupCreateDto;
 import com.example.uhabmessenger.dto.groups.GroupInfoDto;
 import com.example.uhabmessenger.exception.GroupNotFoundException;
 import com.example.uhabmessenger.exception.GroupSaveException;
@@ -10,6 +11,8 @@ import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.GroupRepository;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GroupService {
@@ -26,15 +31,35 @@ public class GroupService {
     private final SimpleUserService simpleUserService;
     private final GroupMapstructService groupMapstructService;
 
-    public void save(String title, String description, List<UUID> userIds) {
-        checkExistByTitle(title);
+    public void save(GroupCreateDto groupCreateDto) {
+        checkExistByTitle(groupCreateDto.title());
         try {
-            GroupModel groupBuild = GroupModel.builder().title(title).description(description).build();
+            GroupModel groupBuild = groupMapstructService.toModel(groupCreateDto);
+            List<UUID> userIds = deleteDuplicate(groupCreateDto.userIds());
             List<UserModel> users = findUsersByUserIds(userIds);
             groupRepository.save(addUsersIntoGroup(groupBuild, users));
         } catch (Exception e) {
             throw new GroupSaveException("Group save error" + e.getMessage());
         }
+    }
+
+    private List<UUID> deleteDuplicate(List<UUID> userIds) {
+        return userIds.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private void removeAlreadyExists(List<UUID> usersIdForAdded, List<UserModel> userAlreadyThere) {
+        List<UUID> userAlreadyIds = findUserIdsByUserModels(userAlreadyThere);
+        usersIdForAdded.removeAll(userAlreadyIds);
+    }
+
+    private List<UUID> findUserIdsByUserModels(List<UserModel> users1) {
+        List<UUID> result = new ArrayList<>();
+        for (UserModel userModel : users1) {
+            result.add(userModel.getUserId());
+        }
+        return result;
     }
 
     private void checkExistByTitle(String title) {
@@ -103,7 +128,8 @@ public class GroupService {
 
         GroupModel groupModel = groupRepository.findByGroupId(groupId)
                 .orElseThrow(() -> new GroupNotFoundException("group not found by " + groupId));
-
+        membersIds = deleteDuplicate(membersIds);
+        removeAlreadyExists(membersIds, groupModel.getUsers());
         List<UserModel> usersByUserIds = findUsersByUserIds(membersIds);
 
         groupRepository.save(addUsersIntoGroup(groupModel, usersByUserIds));
