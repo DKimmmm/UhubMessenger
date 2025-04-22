@@ -42,7 +42,9 @@ public class UserController {
     }
 
     @GetMapping("/image-download")
-    public ResponseEntity<Void> downloadImage(@RequestParam UUID userId, @RequestParam UUID imageId, HttpServletResponse response) {
+    public ResponseEntity<Void> downloadImage(@RequestParam UUID userId,
+                                              @RequestParam UUID imageId,
+                                              HttpServletResponse response) {
             userService.downloadImageByImageAndUserIds(imageId, userId, response);
             return ResponseEntity.ok().build();
     }

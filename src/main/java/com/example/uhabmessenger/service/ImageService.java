@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.service;
 
+import com.example.uhabmessenger.exception.DownloadImageException;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.repository.MinioService;
 import com.example.uhabmessenger.repository.entity.ImageRepository;
@@ -69,5 +70,14 @@ public class ImageService {
             response.setContentLength(image.getSize().intValue());
             is.transferTo(os);
         }
+    }
+
+    public ImageModel findImageByImageIdFromImageList(UUID imageId, List<ImageModel> images) {
+        for (ImageModel image : images) {
+            if (image.getImageId().equals(imageId)) {
+                return image;
+            }
+        }
+        throw new DownloadImageException("image not found");
     }
 }

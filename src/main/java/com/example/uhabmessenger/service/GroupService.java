@@ -2,6 +2,7 @@ package com.example.uhabmessenger.service;
 
 import com.example.uhabmessenger.dto.groups.GroupCreateDto;
 import com.example.uhabmessenger.dto.groups.GroupInfoDto;
+import com.example.uhabmessenger.exception.DownloadImageException;
 import com.example.uhabmessenger.exception.GroupNotFoundException;
 import com.example.uhabmessenger.exception.GroupSaveException;
 import com.example.uhabmessenger.exception.ImageSaveException;
@@ -11,6 +12,7 @@ import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.GroupRepository;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -181,4 +183,16 @@ public class GroupService {
             imageService.deleteFromMinio(remove.getFileName());
         }
     }
+
+    public void downloadImage(UUID imageId, UUID groupId, HttpServletResponse response) {
+        try {
+            List<ImageModel> images = groupRepository.findByGroupId(groupId)
+                    .orElseThrow(()-> new GroupNotFoundException("group not found")).getImages();
+            ImageModel image = imageService.findImageByImageIdFromImageList(imageId, images);
+            imageService.downloadFromMinio(image, response);
+        } catch (Exception e) {
+            throw new DownloadImageException("error in download your needed image");
+        }
+    }
+
 }

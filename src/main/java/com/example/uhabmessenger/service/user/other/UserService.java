@@ -102,33 +102,33 @@ public class UserService {
     public void downloadImageByImageAndUserIds(UUID imageId, UUID userId, HttpServletResponse response) {
         try {
             List<ImageModel> images = simpleUserService.findById(userId).getImages();
-            ImageModel image = findImageByImageIdFromImageList(imageId, images);
-            downloadImage(image, response);
-        } catch (Exception e) {
-            throw new DownloadImageException("error in download your needed image");
-        }
-    }
-
-    public void downloadImage(ImageModel image, HttpServletResponse response) {
-
-        try {
+            ImageModel image = imageService.findImageByImageIdFromImageList(imageId, images);
             imageService.downloadFromMinio(image, response);
         } catch (Exception e) {
             throw new DownloadImageException("error in download your needed image");
         }
-
     }
+//
+//    public void downloadImage(ImageModel image, HttpServletResponse response) {
+//
+//        try {
+//            imageService.downloadFromMinio(image, response);
+//        } catch (Exception e) {
+//            throw new DownloadImageException("error in download your needed image");
+//        }
+//
+//    }
 
-    private ImageModel findImageByImageIdFromImageList(UUID imageId, List<ImageModel> images) {
-
-        for (ImageModel image : images) {
-            if (image.getImageId().equals(imageId)) {
-                return image;
-            }
-        }
-        throw new DownloadImageException("image not found");
-
-    }
+//    private ImageModel findImageByImageIdFromImageList(UUID imageId, List<ImageModel> images) {
+//
+//        for (ImageModel image : images) {
+//            if (image.getImageId().equals(imageId)) {
+//                return image;
+//            }
+//        }
+//        throw new DownloadImageException("image not found");
+//
+//    }
 
     public UserInfoDto getUserInfo(UUID userId) {
         UserModel userModel = simpleUserService.findById(userId);

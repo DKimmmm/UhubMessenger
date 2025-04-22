@@ -3,6 +3,7 @@ package com.example.uhabmessenger.controller.entity;
 import com.example.uhabmessenger.dto.groups.GroupCreateDto;
 import com.example.uhabmessenger.dto.groups.GroupInfoDto;
 import com.example.uhabmessenger.service.GroupService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -64,6 +65,15 @@ public class GroupController {
     @DeleteMapping("/remove/{groupId}")
     public ResponseEntity<Void> groupRemove(@PathVariable UUID groupId) {
         groupService.removeById(groupId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/image-download")
+    public ResponseEntity<Void> downloadImage(@RequestParam UUID groupId,
+                                              @RequestParam UUID imageId,
+                                              HttpServletResponse response) {
+
+        groupService.downloadImage(imageId, groupId, response);
         return ResponseEntity.ok().build();
     }
 }
