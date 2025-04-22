@@ -10,6 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class PostInfoDto {
+    private UUID postId;
     private String title;
     private String description;
     private List<UUID> imagesIds;

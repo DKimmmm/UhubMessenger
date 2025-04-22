@@ -2,6 +2,7 @@ package com.example.uhabmessenger.service;
 
 import com.example.uhabmessenger.dto.posts.PostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
+import com.example.uhabmessenger.exception.PostNotFoundException;
 import com.example.uhabmessenger.mapper.PostMapstructService;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.PostModel;
@@ -104,17 +105,18 @@ public class PostService {
     }
 
     public PostInfoDto getPostInfo(UUID postId) {
-        PostModel postModel = postRepository.findByPostId(postId).orElseThrow();
-        log.info("add customer exception");
-//        if (postModel == null) {
-//            throw new RuntimeException();
-//        }
+
+        PostModel postModel = postRepository.findByPostId(postId)
+                .orElseThrow(()-> new PostNotFoundException("post not found"));
         return modelToInfoDtoWithListImageIds(postModel);
+
     }
 
     public PostInfoDto modelToInfoDtoWithListImageIds(PostModel model) {
+
         PostInfoDto postInfoDto = postMapstructService.toPostInfoDto(model);
         return addImagesIdsToDto(model, postInfoDto);
+
     }
 
     private PostInfoDto addImagesIdsToDto(PostModel postModel, PostInfoDto postInfoDto) {
