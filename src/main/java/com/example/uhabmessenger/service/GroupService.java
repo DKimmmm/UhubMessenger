@@ -5,7 +5,7 @@ import com.example.uhabmessenger.mapper.GroupMapstructService;
 import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.GroupRepository;
-import com.example.uhabmessenger.service.user.other.SimpleSaveAndFindUserService;
+import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class GroupService {
 
     private final GroupRepository groupRepository;
-    private final SimpleSaveAndFindUserService simpleUserService;
+    private final SimpleUserService simpleUserService;
     private final GroupMapstructService groupMapstructService;
 
     public void save(String title, String description, List<UUID> userIds) {

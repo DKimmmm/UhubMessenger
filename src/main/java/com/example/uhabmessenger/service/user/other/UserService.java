@@ -4,7 +4,6 @@ import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.dto.user.UserInfoDto;
 import com.example.uhabmessenger.exception.AuthorizationErrorException;
 import com.example.uhabmessenger.exception.DownloadImageException;
-import com.example.uhabmessenger.exception.UserNotFoundException;
 import com.example.uhabmessenger.exception.UsernameIncorrectException;
 import com.example.uhabmessenger.formatutils.UsernameFormatUtil;
 import com.example.uhabmessenger.mapper.UserMapstructService;
@@ -12,7 +11,6 @@ import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.model.UserModel;
-import com.example.uhabmessenger.repository.entity.UserRepository;
 import com.example.uhabmessenger.service.ImageService;
 import com.example.uhabmessenger.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,10 +29,10 @@ import java.util.UUID;
 public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    private final UserRepository userRepository;
     private final ImageService imageService;
     private final UserMapstructService userMapstructService;
     private final PostService postService;
+    private final SimpleUserService simpleUserService;
 
     public UserModel getUserByUsername(String username) {
         if (UsernameFormatUtil.usernameIsEmailFormat(username)) {
@@ -48,47 +46,60 @@ public class UserService {
 
     private UserModel findUserByEmail(String username) {
 
-        return userRepository.findByEmail(username).orElseThrow(
-                () -> new UsernameIncorrectException("uncorrected email"));
+        try {
+            return simpleUserService.findByEmail(username);
+        } catch (Exception e) {
+            throw new UsernameIncorrectException("uncorrected email");
+        }
 
     }
 
     private UserModel findUserByPhone(String username) {
 
-        return userRepository.findByPhone(username).orElseThrow(
-                () -> new UsernameIncorrectException("uncorrected phone"));
+        try {
+            return simpleUserService.findByPhone(username);
+        } catch (Exception e) {
+            throw new UsernameIncorrectException("uncorrected phone");
+        }
 
     }
 
     public void uploadUserImage(MultipartFile multipartFile, UUID userId) {
+
         ImageModel imageModel = imageService.uploadImage(multipartFile);
         addImageIntoUserImageList(userId, imageModel);
+
     }
 
     private void addImageIntoUserImageList(UUID userId, ImageModel imageModel) {
-        UserModel userModel = userRepository.findById(userId).get();
+
+        UserModel userModel = simpleUserService.findById(userId);
         userModel.getImages().add(imageModel);
-        userRepository.save(userModel);
+        simpleUserService.save(userModel);
+
     }
 
     private void deleteFromMinio(UUID userId) {
+
         List<String> fileNames = imageService.findByUserId(userId);
         for (String fileName : fileNames) {
             imageService.deleteFromMinio(fileName);
-            log.info("minio delete by filename: {}", fileName);
         }
+
     }
 
     public void deleteImage(UUID userId, UUID imageId) {
+
         ImageModel imageModel = imageService.findByImageId(imageId);
-        UserModel userModel = userRepository.findById(userId).get();
+        UserModel userModel = simpleUserService.findById(userId);
         userModel.getImages().remove(imageModel);
-        userRepository.save(userModel);
+        simpleUserService.save(userModel);
+
     }
 
     public void downloadImageByImageAndUserIds(UUID imageId, UUID userId, HttpServletResponse response) {
         try {
-            List<ImageModel> images = userRepository.findByUserId(userId).get().getImages();
+            List<ImageModel> images = simpleUserService.findById(userId).getImages();
             ImageModel image = findImageByImageIdFromImageList(imageId, images);
             downloadImage(image, response);
         } catch (Exception e) {
@@ -97,25 +108,28 @@ public class UserService {
     }
 
     public void downloadImage(ImageModel image, HttpServletResponse response) {
+
         try {
             imageService.downloadFromMinio(image, response);
         } catch (Exception e) {
             throw new DownloadImageException("error in download your needed image");
         }
+
     }
 
     private ImageModel findImageByImageIdFromImageList(UUID imageId, List<ImageModel> images) {
+
         for (ImageModel image : images) {
             if (image.getImageId().equals(imageId)) {
                 return image;
             }
         }
         throw new DownloadImageException("image not found");
+
     }
 
     public UserInfoDto getUserInfo(UUID userId) {
-        UserModel userModel = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException("not found by id"));
+        UserModel userModel = simpleUserService.findById(userId);
 
         UserInfoDto userInfoDto = userMapstructService.toUserInfoDto(userModel);
 
@@ -135,31 +149,39 @@ public class UserService {
     }
 
     private UserInfoDto addImagesIdsToDto(UserModel userModel, UserInfoDto userInfoDto) {
+
         if (userInfoDto != null) {
             userInfoDto.setImagesIds(collectImagesIdsFromUserModel(userModel));
             return userInfoDto;
         }
         return null;
+
     }
 
     private List<UUID> collectImagesIdsFromUserModel(UserModel userModel) {
+
         List<UUID> result = new ArrayList<>();
         for (ImageModel image : userModel.getImages()) {
             result.add(image.getImageId());
         }
         return result;
+
     }
 
     public List<PostInfoDto> findPostsInfoListByUserId(UUID userId) {
-        UserModel userModel = userRepository.findByUserId(userId).orElseThrow();
+
+        UserModel userModel = simpleUserService.findById(userId);
         return createPostInfoDtosByPostModelList(userModel.getPosts());
+
     }
 
     private List<PostInfoDto> createPostInfoDtosByPostModelList(List<PostModel> posts) {
+
         List<PostInfoDto> result = new ArrayList<>();
         for (PostModel post : posts) {
             result.add(postService.modelToInfoDtoWithListImageIds(post));
         }
         return result;
+
     }
 }
