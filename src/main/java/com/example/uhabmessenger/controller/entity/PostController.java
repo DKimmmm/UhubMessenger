@@ -18,13 +18,24 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> postSave(@RequestParam(value = "userId") UUID userId,
+    @PostMapping(value = "/user/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> userPostSave(@RequestParam(value = "userId") UUID userId,
                                       @RequestParam(value = "title", required = false) String title,
                                       @RequestParam(value = "description", required = false) String description,
                                       @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
 
-            postService.save(userId, title, description, multipartFiles);
+            postService.userPostSave(userId, title, description, multipartFiles);
+            return ResponseEntity.ok().build();
+
+    }
+
+    @PostMapping(value = "/group/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> groupPostSave(@RequestParam(value = "groupId") UUID groupId,
+                                      @RequestParam(value = "title", required = false) String title,
+                                      @RequestParam(value = "description", required = false) String description,
+                                      @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
+
+            postService.groupPostSave(groupId, title, description, multipartFiles);
             return ResponseEntity.ok().build();
 
     }
@@ -35,6 +46,7 @@ public class PostController {
             return ResponseEntity.ok(postService.getPostInfo(postId));
 
     }
+
 
 
 }

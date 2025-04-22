@@ -1,16 +1,17 @@
-package com.example.uhabmessenger.service;
+package com.example.uhabmessenger.service.groups;
 
 import com.example.uhabmessenger.dto.groups.GroupCreateDto;
 import com.example.uhabmessenger.dto.groups.GroupInfoDto;
+import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.exception.DownloadImageException;
-import com.example.uhabmessenger.exception.GroupNotFoundException;
 import com.example.uhabmessenger.exception.GroupSaveException;
 import com.example.uhabmessenger.exception.ImageSaveException;
 import com.example.uhabmessenger.mapper.GroupMapstructService;
 import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.UserModel;
-import com.example.uhabmessenger.repository.entity.GroupRepository;
+import com.example.uhabmessenger.service.ImageService;
+import com.example.uhabmessenger.service.PostService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +30,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GroupService {
 
-    private final GroupRepository groupRepository;
     private final SimpleUserService simpleUserService;
+    private final SimpleGroupService simpleGroupService;
     private final GroupMapstructService groupMapstructService;
     private final ImageService imageService;
+    private final PostService postService;
 
     public void save(GroupCreateDto groupCreateDto) {
         checkExistByTitle(groupCreateDto.title());
@@ -40,7 +42,7 @@ public class GroupService {
             GroupModel groupBuild = groupMapstructService.toModel(groupCreateDto);
             List<UUID> userIds = deleteDuplicate(groupCreateDto.userIds());
             List<UserModel> users = findUsersByUserIds(userIds);
-            groupRepository.save(addUsersIntoGroup(groupBuild, users));
+            simpleGroupService.save(addUsersIntoGroup(groupBuild, users));
         } catch (Exception e) {
             throw new GroupSaveException("Group save error" + e.getMessage());
         }
@@ -66,7 +68,7 @@ public class GroupService {
     }
 
     private void checkExistByTitle(String title) {
-        if (groupRepository.existsByTitle(title)) {
+        if (simpleGroupService.existsByTitle(title)) {
             throw new GroupSaveException("Group with title '" + title + "' already exists");
         }
     }
@@ -94,7 +96,7 @@ public class GroupService {
 
     public List<GroupInfoDto> getAllInfo() {
 
-        List<GroupModel> allGroups = groupRepository.findAll();
+        List<GroupModel> allGroups = simpleGroupService.findAll();
 
         List<GroupInfoDto> result = new ArrayList<>();
 
@@ -129,41 +131,38 @@ public class GroupService {
     }
 
     public GroupInfoDto getInfo(UUID groupId) {
-        GroupModel groupModel = groupRepository.findByGroupId(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("group not found by " + groupId));
 
+        GroupModel groupModel = simpleGroupService.findById(groupId);
         return groupToInfoDto(groupModel);
 
     }
 
     public void addMembers(UUID groupId, List<UUID> membersIds) {
 
-        GroupModel groupModel = groupRepository.findByGroupId(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("group not found by " + groupId));
+        GroupModel groupModel = simpleGroupService.findById(groupId);
         membersIds = deleteDuplicate(membersIds);
         removeAlreadyExists(membersIds, groupModel.getUsers());
         List<UserModel> usersByUserIds = findUsersByUserIds(membersIds);
 
-        groupRepository.save(addUsersIntoGroup(groupModel, usersByUserIds));
+        simpleGroupService.save(addUsersIntoGroup(groupModel, usersByUserIds));
 
     }
 
     public void removeMember(UUID groupId, UUID memberId) {
-        GroupModel groupModel = groupRepository.findByGroupId(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("group not found by " + groupId));
+        GroupModel groupModel = simpleGroupService.findById(groupId);
 
         groupModel.removeUser(simpleUserService.findById(memberId));
 
-        groupRepository.save(groupModel);
+        simpleGroupService.save(groupModel);
     }
 
     public void removeById(UUID groupId) {
-        groupRepository.deleteById(groupId);
+        simpleGroupService.deleteById(groupId);
     }
 
     public void photoUpdate(UUID groupId, MultipartFile multipartFile) {
         try {
-            GroupModel groupModel = groupRepository.findByGroupId(groupId).get();
+            GroupModel groupModel = simpleGroupService.findById(groupId);
             removeOldPhoto(groupModel);
             addNewPhoto(groupModel, multipartFile);
         } catch (Exception e) {
@@ -174,7 +173,7 @@ public class GroupService {
     private void addNewPhoto(GroupModel groupModel, MultipartFile multipartFile) {
         ImageModel imageModel = imageService.uploadImage(multipartFile);
         groupModel.getImages().add(imageModel);
-        groupRepository.save(groupModel);
+        simpleGroupService.save(groupModel);
     }
 
     private void removeOldPhoto(GroupModel groupModel) {
@@ -186,8 +185,7 @@ public class GroupService {
 
     public void downloadImage(UUID imageId, UUID groupId, HttpServletResponse response) {
         try {
-            List<ImageModel> images = groupRepository.findByGroupId(groupId)
-                    .orElseThrow(()-> new GroupNotFoundException("group not found")).getImages();
+            List<ImageModel> images = simpleGroupService.findById(groupId).getImages();
             ImageModel image = imageService.findImageByImageIdFromImageList(imageId, images);
             imageService.downloadFromMinio(image, response);
         } catch (Exception e) {
@@ -195,4 +193,9 @@ public class GroupService {
         }
     }
 
+    public List<PostInfoDto> getPostsInfoDto(UUID groupId) {
+        return postService.createPostInfoDtosByPostModelList(
+                simpleGroupService.findById(groupId).getPosts()
+        );
+    }
 }

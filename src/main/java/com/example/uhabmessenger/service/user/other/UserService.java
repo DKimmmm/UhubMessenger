@@ -81,15 +81,6 @@ public class UserService {
 
     }
 
-    private void deleteFromMinio(UUID userId) {
-
-        List<String> fileNames = imageService.findByUserId(userId);
-        for (String fileName : fileNames) {
-            imageService.deleteFromMinio(fileName);
-        }
-
-    }
-
     public void deleteImage(UUID userId, UUID imageId) {
 
         ImageModel imageModel = imageService.findByImageId(imageId);
@@ -108,27 +99,6 @@ public class UserService {
             throw new DownloadImageException("error in download your needed image");
         }
     }
-//
-//    public void downloadImage(ImageModel image, HttpServletResponse response) {
-//
-//        try {
-//            imageService.downloadFromMinio(image, response);
-//        } catch (Exception e) {
-//            throw new DownloadImageException("error in download your needed image");
-//        }
-//
-//    }
-
-//    private ImageModel findImageByImageIdFromImageList(UUID imageId, List<ImageModel> images) {
-//
-//        for (ImageModel image : images) {
-//            if (image.getImageId().equals(imageId)) {
-//                return image;
-//            }
-//        }
-//        throw new DownloadImageException("image not found");
-//
-//    }
 
     public UserInfoDto getUserInfo(UUID userId) {
         UserModel userModel = simpleUserService.findById(userId);
@@ -173,17 +143,7 @@ public class UserService {
     public List<PostInfoDto> findPostsInfoListByUserId(UUID userId) {
 
         UserModel userModel = simpleUserService.findById(userId);
-        return createPostInfoDtosByPostModelList(userModel.getPosts());
-
-    }
-
-    private List<PostInfoDto> createPostInfoDtosByPostModelList(List<PostModel> posts) {
-
-        List<PostInfoDto> result = new ArrayList<>();
-        for (PostModel post : posts) {
-            result.add(postService.modelToInfoDtoWithListImageIds(post));
-        }
-        return result;
+        return postService.createPostInfoDtosByPostModelList(userModel.getPosts());
 
     }
 

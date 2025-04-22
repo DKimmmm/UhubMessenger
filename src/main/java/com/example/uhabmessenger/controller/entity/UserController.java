@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.controller.entity;
 
+import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.dto.user.UserInfoDto;
 import com.example.uhabmessenger.dto.user.UserUpdateInfoDto;
 import com.example.uhabmessenger.service.user.other.UserService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -55,7 +57,7 @@ public class UserController {
     }
 
     @GetMapping("/my-posts/{userId}")
-    public ResponseEntity<?> getMyPostsInfo(@PathVariable UUID userId) {
+    public ResponseEntity<List<PostInfoDto>> getMyPostsInfo(@PathVariable UUID userId) {
             return ResponseEntity.ok(userService.findPostsInfoListByUserId(userId));
     }
 }

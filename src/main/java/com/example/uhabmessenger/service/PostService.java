@@ -4,12 +4,14 @@ import com.example.uhabmessenger.dto.posts.PostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.exception.PostNotFoundException;
 import com.example.uhabmessenger.mapper.PostMapstructService;
+import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.MinioService;
 import com.example.uhabmessenger.repository.entity.PostRepository;
 import com.example.uhabmessenger.repository.entity.UserRepository;
+import com.example.uhabmessenger.service.groups.SimpleGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -29,15 +31,32 @@ public class PostService {
     private final UserRepository userRepository;
     private final PostMapstructService postMapstructService;
     private final ImageService imageService;
-    private final MinioService minioService;
+    private final SimpleGroupService simpleGroupService;
 
 
-    public void save(UUID userId, String title, String description, List<MultipartFile> multipartFiles) {
+    public void userPostSave(UUID userId, String title, String description, List<MultipartFile> multipartFiles) {
+        PostModel postModel = save(title, description, multipartFiles);
+        userPostSaveIntoUser(userId, postModel);
+    }
+
+    public void groupPostSave(UUID groupId, String title, String description, List<MultipartFile> multipartFiles) {
+        PostModel postModel = save(title, description, multipartFiles);
+        savePostIntoGroup(groupId, postModel);
+    }
+
+    private void savePostIntoGroup(UUID groupId, PostModel postModel) {
+        GroupModel groupModel = simpleGroupService.findById(groupId);
+        groupModel.getPosts().add(postModel);
+        simpleGroupService.save(groupModel);
+    }
+
+    public PostModel save(String title, String description, List<MultipartFile> multipartFiles) {
         checkForOneNotNullField(title, multipartFiles);
         PostModel beginnerPostModel = mapperToModel(title, description);
         List<ImageModel> images = savePostImages(multipartFiles);
         beginnerPostModel.setImages(images);
-        userPostSaveIntoUser(userId, beginnerPostModel);
+        return beginnerPostModel;
+
     }
 
     private void userPostSaveIntoUser(UUID userId, PostModel beginnerPostModel) {
@@ -68,12 +87,6 @@ public class PostService {
         return postMapstructService.toPostModel(new PostDto(title, description));
     }
 
-//    public ImageModel uploadPostImage(MultipartFile multipartFile) {
-////        deleteIfAlreadyExists(postId);
-//        return
-
-    /// /        imageSaveInPostgres(postId, imageModel);
-//    }
     private void imageSaveInPostgres(UUID postId, ImageModel imageModel) {
         PostModel postModel = postRepository.findById(postId).get();
         List<ImageModel> images = postModel.getImages();
@@ -99,7 +112,7 @@ public class PostService {
     private void deleteFromMinio(UUID postId) {
         List<String> fileNames = imageService.findByPostId(postId);
         for (String fileName : fileNames) {
-            minioService.deleteFile(fileName);
+            imageService.deleteFromMinio(fileName);
             log.info("minio delete by filename: {}", fileName);
         }
     }
@@ -130,5 +143,15 @@ public class PostService {
             result.add(image.getImageId());
         }
         return result;
+    }
+
+    public List<PostInfoDto> createPostInfoDtosByPostModelList(List<PostModel> posts) {
+
+        List<PostInfoDto> result = new ArrayList<>();
+        for (PostModel post : posts) {
+            result.add(modelToInfoDtoWithListImageIds(post));
+        }
+        return result;
+
     }
 }

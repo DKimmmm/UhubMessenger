@@ -2,7 +2,8 @@ package com.example.uhabmessenger.controller.entity;
 
 import com.example.uhabmessenger.dto.groups.GroupCreateDto;
 import com.example.uhabmessenger.dto.groups.GroupInfoDto;
-import com.example.uhabmessenger.service.GroupService;
+import com.example.uhabmessenger.dto.posts.PostInfoDto;
+import com.example.uhabmessenger.service.groups.GroupService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.Media;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,5 +75,10 @@ public class GroupController {
 
         groupService.downloadImage(imageId, groupId, response);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/posts/{groupId}")
+    public ResponseEntity<List<PostInfoDto>> groupPostInfoDto(@PathVariable UUID groupId) {
+        return ResponseEntity.ok(groupService.getPostsInfoDto(groupId));
     }
 }
