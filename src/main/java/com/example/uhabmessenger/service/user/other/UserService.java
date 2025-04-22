@@ -2,6 +2,7 @@ package com.example.uhabmessenger.service.user.other;
 
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.dto.user.UserInfoDto;
+import com.example.uhabmessenger.dto.user.UserUpdateInfoDto;
 import com.example.uhabmessenger.exception.AuthorizationErrorException;
 import com.example.uhabmessenger.exception.DownloadImageException;
 import com.example.uhabmessenger.exception.UsernameIncorrectException;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -183,5 +185,31 @@ public class UserService {
         }
         return result;
 
+    }
+
+    public UserInfoDto updateInfo(UserUpdateInfoDto userUpdateInfoDto) {
+        UserModel userModel = updateFieldIfNotNull(
+                simpleUserService.findById(userUpdateInfoDto.userId()),
+                userUpdateInfoDto);
+
+        return getUserInfo(simpleUserService.save(userModel).getUserId());
+    }
+
+    private UserModel updateFieldIfNotNull(UserModel userModel, UserUpdateInfoDto userUpdateInfoDto) {
+        if (!Objects.isNull(userUpdateInfoDto.name()) && !userUpdateInfoDto.name().isBlank()) {
+            userModel.setName(userUpdateInfoDto.name());
+        }
+        if (!Objects.isNull(userUpdateInfoDto.lastname()) && !userUpdateInfoDto.lastname().isBlank()) {
+            userModel.setLastname(userUpdateInfoDto.lastname());
+        }
+        if (!Objects.isNull(userUpdateInfoDto.email()) && !userUpdateInfoDto.email().isBlank()) {
+            userModel.setEmail(userUpdateInfoDto.email());
+            userModel.setApprovedEmail(false);
+        }
+        if (!Objects.isNull(userUpdateInfoDto.phone()) && !userUpdateInfoDto.phone().isBlank()) {
+            userModel.setPhone(userUpdateInfoDto.phone());
+            userModel.setApprovedPhone(false);
+        }
+        return userModel;
     }
 }

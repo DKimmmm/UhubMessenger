@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.validation;
 
+import com.example.uhabmessenger.validation.annotation.TitleCase;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -12,11 +13,11 @@ public class TitleCaseValidator implements ConstraintValidator<TitleCase, String
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null || value.trim().isEmpty()) {
-            return false; // Можно изменить на true, если null допустим
+            return true; // Можно изменить на true, если null допустим
         }
         String trimmedValue = value.trim();
         if (trimmedValue.isEmpty()) {
-            return false;
+            return true;
         }
 
         // Проверяем, что первая буква заглавная, а остальные строчные

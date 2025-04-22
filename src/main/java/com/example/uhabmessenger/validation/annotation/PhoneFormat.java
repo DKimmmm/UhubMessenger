@@ -1,16 +1,17 @@
-package com.example.uhabmessenger.validation;
+package com.example.uhabmessenger.validation.annotation;
 
+import com.example.uhabmessenger.validation.PhoneFormatValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = PasswordValidator.class)
+@Constraint(validatedBy = PhoneFormatValidator.class)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Password {
-    String message() default "Invalid password";
+public @interface PhoneFormat {
+    String message() default "valid phone format";
 
     Class<?>[] groups() default {};
 

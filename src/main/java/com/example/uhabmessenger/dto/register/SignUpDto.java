@@ -1,8 +1,8 @@
 package com.example.uhabmessenger.dto.register;
 
-import com.example.uhabmessenger.validation.Password;
-import com.example.uhabmessenger.validation.PhoneOrEmail;
-import com.example.uhabmessenger.validation.TitleCase;
+import com.example.uhabmessenger.validation.annotation.Password;
+import com.example.uhabmessenger.validation.annotation.PhoneOrEmail;
+import com.example.uhabmessenger.validation.annotation.TitleCase;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -14,13 +14,16 @@ public record SignUpDto(
 
         @Size(min = 2)
         @TitleCase
+        @NotNull
         String lastname,
 
         @PhoneOrEmail
         @Size(min = 10)
+        @NotNull
         String username,
 
         @Password
+        @NotNull
         @Size(min = 8)
         String password
 ) {

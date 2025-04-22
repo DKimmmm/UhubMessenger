@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.validation;
 
+import com.example.uhabmessenger.validation.annotation.Password;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;

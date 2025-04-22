@@ -1,16 +1,17 @@
-package com.example.uhabmessenger.validation;
+package com.example.uhabmessenger.validation.annotation;
 
+import com.example.uhabmessenger.validation.PhoneOrEmailValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = TitleCaseValidator.class)
+@Constraint(validatedBy = PhoneOrEmailValidator.class)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TitleCase {
-    String message() default "Format not tittle";
+public @interface PhoneOrEmail {
+    String message() default "valid phone or email format";
 
     Class<?>[] groups() default {};
 

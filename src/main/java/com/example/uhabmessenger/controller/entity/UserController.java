@@ -1,8 +1,10 @@
 package com.example.uhabmessenger.controller.entity;
 
 import com.example.uhabmessenger.dto.user.UserInfoDto;
+import com.example.uhabmessenger.dto.user.UserUpdateInfoDto;
 import com.example.uhabmessenger.service.user.other.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
@@ -19,11 +21,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<?> testTokenMapping(@RequestBody String message) {
-        return ResponseEntity.ok(message);
-    }
-
     @SneakyThrows
     @PostMapping(value = "/add-image/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> save(@PathVariable UUID userId,
@@ -32,12 +29,16 @@ public class UserController {
             return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/update-info")
+    public ResponseEntity<UserInfoDto> updateInfo(@Valid @RequestBody UserUpdateInfoDto userUpdateInfoDto) {
+        return ResponseEntity.ok(userService.updateInfo(userUpdateInfoDto));
+    }
+
     @DeleteMapping("/image")
     public ResponseEntity<?> deleteImage(@RequestParam UUID userId,
                                          @RequestParam UUID imageId) {
             userService.deleteImage(userId, imageId);
             return ResponseEntity.ok().build();
-
     }
 
     @GetMapping("/image-download")

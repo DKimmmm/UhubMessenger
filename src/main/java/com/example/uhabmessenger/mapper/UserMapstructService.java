@@ -2,6 +2,7 @@ package com.example.uhabmessenger.mapper;
 
 import com.example.uhabmessenger.dto.register.SignUpDto;
 import com.example.uhabmessenger.dto.user.UserInfoDto;
+import com.example.uhabmessenger.dto.user.UserUpdateInfoDto;
 import com.example.uhabmessenger.model.UserModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -12,4 +13,6 @@ public interface UserMapstructService {
     UserModel toUserModel(SignUpDto dto);
 
     UserInfoDto toUserInfoDto(UserModel userModel);
+
+    UserModel toUserModel(UserUpdateInfoDto userUpdateInfoDto);
 }
