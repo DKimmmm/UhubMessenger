@@ -54,4 +54,8 @@ public class SimpleUserService {
 
     }
 
+    public boolean isExistByUsername(String username) {
+        return userRepository.existsByPhone(username) || userRepository.existsByEmail(username);
+    }
+
 }

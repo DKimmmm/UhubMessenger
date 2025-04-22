@@ -1,19 +1,16 @@
 package com.example.uhabmessenger.service.user.authorization;
 
 import com.example.uhabmessenger.dto.register.LoginDto;
-import com.example.uhabmessenger.exception.AuthorizationErrorException;
-import com.example.uhabmessenger.exception.UncorrectedPasswordException;
-import com.example.uhabmessenger.exception.UserAlreadyExistsException;
 import com.example.uhabmessenger.dto.register.SignUpDto;
+import com.example.uhabmessenger.exception.AuthorizationErrorException;
+import com.example.uhabmessenger.exception.UserAlreadyExistsException;
 import com.example.uhabmessenger.mapper.UserMapstructService;
 import com.example.uhabmessenger.model.UserModel;
-import com.example.uhabmessenger.repository.entity.UserRepository;
+import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import com.example.uhabmessenger.service.user.other.UserService;
 import com.example.uhabmessenger.validation.PhoneOrEmailValidator;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,33 +21,31 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthUserServiceImpl implements AuthUserService {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthUserServiceImpl.class);
     private final UserMapstructService userMapstructService;
 
-    private final UserRepository userRepository;
     private final UserService userService;
+    private final SimpleUserService simpleUserService;
 
     @Override
     @Transactional
     public void signup(SignUpDto signUpDto, HttpServletResponse response) {
-        try {
-            if (checkForAlreadyExists(signUpDto.username())) {
-                throw new UserAlreadyExistsException("user this username "+ signUpDto + " already exists");
-            }
-            userRepository.save(mapperToUserModel(signUpDto));
-        } catch (UserAlreadyExistsException | AuthorizationErrorException e){
-            log.warn("was be error {}", e.getMessage());
-            throw e;
+
+        if (checkForAlreadyExists(signUpDto.username())) {
+            throw new UserAlreadyExistsException("user this username " + signUpDto + " already exists");
         }
+        simpleUserService.save(mapperToUserModel(signUpDto));
+
     }
 
     @Override
     @Transactional(readOnly = true)
     public UUID login(LoginDto loginDto, HttpServletResponse response) {
+
         if (!checkForAlreadyExists(loginDto.username())) {
             throw new AuthorizationErrorException("user login fail with username: " + loginDto.username());
         }
         return findIdByUsername(loginDto.username());
+
     }
 
     private UUID findIdByUsername(String username) {
@@ -59,7 +54,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private boolean checkForAlreadyExists(String username) {
-        return userRepository.existsByPhone(username) || userRepository.existsByEmail(username);
+        return simpleUserService.isExistByUsername(username);
     }
 
     private UserModel mapperToUserModel(SignUpDto signUpDto) {
@@ -70,6 +65,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     private UserModel addUsername(UserModel userModel, String username) {
+
         if (usernameIsEmailFormatted(username)) {
             userModel.setEmail(username);
         } else if (usernameIsPhoneFormatted(username)) {
