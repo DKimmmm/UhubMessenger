@@ -38,6 +38,13 @@ public class PostModel {
     @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentModel> comments;
 
+    public List<CommentModel> getComments() {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        return comments;
+    }
+
     public List<ImageModel> getImages() {
         if (images == null) {
             images = new ArrayList<>();

@@ -9,7 +9,13 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@SpringBootTest(properties = "spring.profiles.active=test")
+@SpringBootTest(
+        properties = {
+                "spring.profiles.active=test",
+                "server.port=8080", // Фиксированный порт для веб-приложения
+                "server.servlet.context-path=/uhub"
+        }
+)
 public abstract class BaseIntegrationTest {
 
     @Container
@@ -31,5 +37,11 @@ public abstract class BaseIntegrationTest {
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         registry.add("spring.datasource.type", () -> "com.zaxxer.hikari.HikariDataSource"); // Явно указываем Hikari
         registry.add("spring.liquibase.enabled", () -> "true"); // Включаем Liquibase для тестов
+
+        // MinIO properties
+        registry.add("minio.url", () -> "http://localhost:9000");
+        registry.add("minio.access-key", () -> "minio_user");
+        registry.add("minio.secret-key", () -> "password123");
+        registry.add("minio.bucket-name", () -> "photo-bucket");
     }
 }
