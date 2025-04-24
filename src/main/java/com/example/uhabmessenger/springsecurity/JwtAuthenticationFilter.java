@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String token = jwtTokenProvider.resolveToken(request);
-        log.info("api is: [{}], token is: [{}]", request.getServletPath(), token);
+        log.debug("api is: [{}], token is: [{}]", request.getServletPath(), token);
         token = tokenBearerDelete(token);
 
         try {
@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                log.info("token isn't validated");
+                log.debug("token isn't validated");
             }
         } catch (Exception e) {
             log.warn("error in check token");

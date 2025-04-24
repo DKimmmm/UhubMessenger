@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.controller.entity;
 
+import com.example.uhabmessenger.dto.comment.AddCommentDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -20,33 +21,37 @@ public class PostController {
 
     @PostMapping(value = "/user/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> userPostSave(@RequestParam(value = "userId") UUID userId,
-                                      @RequestParam(value = "title", required = false) String title,
-                                      @RequestParam(value = "description", required = false) String description,
-                                      @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
+                                          @RequestParam(value = "title", required = false) String title,
+                                          @RequestParam(value = "description", required = false) String description,
+                                          @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
 
-            postService.userPostSave(userId, title, description, multipartFiles);
-            return ResponseEntity.ok().build();
+        postService.userPostSave(userId, title, description, multipartFiles);
+        return ResponseEntity.ok().build();
 
     }
 
     @PostMapping(value = "/group/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> groupPostSave(@RequestParam(value = "groupId") UUID groupId,
-                                      @RequestParam(value = "title", required = false) String title,
-                                      @RequestParam(value = "description", required = false) String description,
-                                      @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
+                                           @RequestParam(value = "title", required = false) String title,
+                                           @RequestParam(value = "description", required = false) String description,
+                                           @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
 
-            postService.groupPostSave(groupId, title, description, multipartFiles);
-            return ResponseEntity.ok().build();
+        postService.groupPostSave(groupId, title, description, multipartFiles);
+        return ResponseEntity.ok().build();
 
     }
 
     @GetMapping("/post-info/{postId}")
     public ResponseEntity<PostInfoDto> getPostInfo(@PathVariable UUID postId) {
 
-            return ResponseEntity.ok(postService.getPostInfo(postId));
+        return ResponseEntity.ok(postService.getPostInfo(postId));
 
     }
 
-
+    @PostMapping("/add/comment")
+    public ResponseEntity<Void> addComment(@RequestBody AddCommentDto addCommentDto) {
+        postService.addComment(addCommentDto);
+        return ResponseEntity.ok().build();
+    }
 
 }

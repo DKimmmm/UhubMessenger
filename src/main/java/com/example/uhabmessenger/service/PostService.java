@@ -1,13 +1,11 @@
 package com.example.uhabmessenger.service;
 
+import com.example.uhabmessenger.dto.comment.AddCommentDto;
 import com.example.uhabmessenger.dto.posts.PostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.exception.PostNotFoundException;
 import com.example.uhabmessenger.mapper.PostMapstructService;
-import com.example.uhabmessenger.model.GroupModel;
-import com.example.uhabmessenger.model.ImageModel;
-import com.example.uhabmessenger.model.PostModel;
-import com.example.uhabmessenger.model.UserModel;
+import com.example.uhabmessenger.model.*;
 import com.example.uhabmessenger.repository.entity.PostRepository;
 import com.example.uhabmessenger.service.groups.SimpleGroupService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
@@ -121,5 +119,19 @@ public class PostService {
         }
         return result;
 
+    }
+
+    public void addComment(AddCommentDto addCommentDto) {
+        PostModel postModel = postRepository.findByPostId(addCommentDto.postId()).orElseThrow(
+                () -> new PostNotFoundException("post not found by id: " + addCommentDto.postId())
+        );
+
+        CommentModel commentModel = CommentModel.builder()
+                .text(addCommentDto.text())
+                .user(simpleUserService.findById(addCommentDto.userId()))
+                .build();
+
+        postModel.addComment(commentModel);
+        postRepository.save(postModel);
     }
 }
