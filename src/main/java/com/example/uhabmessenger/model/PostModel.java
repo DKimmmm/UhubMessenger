@@ -45,6 +45,11 @@ public class PostModel {
         return comments;
     }
 
+    public void addComment(CommentModel comment) {
+        comment.setPost(this);
+        getComments().add(comment);
+    }
+
     public List<ImageModel> getImages() {
         if (images == null) {
             images = new ArrayList<>();

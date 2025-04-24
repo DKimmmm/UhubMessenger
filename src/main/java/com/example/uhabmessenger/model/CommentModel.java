@@ -5,13 +5,13 @@ import lombok.*;
 
 import java.util.UUID;
 
+@Table(name = "comments")
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "comments")
-@Entity
 public class CommentModel {
 
     @Id
@@ -26,7 +26,7 @@ public class CommentModel {
     @JoinColumn(name = "user_id")
     private UserModel user;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "post_id")
     private PostModel post;
 
