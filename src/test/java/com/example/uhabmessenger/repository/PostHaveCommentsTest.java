@@ -34,27 +34,59 @@ public class PostHaveCommentsTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void cascadeTest() {
-        UserModel userModel = UserModel.builder().name("name").lastname("last").password("pass").build();
-        userModel = userRepository.save(userModel);
+        UserModel userModel = justUserCreatorRepository();
 
         Assertions.assertThat(userRepository.count()).isEqualTo(1);
 
         PostModel postModel = PostModel.builder().tittle("title").description("des").build();
-        CommentModel commentModel = CommentModel.builder().text("text").build();
-        commentModel.setUser(userModel);
-        postModel.addComment(commentModel);
+        CommentModel commentModel = justCommentCreator(userModel);
 
+        postModel.addComment(commentModel);
         postRepository.save(postModel);
 
         Assertions.assertThat(postRepository.count()).isEqualTo(1);
         Assertions.assertThat(commentRepository.count()).isEqualTo(1);
     }
 
+    private UserModel justUserCreatorRepository() {
+        return userRepository.save(
+                UserModel.builder().name("name").lastname("last").password("pass").build()
+        );
+    }
+
+    private CommentModel justCommentCreator(UserModel userModel) {
+        return CommentModel.builder().text("text").user(userModel).build();
+    }
 
     @Test
     @Transactional
     void orphanDelTest() {
+        UserModel userModel = justUserCreatorRepository();
+
+        CommentModel commentModel = justCommentCreator(userModel);
+        CommentModel commentModel1 = justCommentCreator(userModel);
+
+        PostModel postModel = PostModel.builder().tittle("title").description("des").build();
+
+        postModel.addComment(commentModel);
+        postModel.addComment(commentModel1);
+
+        postRepository.save(postModel);
+
+        Assertions.assertThat(commentRepository.count()).isEqualTo(2);
+
+        postModel.getComments().remove(commentModel1);
+        postRepository.save(postModel);
+
+        Assertions.assertThat(commentRepository.count()).isEqualTo(1);
+
+        postRepository.deleteAll();
+
+        Assertions.assertThat(commentRepository.count()).isEqualTo(0);
 
     }
+
+
+
 
 }
