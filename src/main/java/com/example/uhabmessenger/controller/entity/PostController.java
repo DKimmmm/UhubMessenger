@@ -1,6 +1,7 @@
 package com.example.uhabmessenger.controller.entity;
 
 import com.example.uhabmessenger.dto.comment.AddCommentDto;
+import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -54,4 +55,8 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/get-comment")
+    public ResponseEntity<List<CommentInfoDto>> getInfoByPostId(@RequestParam UUID postId) {
+        return ResponseEntity.ok(postService.getCommentsByPostId(postId));
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.uhabmessenger.service;
 
 import com.example.uhabmessenger.dto.comment.AddCommentDto;
+import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.PostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.exception.PostNotFoundException;
@@ -86,7 +87,7 @@ public class PostService {
     public PostInfoDto getPostInfo(UUID postId) {
 
         PostModel postModel = postRepository.findByPostId(postId)
-                .orElseThrow(()-> new PostNotFoundException("post not found"));
+                .orElseThrow(() -> new PostNotFoundException("post not found"));
         return modelToInfoDtoWithListImageIds(postModel);
 
     }
@@ -133,5 +134,25 @@ public class PostService {
 
         postModel.addComment(commentModel);
         postRepository.save(postModel);
+    }
+
+    public List<CommentInfoDto> getCommentsByPostId(UUID postId) {
+        PostModel postModel = postRepository.findByPostId(postId).orElseThrow(
+                () -> new PostNotFoundException("post not fount by " + postId)
+        );
+
+        return listCommentsToListInfoDto(postModel.getComments());
+    }
+
+    private List<CommentInfoDto> listCommentsToListInfoDto(List<CommentModel> comments) {
+        List<CommentInfoDto> result = new ArrayList<>();
+        for (CommentModel comment : comments) {
+            result.add(CommentInfoDto.builder()
+                    .text(comment.getText())
+                    .userId(comment.getUser().getUserId())
+                    .userName(comment.getUser().getName())
+                    .userLastname(comment.getUser().getLastname()).build());
+        }
+        return result;
     }
 }
