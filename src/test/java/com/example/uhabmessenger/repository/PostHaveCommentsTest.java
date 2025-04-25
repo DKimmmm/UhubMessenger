@@ -38,7 +38,7 @@ public class PostHaveCommentsTest extends BaseIntegrationTest {
 
         Assertions.assertThat(userRepository.count()).isEqualTo(1);
 
-        PostModel postModel = PostModel.builder().tittle("title").description("des").build();
+        PostModel postModel = PostModel.builder().title("title").description("des").build();
         CommentModel commentModel = justCommentCreator(userModel);
 
         postModel.addComment(commentModel);
@@ -66,7 +66,7 @@ public class PostHaveCommentsTest extends BaseIntegrationTest {
         CommentModel commentModel = justCommentCreator(userModel);
         CommentModel commentModel1 = justCommentCreator(userModel);
 
-        PostModel postModel = PostModel.builder().tittle("title").description("des").build();
+        PostModel postModel = PostModel.builder().title("title").description("des").build();
 
         postModel.addComment(commentModel);
         postModel.addComment(commentModel1);

@@ -32,7 +32,7 @@ public class GroupModel {
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @JsonManagedReference // Для предотвращения рекурсии при сериализации
+    @JsonManagedReference
     private List<UserModel> users = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
@@ -51,34 +51,44 @@ public class GroupModel {
     )
     private List<ImageModel> images = new ArrayList<>();
 
-    //методы сериализации которые необходимы для связи многие к многим
-    public void addUser(UserModel user){
+    public void addUser(UserModel user) {
+
         this.getUsers().add(user);
         user.getGroups().add(this);
+
     }
-    public void removeUser(UserModel user){
+
+    public void removeUser(UserModel user) {
+
         this.getUsers().remove(user);
         user.getGroups().remove(this);
+
     }
 
     public List<UserModel> getUsers() {
+
         if (users == null) {
             users = new ArrayList<>();
         }
         return users;
+
     }
 
     public List<PostModel> getPosts() {
+
         if (posts == null) {
             posts = new ArrayList<>();
         }
         return posts;
+
     }
 
     public List<ImageModel> getImages() {
+
         if (images == null) {
             images = new ArrayList<>();
         }
         return images;
+
     }
 }

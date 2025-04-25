@@ -33,7 +33,7 @@ public class PostRepositoryTest extends BaseIntegrationTest {
     void saveAndFindTest() {
         PostModel postModel = postRepository.save(
                 PostModel.builder()
-                        .tittle("tt")
+                        .title("tt")
                         .description("dd")
                         .build());
         PostModel model = postRepository.findById(postModel.getPostId()).orElse(null);
@@ -44,7 +44,7 @@ public class PostRepositoryTest extends BaseIntegrationTest {
     void saveAndDelete() {
         PostModel postModel = postRepository.save(
                 PostModel.builder()
-                        .tittle("tt")
+                        .title("tt")
                         .description("dd")
                         .build());
         assertThat(postRepository.findAll().size()).isEqualTo(1);
@@ -72,9 +72,9 @@ public class PostRepositoryTest extends BaseIntegrationTest {
 
     private PostModel postModelInitialized(List<ImageModel> images) {
         return postRepository.save(PostModel.builder()
-                .tittle("title")
+                .title("title")
                 .description("description")
-                .tittle("title")
+                .title("title")
                 .images(images)
                 .build());
     }
@@ -105,7 +105,7 @@ public class PostRepositoryTest extends BaseIntegrationTest {
                 .build();
         assertThat(imageRepository.findAll().size()).isEqualTo(0);
         PostModel postBuilt = PostModel.builder()
-                .tittle("tt")
+                .title("tt")
                 .description("des")
                 .build();
 

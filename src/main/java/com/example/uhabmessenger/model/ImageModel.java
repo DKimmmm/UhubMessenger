@@ -1,16 +1,14 @@
 package com.example.uhabmessenger.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "images")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -26,6 +24,7 @@ public class ImageModel {
 
     @Column(name = "content_type")
     private String contentType;
+
     private Long size;
 
 }

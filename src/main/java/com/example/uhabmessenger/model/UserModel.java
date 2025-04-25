@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -54,27 +56,33 @@ public class UserModel {
 
 
     @ManyToMany(mappedBy = "users")
-    @JsonBackReference // Для предотвращения рекурсии
+    @JsonBackReference
     private List<GroupModel> groups = new ArrayList<>();
 
     public List<ImageModel> getImages() {
+
         if (images == null) {
             images = new ArrayList<>();
         }
         return images;
+
     }
 
     public List<PostModel> getPosts() {
+
         if (posts == null) {
             posts = new ArrayList<>();
         }
         return posts;
+
     }
 
     public List<GroupModel> getGroups() {
+
         if (groups == null) {
             groups = new ArrayList<>();
         }
         return groups;
+
     }
 }

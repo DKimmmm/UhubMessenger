@@ -5,8 +5,8 @@ import lombok.*;
 
 import java.util.UUID;
 
-@Table(name = "comments")
 @Entity
+@Table(name = "comments")
 @Getter
 @Setter
 @AllArgsConstructor
