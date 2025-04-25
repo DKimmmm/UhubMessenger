@@ -21,10 +21,10 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(value = "/user/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> userPostSave(@RequestParam(value = "userId") UUID userId,
-                                          @RequestParam(value = "title", required = false) String title,
-                                          @RequestParam(value = "description", required = false) String description,
-                                          @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
+    public ResponseEntity<Void> userPostSave(@RequestParam(value = "userId") UUID userId,
+                                             @RequestParam(value = "title", required = false) String title,
+                                             @RequestParam(value = "description", required = false) String description,
+                                             @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
 
         postService.userPostSave(userId, title, description, multipartFiles);
         return ResponseEntity.ok().build();
@@ -32,10 +32,10 @@ public class PostController {
     }
 
     @PostMapping(value = "/group/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> groupPostSave(@RequestParam(value = "groupId") UUID groupId,
-                                           @RequestParam(value = "title", required = false) String title,
-                                           @RequestParam(value = "description", required = false) String description,
-                                           @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
+    public ResponseEntity<Void> groupPostSave(@RequestParam(value = "groupId") UUID groupId,
+                                              @RequestParam(value = "title", required = false) String title,
+                                              @RequestParam(value = "description", required = false) String description,
+                                              @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
 
         postService.groupPostSave(groupId, title, description, multipartFiles);
         return ResponseEntity.ok().build();
@@ -51,12 +51,18 @@ public class PostController {
 
     @PostMapping("/add/comment")
     public ResponseEntity<Void> addComment(@RequestBody AddCommentDto addCommentDto) {
+
         postService.addComment(addCommentDto);
         return ResponseEntity.ok().build();
+
     }
 
-    @GetMapping("/get-comment")
+    @GetMapping("/get-comments")
     public ResponseEntity<List<CommentInfoDto>> getInfoByPostId(@RequestParam UUID postId) {
-        return ResponseEntity.ok(postService.getCommentsByPostId(postId));
+
+        return ResponseEntity.ok(
+                postService.getCommentsByPostId(postId)
+        );
+
     }
 }
