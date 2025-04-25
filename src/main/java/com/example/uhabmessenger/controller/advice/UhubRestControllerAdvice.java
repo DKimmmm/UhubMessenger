@@ -13,54 +13,52 @@ import org.springframework.web.client.HttpClientErrorException;
 @RestControllerAdvice
 public class UhubRestControllerAdvice {
 
-    @ExceptionHandler(value = {AuthorizationErrorException.class, UserAlreadyExistsException.class, UsernameIncorrectException.class,
-            GroupNotFoundException.class, PostNotFoundException.class, GroupSaveException.class, ImageSaveException.class})
+    @ExceptionHandler(value = {AuthorizationErrorException.class, UserAlreadyExistsException.class,
+            UsernameIncorrectException.class, UncorrectedPasswordException.class})
+    public ResponseEntity<String> handleAuthorizationException(Exception e) {
 
-    public ResponseEntity<String> handleAuthorizationErrorException(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("К сожалению, произошла ошибка во время авторизации. Error: \n" + e.getMessage());
+
+    }
+
+    @ExceptionHandler(value = {UserNotFoundException.class, GroupNotFoundException.class, PostNotFoundException.class})
+    public ResponseEntity<String> handleResourceNotFoundException(Exception e) {
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Искомый ресурс не найден. Error: \n" + e.getMessage());
+
+    }
+
+    @ExceptionHandler(value = {GroupSaveException.class, ImageSaveException.class, DownloadImageException.class})
+    public ResponseEntity<String> handleOtherException(Exception e) {
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("К сожалению, произошла ошибка. Error: \n" + e.getMessage());
-    }
 
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFoundException(Exception e) {
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("К сожалению, произошла ошибка поиска данных. Error: \n" + e.getMessage());
-
-    }
-
-    @ExceptionHandler(UncorrectedPasswordException.class)
-    public ResponseEntity<String> handleUserAlreadyExistsException(Exception e) {
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("К сожалению, произошла ошибка с паролем. Error: \n" + e.getMessage());
-    }
-
-    @ExceptionHandler(DownloadImageException.class)
-    public ResponseEntity<String> handleDownloadImageException(Exception e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("К сожалению, произошла ошибка получения изображения. \nError: " + e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleNoValidDataException(MethodArgumentNotValidException e) {
+
         return ResponseEntity
                 .status(HttpStatus.valueOf(401))
                 .body("Получены данные некорректного формата, попробуйте снова. \nError: " + e.getMessage());
+
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<String> handleHttpClientException(HttpClientErrorException e) {
+
         return ResponseEntity
-                .status(HttpStatus.valueOf(402))
+                .status(HttpStatus.valueOf(403))
                 .body("Доступ закрыт. " +
                         "\nЛибо ограничен доступ, либо не предоставлены данные для аутентификации " +
                         "\nError: " + e.getMessage());
+
     }
 
     @ExceptionHandler(Exception.class)
