@@ -7,7 +7,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface GroupRepository extends JpaRepository<GroupModel, UUID> {
+
     Optional<GroupModel> findByGroupId(UUID uuid);
 
     boolean existsByTitle(String title);
+
 }

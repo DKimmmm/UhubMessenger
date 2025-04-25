@@ -24,6 +24,7 @@ public class MinioService {
 
     @SneakyThrows
     public void uploadFile(String fileName, InputStream inputStream, long contentLength) {
+
         minioClient.putObject(
                 PutObjectArgs.builder()
                         .bucket(bucketName)
@@ -31,33 +32,38 @@ public class MinioService {
                         .stream(inputStream, contentLength, -1)
                         .build());
 
-        log.info("'{}' is successfully uploaded as object '{}' to bucket '{}'.",
+        log.debug("'{}' is successfully uploaded as object '{}' to bucket '{}'.",
                 fileName, fileName, bucketName);
+
     }
 
     @SneakyThrows
     public InputStream downloadInputStream(String fileName) {
+
         InputStream inputStream = minioClient.getObject(
                 GetObjectArgs.builder()
                         .bucket(bucketName)
                         .object(fileName)
                         .build());
 
-        log.info("Object '{}' is successfully downloaded from bucket '{}'.",
+        log.debug("Object '{}' is successfully downloaded from bucket '{}'.",
                 fileName, bucketName);
 
         return inputStream;
+
     }
 
     @SneakyThrows
     public void deleteFile(String fileName) {
+
         minioClient.removeObject(
                 RemoveObjectArgs.builder()
                         .bucket(bucketName)
                         .object(fileName)
                         .build());
 
-        log.info("Object '{}' is successfully deleted from bucket '{}'.",
+        log.debug("Object '{}' is successfully deleted from bucket '{}'.",
                 fileName, bucketName);
+
     }
 }

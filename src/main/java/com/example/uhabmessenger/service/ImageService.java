@@ -44,14 +44,6 @@ public class ImageService {
 
     }
 
-    public List<String> findByPostId(UUID postId) {
-        return imageRepository.findFileNamesByPostId(postId);
-    }
-
-    public List<String> findByUserId(UUID userId) {
-        return imageRepository.findFileNamesByUserId(userId);
-    }
-
     public ImageModel findByImageId(UUID imageId) {
         return imageRepository.findById(imageId).get();
     }
