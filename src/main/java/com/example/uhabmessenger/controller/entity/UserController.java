@@ -24,40 +24,58 @@ public class UserController {
     private final UserService userService;
 
     @SneakyThrows
-    @PostMapping(value = "/add-image/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/image/add/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> save(@PathVariable UUID userId,
                                      @RequestPart MultipartFile multipartFile) {
-            userService.uploadUserImage(multipartFile, userId);
-            return ResponseEntity.ok().build();
+
+        userService.uploadUserImage(multipartFile, userId);
+        return ResponseEntity.ok().build();
+
     }
 
-    @PutMapping("/update-info")
-    public ResponseEntity<UserInfoDto> updateInfo(@Valid @RequestBody UserUpdateInfoDto userUpdateInfoDto) {
-        return ResponseEntity.ok(userService.updateInfo(userUpdateInfoDto));
-    }
-
-    @DeleteMapping("/image")
-    public ResponseEntity<?> deleteImage(@RequestParam UUID userId,
-                                         @RequestParam UUID imageId) {
-            userService.deleteImage(userId, imageId);
-            return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/image-download")
+    @GetMapping("/image/download")
     public ResponseEntity<Void> downloadImage(@RequestParam UUID userId,
                                               @RequestParam UUID imageId,
                                               HttpServletResponse response) {
-            userService.downloadImageByImageAndUserIds(imageId, userId, response);
-            return ResponseEntity.ok().build();
+
+        userService.downloadImageByImageAndUserIds(imageId, userId, response);
+        return ResponseEntity.ok().build();
+
     }
 
-    @GetMapping("/user-info/{userId}")
+    @DeleteMapping("/image")
+    public ResponseEntity<Void> deleteImage(@RequestParam UUID userId,
+                                            @RequestParam UUID imageId) {
+
+        userService.deleteImage(userId, imageId);
+        return ResponseEntity.ok().build();
+
+    }
+
+    @PutMapping("/update/info")
+    public ResponseEntity<UserInfoDto> updateInfo(@Valid @RequestBody UserUpdateInfoDto userUpdateInfoDto) {
+
+        return ResponseEntity.ok(
+                userService.updateInfo(userUpdateInfoDto)
+        );
+
+    }
+
+    @GetMapping("/info/{userId}")
     public ResponseEntity<UserInfoDto> getUserInfo(@PathVariable UUID userId) {
-            return ResponseEntity.ok(userService.getUserInfo(userId));
+
+        return ResponseEntity.ok(
+                userService.getUserInfo(userId)
+        );
+
     }
 
-    @GetMapping("/my-posts/{userId}")
+    @GetMapping("/posts/{userId}")
     public ResponseEntity<List<PostInfoDto>> getMyPostsInfo(@PathVariable UUID userId) {
-            return ResponseEntity.ok(userService.findPostsInfoListByUserId(userId));
+
+        return ResponseEntity.ok(
+                userService.findPostsInfoListByUserId(userId)
+        );
+
     }
 }
