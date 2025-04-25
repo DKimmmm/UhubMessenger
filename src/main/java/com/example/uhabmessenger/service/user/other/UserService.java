@@ -10,7 +10,6 @@ import com.example.uhabmessenger.formatutils.UsernameFormatUtil;
 import com.example.uhabmessenger.mapper.UserMapstructService;
 import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
-import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.service.ImageService;
 import com.example.uhabmessenger.service.PostService;
@@ -21,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -91,22 +89,28 @@ public class UserService {
 
         ImageModel imageModel = imageService.findByImageId(imageId);
         UserModel userModel = simpleUserService.findById(userId);
+
         userModel.getImages().remove(imageModel);
         simpleUserService.save(userModel);
 
     }
 
     public void downloadImageByImageAndUserIds(UUID imageId, UUID userId, HttpServletResponse response) {
+
         try {
+
             List<ImageModel> images = simpleUserService.findById(userId).getImages();
             ImageModel image = imageService.findImageByImageIdFromImageList(imageId, images);
             imageService.downloadFromMinio(image, response);
+
         } catch (Exception e) {
             throw new DownloadImageException("error in download your needed image");
         }
+
     }
 
     public UserInfoDto getUserInfo(UUID userId) {
+
         UserModel userModel = simpleUserService.findById(userId);
 
         UserInfoDto userInfoDto = userMapstructService.toUserInfoDto(userModel);
@@ -115,15 +119,18 @@ public class UserService {
                 addImagesIdsToDto(userModel, userInfoDto),
                 userModel.getGroups()
         );
+
     }
 
     private UserInfoDto addGroupIdsIntoDto(UserInfoDto userInfoDto, List<GroupModel> groups) {
-        List<UUID> groupIds = new ArrayList<>();
-        for (GroupModel group : groups) {
-            groupIds.add(group.getGroupId());
-        }
-        userInfoDto.setGroupsIds(groupIds);
+
+        userInfoDto.setGroupsIds(
+                groups.stream()
+                        .map(GroupModel::getGroupId)
+                        .toList());
+
         return userInfoDto;
+
     }
 
     private UserInfoDto addImagesIdsToDto(UserModel userModel, UserInfoDto userInfoDto) {
@@ -138,11 +145,9 @@ public class UserService {
 
     private List<UUID> collectImagesIdsFromUserModel(UserModel userModel) {
 
-        List<UUID> result = new ArrayList<>();
-        for (ImageModel image : userModel.getImages()) {
-            result.add(image.getImageId());
-        }
-        return result;
+        return userModel.getImages().stream()
+                .map(ImageModel::getImageId)
+                .toList();
 
     }
 
@@ -154,28 +159,38 @@ public class UserService {
     }
 
     public UserInfoDto updateInfo(UserUpdateInfoDto userUpdateInfoDto) {
-        UserModel userModel = updateFieldIfNotNull(
+
+        UserModel userModel = updateFieldIfNewDataNotNull(
                 simpleUserService.findById(userUpdateInfoDto.userId()),
                 userUpdateInfoDto);
 
-        return getUserInfo(simpleUserService.save(userModel).getUserId());
+        return getUserInfo(
+                simpleUserService.save(userModel).getUserId()
+        );
+
     }
 
-    private UserModel updateFieldIfNotNull(UserModel userModel, UserUpdateInfoDto userUpdateInfoDto) {
+    private UserModel updateFieldIfNewDataNotNull(UserModel userModel, UserUpdateInfoDto userUpdateInfoDto) {
+
         if (!Objects.isNull(userUpdateInfoDto.name()) && !userUpdateInfoDto.name().isBlank()) {
             userModel.setName(userUpdateInfoDto.name());
         }
+
         if (!Objects.isNull(userUpdateInfoDto.lastname()) && !userUpdateInfoDto.lastname().isBlank()) {
             userModel.setLastname(userUpdateInfoDto.lastname());
         }
+
         if (!Objects.isNull(userUpdateInfoDto.email()) && !userUpdateInfoDto.email().isBlank()) {
             userModel.setEmail(userUpdateInfoDto.email());
             userModel.setApprovedEmail(false);
         }
+
         if (!Objects.isNull(userUpdateInfoDto.phone()) && !userUpdateInfoDto.phone().isBlank()) {
             userModel.setPhone(userUpdateInfoDto.phone());
             userModel.setApprovedPhone(false);
         }
+
         return userModel;
+
     }
 }
