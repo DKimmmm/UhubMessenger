@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record SignUpDto(
+
         @NotNull
         @Size(min = 2)
         @TitleCase
@@ -26,5 +27,6 @@ public record SignUpDto(
         @NotNull
         @Size(min = 8)
         String password
+
 ) {
 }

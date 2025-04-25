@@ -4,10 +4,10 @@ import com.example.uhabmessenger.validation.annotation.EmailFormat;
 import com.example.uhabmessenger.validation.annotation.PhoneFormat;
 import com.example.uhabmessenger.validation.annotation.TitleCase;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.UUID;
 
 public record UserUpdateInfoDto(
+
         @NotNull
         UUID userId,
 
@@ -22,5 +22,6 @@ public record UserUpdateInfoDto(
 
         @EmailFormat
         String email
+
 ) {
 }

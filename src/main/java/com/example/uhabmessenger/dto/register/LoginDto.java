@@ -7,11 +7,14 @@ import jakarta.validation.constraints.NotNull;
 
 @Valid
 public record LoginDto(
+
         @PhoneOrEmail
         @NotNull
         String username,
+
         @Password
         @NotNull
         String password
+
 ) {
 }

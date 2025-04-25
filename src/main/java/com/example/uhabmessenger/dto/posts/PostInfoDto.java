@@ -1,7 +1,6 @@
 package com.example.uhabmessenger.dto.posts;
 
 import lombok.*;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -10,8 +9,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class PostInfoDto {
+
     private UUID postId;
+
     private String title;
+
     private String description;
+
     private List<UUID> imagesIds;
+
 }
