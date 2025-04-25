@@ -17,13 +17,16 @@ public class TokenInjectionService {
     private final AuthenticationManager authenticationManager;
 
     public void jwtInjection(HttpServletResponse response, String username, String password) {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
         );
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtTokenProvider.generateToken(authentication);
         response.addHeader("Authorization", "Bearer " + jwt);
+
     }
 
 }

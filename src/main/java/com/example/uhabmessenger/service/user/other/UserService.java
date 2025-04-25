@@ -37,6 +37,7 @@ public class UserService {
     private final SimpleUserService simpleUserService;
 
     public UserModel getUserByUsername(String username) {
+
         if (UsernameFormatUtil.usernameIsEmailFormat(username)) {
             return findUserByEmail(username);
         } else if (UsernameFormatUtil.usernameIsPhoneFormat(username)) {
@@ -44,12 +45,15 @@ public class UserService {
         } else {
             throw new AuthorizationErrorException("username is not correct format");
         }
+
     }
 
     private UserModel findUserByEmail(String username) {
 
         try {
+
             return simpleUserService.findByEmail(username);
+
         } catch (Exception e) {
             throw new UsernameIncorrectException("uncorrected email");
         }
@@ -59,7 +63,9 @@ public class UserService {
     private UserModel findUserByPhone(String username) {
 
         try {
+
             return simpleUserService.findByPhone(username);
+
         } catch (Exception e) {
             throw new UsernameIncorrectException("uncorrected phone");
         }

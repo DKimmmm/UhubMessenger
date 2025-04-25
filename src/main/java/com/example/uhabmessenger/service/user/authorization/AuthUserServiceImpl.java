@@ -24,6 +24,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     private final UserMapstructService userMapstructService;
 
     private final UserService userService;
+
     private final SimpleUserService simpleUserService;
 
     @Override
@@ -49,19 +50,25 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     private UUID findIdByUsername(String username) {
+
         return userService.getUserByUsername(username).getUserId();
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private boolean checkForAlreadyExists(String username) {
+
         return simpleUserService.isExistByUsername(username);
+
     }
 
     private UserModel mapperToUserModel(SignUpDto signUpDto) {
+
         return addUsername(
                 userMapstructService.toUserModel(signUpDto),
                 signUpDto.username()
         );
+
     }
 
     private UserModel addUsername(UserModel userModel, String username) {
@@ -77,10 +84,14 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     private boolean usernameIsPhoneFormatted(String username) {
+
         return PhoneOrEmailValidator.matchersPhoneRegex(username);
+
     }
 
     private boolean usernameIsEmailFormatted(String username) {
+
         return PhoneOrEmailValidator.matchersEmailRegex(username);
+
     }
 }

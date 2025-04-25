@@ -16,23 +16,33 @@ public class SimpleGroupService {
     private final GroupRepository groupRepository;
 
     public GroupModel findById(UUID groupId) {
+
         return groupRepository.findByGroupId(groupId)
                 .orElseThrow(() -> new GroupNotFoundException("group not found"));
+
     }
 
     public void save(GroupModel groupModel) {
+
         groupRepository.save(groupModel);
+
     }
 
     public boolean existsByTitle(String title) {
+
         return groupRepository.existsByTitle(title);
+
     }
 
     public List<GroupModel> findAll() {
+
         return groupRepository.findAll();
+
     }
 
     public void deleteById(UUID groupId) {
+
         groupRepository.deleteById(groupId);
+
     }
 }
