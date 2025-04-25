@@ -12,4 +12,5 @@ public interface GroupMapstructService {
     GroupInfoDto toInfoDto(GroupModel dto);
 
     GroupModel toModel(GroupCreateDto groupCreateDto);
+
 }

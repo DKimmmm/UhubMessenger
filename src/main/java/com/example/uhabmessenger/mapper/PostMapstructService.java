@@ -13,4 +13,5 @@ public interface PostMapstructService {
 
     @Mapping(source = "tittle", target = "title")
     PostInfoDto toPostInfoDto(PostModel postModel);
+
 }
