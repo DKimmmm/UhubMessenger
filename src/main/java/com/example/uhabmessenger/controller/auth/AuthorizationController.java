@@ -23,7 +23,7 @@ public class AuthorizationController {
     private final AuthUserService authUserService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpDto signUpDto, HttpServletResponse response) {
+    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDto signUpDto, HttpServletResponse response) {
 
             authUserService.signup(signUpDto, response);
             return ResponseEntity.ok().build();

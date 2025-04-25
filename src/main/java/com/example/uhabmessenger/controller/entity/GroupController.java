@@ -24,7 +24,8 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping(value = "/create")
-    public ResponseEntity<?> create(@RequestBody GroupCreateDto groupCreateDto) {
+    public ResponseEntity<Void> create(@RequestBody GroupCreateDto groupCreateDto) {
+
         groupService.save(groupCreateDto);
         return ResponseEntity.ok().build();
 
@@ -35,8 +36,8 @@ public class GroupController {
                                             @RequestPart MultipartFile multipartFile) {
         groupService.photoUpdate(groupId, multipartFile);
         return ResponseEntity.ok().build();
-    }
 
+    }
 
     @GetMapping("/all-info")
     public ResponseEntity<List<GroupInfoDto>> getAllInfo() {
@@ -50,35 +51,43 @@ public class GroupController {
 
     @PostMapping("/add-members")
     public ResponseEntity<Void> addMembers(@RequestParam UUID groupId,
-            @RequestBody List<UUID> membersIds) {
+                                           @RequestBody List<UUID> membersIds) {
         groupService.addMembers(groupId, membersIds);
         return ResponseEntity.ok().build();
+
     }
 
     @DeleteMapping("/member-remove")
     public ResponseEntity<Void> removeMember(@RequestParam UUID groupId,
-            @RequestParam UUID memberId) {
+                                             @RequestParam UUID memberId) {
         groupService.removeMember(groupId, memberId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/remove/{groupId}")
     public ResponseEntity<Void> groupRemove(@PathVariable UUID groupId) {
+
         groupService.removeById(groupId);
         return ResponseEntity.ok().build();
+
     }
 
-    @GetMapping("/image-download")
+    @GetMapping("/image/download")
     public ResponseEntity<Void> downloadImage(@RequestParam UUID groupId,
                                               @RequestParam UUID imageId,
                                               HttpServletResponse response) {
 
         groupService.downloadImage(imageId, groupId, response);
         return ResponseEntity.ok().build();
+
     }
 
     @GetMapping("/posts/{groupId}")
     public ResponseEntity<List<PostInfoDto>> groupPostInfoDto(@PathVariable UUID groupId) {
-        return ResponseEntity.ok(groupService.getPostsInfoDto(groupId));
+
+        return ResponseEntity.ok(
+                groupService.getPostsInfoDto(groupId)
+        );
+
     }
 }
