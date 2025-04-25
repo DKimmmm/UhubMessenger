@@ -2,6 +2,9 @@ package com.example.uhabmessenger.formatutils;
 
 public final class RegexUtils {
 
+    private RegexUtils() {
+    }
+
     /** Регулярное выражение для проверки:
     * - минимум 8 символов
      * - минимум 1 заглавная буква (A-Z)
