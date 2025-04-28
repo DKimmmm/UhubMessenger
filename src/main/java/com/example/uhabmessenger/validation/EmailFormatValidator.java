@@ -9,13 +9,9 @@ import static com.example.uhabmessenger.formatutils.RegexUtils.EMAIL_REGEX;
 public class EmailFormatValidator implements ConstraintValidator<EmailFormat, String> {
 
     @Override
-    public void initialize(EmailFormat constraintAnnotation) {
-    }
-
-    @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        if (value == null || value.trim().isEmpty()) {
+        if (value.isBlank()) {
             return true;
         }
         return matchersEmailRegex(value);

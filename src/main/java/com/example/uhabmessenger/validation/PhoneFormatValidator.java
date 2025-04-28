@@ -9,13 +9,9 @@ import static com.example.uhabmessenger.formatutils.RegexUtils.PHONE_REGEX;
 public class PhoneFormatValidator implements ConstraintValidator<PhoneFormat, String> {
 
     @Override
-    public void initialize(PhoneFormat constraintAnnotation) {
-    }
-
-    @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        if (value == null || value.trim().isEmpty()) {
+        if (value.isBlank()) {
             return true;
         }
 

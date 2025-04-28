@@ -1,9 +1,9 @@
 package com.example.uhabmessenger.formatutils;
 
-public final class RegexUtils {
+import lombok.experimental.UtilityClass;
 
-    private RegexUtils() {
-    }
+@UtilityClass
+public final class RegexUtils {
 
     /** Регулярное выражение для проверки:
     * - минимум 8 символов

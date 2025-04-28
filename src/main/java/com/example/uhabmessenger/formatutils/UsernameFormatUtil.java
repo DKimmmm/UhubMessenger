@@ -1,14 +1,13 @@
 package com.example.uhabmessenger.formatutils;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import static com.example.uhabmessenger.formatutils.RegexUtils.EMAIL_REGEX;
 import static com.example.uhabmessenger.formatutils.RegexUtils.PHONE_REGEX;
 
 @Slf4j
+@UtilityClass
 public final class UsernameFormatUtil {
-
-    private UsernameFormatUtil() {
-    }
 
     /**
      * Проверка, соответствует ли username формату номера телефона

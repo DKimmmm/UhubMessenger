@@ -7,13 +7,9 @@ import jakarta.validation.ConstraintValidatorContext;
 public class TitleCaseValidator implements ConstraintValidator<TitleCase, String> {
 
     @Override
-    public void initialize(TitleCase constraintAnnotation) {
-    }
-
-    @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        if (value == null || value.trim().isEmpty()) {
+        if (value.isBlank()) {
             return true;
         }
 
