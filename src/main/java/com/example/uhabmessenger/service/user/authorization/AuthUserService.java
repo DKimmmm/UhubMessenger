@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface AuthUserService {
 
-    void signup(SignUpDto signUpDto, HttpServletResponse response);
+    void signup(SignUpDto signUpDto);
 
-    UUID login(LoginDto loginDto, HttpServletResponse response);
+    UUID login(LoginDto loginDto);
 }

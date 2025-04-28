@@ -30,7 +30,7 @@ public class PhoneOrEmailValidator implements ConstraintValidator<PhoneOrEmail, 
 
         // Валидно, если это телефон ИЛИ email
         boolean b = matchersEmailRegex(value) || matchersPhoneRegex(value);
-        log.info("b = {}", b);
+        log.debug("b = {}", b);
         return b;
     }
 

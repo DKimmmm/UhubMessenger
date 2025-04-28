@@ -25,7 +25,7 @@ public class AuthorizationController {
     @PostMapping("/signup")
     public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDto signUpDto, HttpServletResponse response) {
 
-            authUserService.signup(signUpDto, response);
+            authUserService.signup(signUpDto);
             return ResponseEntity.ok().build();
 
     }
@@ -34,7 +34,7 @@ public class AuthorizationController {
     public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
 
             return ResponseEntity.ok(
-                    authUserService.login(loginDto, response)
+                    authUserService.login(loginDto)
             );
     }
 }

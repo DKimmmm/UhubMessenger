@@ -10,6 +10,8 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
 
@@ -20,7 +22,7 @@ public class AuthControllerAop {
 
     private static final Logger log = LoggerFactory.getLogger(AuthControllerAop.class);
 
-    @Pointcut("execution(* com.example.UhabMessenger.authentication.controller.AuthorizationController.signUp(..))")
+    @Pointcut("execution(* com.example.uhabmessenger.controller.auth.AuthorizationController.signUp(..))")
     public void userSignUp(){}
 
     @Around("userSignUp()")
@@ -43,7 +45,7 @@ public class AuthControllerAop {
         log.info("======== was be exception ========");
     }
 
-    @Pointcut("execution(* com.example.UhabMessenger..AuthorizationController.login(..))")
+    @Pointcut("execution(* com.example.uhabmessenger.controller.auth.AuthorizationController.login(..))")
     public void pointcutLogin(){}
 
     @After("pointcutLogin()")
@@ -51,8 +53,8 @@ public class AuthControllerAop {
         log.info("============== after login ============== {}", joinPoint.getArgs()[0].toString());
     }
 
-    @Pointcut("execution(* com.example.UhabMessenger.authentication.service.authorization.AuthUserService.signup(..)) " +
-                    "|| execution(* com.example.UhabMessenger.authentication.service.authorization.AuthUserService.login(..))")
+    @Pointcut("execution(* com.example.uhabmessenger.service.user.authorization.AuthUserServiceImpl.signup(..)) " +
+                    "|| execution(* com.example.uhabmessenger.service.user.authorization.AuthUserServiceImpl.login(..))")
     public void createAuthTokenHeader() {
 
     }
@@ -63,11 +65,13 @@ public class AuthControllerAop {
     public Object createTokenIntoResponse(ProceedingJoinPoint joinPoint) throws Throwable{
         Object[] args = joinPoint.getArgs();
         Object proceed = joinPoint.proceed(args);
-        if (args.length >= 2) {
-            Object arg1 = args[0];
-            Object arg2 = args[1];
-            if (arg2 instanceof HttpServletResponse response && arg1 instanceof LoginDto dto) {
-                tokenInjectionService.jwtInjection(response, dto.username(), dto.password());
+        if (args.length == 1) {
+            Object dto = args[0];
+            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+            if (response != null && dto instanceof LoginDto(String username, String password)) {
+                tokenInjectionService.jwtInjection(response, username, password);
+            } else {
+                log.warn("HttpServletResponse is not available in request context");
             }
         } else {
             log.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!! where is authorization body !!!!!!!!!!!!!!!!!!!!!!!!!!");

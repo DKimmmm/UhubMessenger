@@ -28,7 +28,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     @Transactional
-    public void signup(SignUpDto signUpDto, HttpServletResponse response) {
+    public void signup(SignUpDto signUpDto) {
 
         if (checkForAlreadyExists(signUpDto.username())) {
             throw new AuthorizationException("user this username " + signUpDto + " already exists");
@@ -39,7 +39,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UUID login(LoginDto loginDto, HttpServletResponse response) {
+    public UUID login(LoginDto loginDto) {
 
         if (!checkForAlreadyExists(loginDto.username())) {
             throw new AuthorizationException("user login fail with username: " + loginDto.username());
