@@ -1,6 +1,7 @@
 package com.example.uhabmessenger.springsecurity;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,57 +25,75 @@ import java.util.List;
 public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
+
             "/authorization/**",
-            "/swagger-resources/**", // для Swagger
-            "/v3/api-docs", // документация
+            "/swagger-resources/**",
+            "/v3/api-docs",
             "/swagger-ui/**",
             "/v3/api-docs*/**",
-            "/image/**",// UI для Swagger
+            "/image/**",
             "/post/**",
             "/user/**",
             "/group/**"
+
     };
 
     private static final String[] AUTH_AUTHORIZATION = {
+
             "/messenger",
             "/user-profile"
+
     };
 
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @SneakyThrows
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests(authorization -> authorization
+
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers(AUTH_AUTHORIZATION).authenticated()// Любой аутентифицированный пользователь
-                        .anyRequest().denyAll() // Запрещаем все остальное
+                        .requestMatchers(AUTH_AUTHORIZATION).authenticated()
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
+
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of("http://localhost:8081/**"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);  // данная конфигурация для всех эндпоинтов
+        source.registerCorsConfiguration("/**", configuration);
+
         return source;
+
     }
 
     @Bean(name = "BCryptPasswordEncoder")
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
+
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+
         return authenticationConfiguration.getAuthenticationManager();
+
     }
 }

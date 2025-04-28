@@ -26,29 +26,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         token = tokenBearerDelete(token);
 
         try {
+
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
             } else {
                 log.debug("token isn't validated");
             }
+
         } catch (Exception e) {
             log.warn("error in check token");
         }
 
         filterChain.doFilter(request, response);
+
     }
 
     private String tokenBearerDelete(String token) {
+
         if (token == null) {
-            return null; // Или выбросить исключение, если null недопустим
+            return null;
         }
 
         String bearerPrefix = "Bearer ";
+
         if (token.startsWith(bearerPrefix)) {
             return token.substring(bearerPrefix.length());
         }
-
         return token;
     }
 }

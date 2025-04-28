@@ -20,10 +20,12 @@ import java.util.UUID;
 public class ImageService {
 
     private final MinioService minioService;
+
     private final ImageRepository imageRepository;
 
     @SneakyThrows
     public ImageModel uploadImage(MultipartFile file) {
+
         minioService.uploadFile(
                 file.getOriginalFilename(),
                 file.getInputStream(),
@@ -31,6 +33,7 @@ public class ImageService {
         );
 
         return imageModelBuilder(file);
+
     }
 
     @SneakyThrows
@@ -45,15 +48,20 @@ public class ImageService {
     }
 
     public ImageModel findByImageId(UUID imageId) {
+
         return imageRepository.findById(imageId).get();
+
     }
 
     public void deleteFromMinio(String fileName) {
+
         minioService.deleteFile(fileName);
+
     }
 
     @SneakyThrows
     public void downloadFromMinio(ImageModel image, HttpServletResponse response) {
+
         try (InputStream is = minioService.downloadInputStream(image.getFileName());
              OutputStream os = response.getOutputStream()) {
 
@@ -62,14 +70,15 @@ public class ImageService {
             response.setContentLength(image.getSize().intValue());
             is.transferTo(os);
         }
+
     }
 
     public ImageModel findImageByImageIdFromImageList(UUID imageId, List<ImageModel> images) {
-        for (ImageModel image : images) {
-            if (image.getImageId().equals(imageId)) {
-                return image;
-            }
-        }
-        throw new DownloadImageException("image not found");
+
+        return images.stream()
+                .filter(image -> image.getImageId().equals(imageId))
+                .findFirst()
+                .orElseThrow(() -> new DownloadImageException("image not found"));
+
     }
 }

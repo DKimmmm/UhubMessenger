@@ -21,20 +21,26 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserService userService;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         UserModel userModel = null;
+
         try {
             userModel = userService.getUserByUsername(username);
         } catch (Exception e) {
             log.warn("error in load user by email");
         }
+
         String currentPassword = userModel.getPassword();
         String encodedPassword = passwordEncoder.encode(currentPassword);
+
         Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         return new UserPrincipal(username, encodedPassword, authorities);
+
     }
 }
 

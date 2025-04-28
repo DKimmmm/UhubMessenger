@@ -2,9 +2,6 @@ server:
   port: ${SERVER_PORT}
   servlet:
     context-path: ${PROJECT_API}
-#
-#project:
-#  api: ${PROJECT_API}
 
 minio:
   url: ${MINIO_URL}
@@ -18,7 +15,6 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-
   liquibase:
     enabled: true
     change-log: classpath:db/liquibase/liquibase-changelog.yaml
@@ -26,7 +22,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-#      show-sql: true
+
     properties:
       hibernate:
         show_sql: false
