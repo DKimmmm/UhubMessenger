@@ -5,6 +5,7 @@ import com.example.uhabmessenger.dto.groups.GroupInfoDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.service.groups.GroupService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -23,8 +24,8 @@ public class GroupController {
 
     private final GroupService groupService;
 
-    @PostMapping(value = "/create")
-    public ResponseEntity<Void> create(@RequestBody GroupCreateDto groupCreateDto) {
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestBody @Valid GroupCreateDto groupCreateDto) {
 
         groupService.save(groupCreateDto);
         return ResponseEntity.ok().build();
@@ -57,14 +58,14 @@ public class GroupController {
 
     }
 
-    @DeleteMapping("/member-remove")
+    @DeleteMapping("/member")
     public ResponseEntity<Void> removeMember(@RequestParam UUID groupId,
                                              @RequestParam UUID memberId) {
         groupService.removeMember(groupId, memberId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/remove/{groupId}")
+    @DeleteMapping("/{groupId}")
     public ResponseEntity<Void> groupRemove(@PathVariable UUID groupId) {
 
         groupService.removeById(groupId);
