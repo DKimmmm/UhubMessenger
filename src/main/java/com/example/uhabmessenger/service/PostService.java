@@ -4,12 +4,12 @@ import com.example.uhabmessenger.dto.comment.AddCommentDto;
 import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.PostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
-import com.example.uhabmessenger.exception.PostNotFoundException;
 import com.example.uhabmessenger.mapper.PostMapstructService;
 import com.example.uhabmessenger.model.*;
 import com.example.uhabmessenger.repository.entity.PostRepository;
 import com.example.uhabmessenger.service.groups.SimpleGroupService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -87,7 +87,7 @@ public class PostService {
     public PostInfoDto getPostInfo(UUID postId) {
 
         PostModel postModel = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new PostNotFoundException("post not found"));
+                .orElseThrow(() -> new EntityNotFoundException("post not found by ID: " + postId));
         return modelToInfoDtoWithListImageIds(postModel);
 
     }
@@ -124,7 +124,7 @@ public class PostService {
 
     public void addComment(AddCommentDto addCommentDto) {
         PostModel postModel = postRepository.findByPostId(addCommentDto.postId()).orElseThrow(
-                () -> new PostNotFoundException("post not found by id: " + addCommentDto.postId())
+                () -> new EntityNotFoundException("post not found by id: " + addCommentDto.postId())
         );
 
         CommentModel commentModel = CommentModel.builder()
@@ -138,7 +138,7 @@ public class PostService {
 
     public List<CommentInfoDto> getCommentsByPostId(UUID postId) {
         PostModel postModel = postRepository.findByPostId(postId).orElseThrow(
-                () -> new PostNotFoundException("post not fount by " + postId)
+                () -> new EntityNotFoundException("post not fount by " + postId)
         );
 
         return listCommentsToListInfoDto(postModel.getComments());

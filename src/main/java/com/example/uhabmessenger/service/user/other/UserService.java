@@ -3,14 +3,12 @@ package com.example.uhabmessenger.service.user.other;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.dto.user.UserInfoDto;
 import com.example.uhabmessenger.dto.user.UserUpdateInfoDto;
-import com.example.uhabmessenger.exception.AuthorizationErrorException;
+import com.example.uhabmessenger.exception.AuthorizationException;
 import com.example.uhabmessenger.exception.DownloadImageException;
-import com.example.uhabmessenger.exception.UsernameIncorrectException;
 import com.example.uhabmessenger.formatutils.UsernameFormatUtil;
 import com.example.uhabmessenger.mapper.UserMapstructService;
 import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
-import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.service.ImageService;
 import com.example.uhabmessenger.service.PostService;
@@ -30,7 +28,6 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final ImageService imageService;
     private final UserMapstructService userMapstructService;
     private final PostService postService;
@@ -43,7 +40,7 @@ public class UserService {
         } else if (UsernameFormatUtil.usernameIsPhoneFormat(username)) {
             return findUserByPhone(username);
         } else {
-            throw new AuthorizationErrorException("username is not correct format");
+            throw new AuthorizationException("username is not correct format");
         }
 
     }
@@ -55,7 +52,7 @@ public class UserService {
             return simpleUserService.findByEmail(username);
 
         } catch (Exception e) {
-            throw new UsernameIncorrectException("uncorrected email");
+            throw new AuthorizationException("uncorrected email");
         }
 
     }
@@ -67,7 +64,7 @@ public class UserService {
             return simpleUserService.findByPhone(username);
 
         } catch (Exception e) {
-            throw new UsernameIncorrectException("uncorrected phone");
+            throw new AuthorizationException("uncorrected phone");
         }
 
     }

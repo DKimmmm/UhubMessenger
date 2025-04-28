@@ -1,6 +1,11 @@
 package com.example.uhabmessenger.controller.advice;
 
-import com.example.uhabmessenger.exception.*;
+import com.example.uhabmessenger.dto.controllerAdviceException.BadRequestExceptionDto;
+import com.example.uhabmessenger.exception.AuthorizationException;
+import com.example.uhabmessenger.exception.DownloadImageException;
+import com.example.uhabmessenger.exception.GroupSaveException;
+import com.example.uhabmessenger.exception.ImageSaveException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,60 +18,58 @@ import org.springframework.web.client.HttpClientErrorException;
 @RestControllerAdvice
 public class UhubRestControllerAdvice {
 
-    @ExceptionHandler(value = {AuthorizationErrorException.class, UserAlreadyExistsException.class,
-            UsernameIncorrectException.class, UncorrectedPasswordException.class})
-    public ResponseEntity<String> handleAuthorizationException(Exception e) {
+    @ExceptionHandler(value = AuthorizationException.class)
+    public ResponseEntity<BadRequestExceptionDto> handleAuthorizationException(Exception e) {
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("К сожалению, произошла ошибка во время авторизации. Error: \n" + e.getMessage());
+        return new ResponseEntity<>(new BadRequestExceptionDto
+                ("К сожалению, произошла ошибка во время авторизации.", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
+                HttpStatus.BAD_REQUEST);
 
     }
 
-    @ExceptionHandler(value = {UserNotFoundException.class, GroupNotFoundException.class, PostNotFoundException.class})
-    public ResponseEntity<String> handleResourceNotFoundException(Exception e) {
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ResponseEntity<BadRequestExceptionDto> handleEntityNotFoundException(Exception e) {
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Искомый ресурс не найден. Error: \n" + e.getMessage());
+        return new ResponseEntity<>(new BadRequestExceptionDto
+                ("Искомый ресурс не найден.", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
+                HttpStatus.BAD_REQUEST);
 
     }
 
     @ExceptionHandler(value = {GroupSaveException.class, ImageSaveException.class, DownloadImageException.class})
-    public ResponseEntity<String> handleOtherException(Exception e) {
+    public ResponseEntity<BadRequestExceptionDto> handleOtherException(Exception e) {
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("К сожалению, произошла ошибка. Error: \n" + e.getMessage());
+        return new ResponseEntity<>(new BadRequestExceptionDto
+                ("К сожалению, произошла ошибка.", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
+                HttpStatus.BAD_REQUEST);
 
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleNoValidDataException(MethodArgumentNotValidException e) {
+    public ResponseEntity<BadRequestExceptionDto> handleNoValidDataException(MethodArgumentNotValidException e) {
 
-        return ResponseEntity
-                .status(HttpStatus.valueOf(401))
-                .body("Получены данные некорректного формата, попробуйте снова. \nError: " + e.getMessage());
+        return new ResponseEntity<>(new BadRequestExceptionDto
+                ("Получены данные некорректного формата, попробуйте снова.", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
+                HttpStatus.BAD_REQUEST);
 
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<String> handleHttpClientException(HttpClientErrorException e) {
+    public ResponseEntity<BadRequestExceptionDto> handleHttpClientException(HttpClientErrorException e) {
 
-        return ResponseEntity
-                .status(HttpStatus.valueOf(403))
-                .body("Доступ закрыт. " +
-                        "\nЛибо ограничен доступ, либо не предоставлены данные для аутентификации " +
-                        "\nError: " + e.getMessage());
+        return new ResponseEntity<>(new BadRequestExceptionDto
+                ("Доступ закрыт. Либо ограничен доступ, либо не предоставлены данные для аутентификации ", e.getMessage(), HttpStatus.valueOf(403).value()),
+                HttpStatus.valueOf(403));
 
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleAllException(Exception e) {
+    public ResponseEntity<BadRequestExceptionDto> handleAllException(Exception e) {
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("К сожалению, произошла серьозная ошибка. Обратитесь к админестратору! \nError: " + e.getMessage());
+        return new ResponseEntity<>(new BadRequestExceptionDto
+                ("К сожалению, произошла серьезная ошибка. Обратитесь к администратору! ", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
+                HttpStatus.BAD_REQUEST);
+
     }
 
 }

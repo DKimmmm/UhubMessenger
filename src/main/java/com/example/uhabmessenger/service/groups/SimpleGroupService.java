@@ -1,8 +1,8 @@
 package com.example.uhabmessenger.service.groups;
 
-import com.example.uhabmessenger.exception.GroupNotFoundException;
 import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.repository.entity.GroupRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class SimpleGroupService {
     public GroupModel findById(UUID groupId) {
 
         return groupRepository.findByGroupId(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("group not found"));
+                .orElseThrow(() -> new EntityNotFoundException("group not found by ID: " + groupId));
 
     }
 

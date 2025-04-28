@@ -1,9 +1,9 @@
 package com.example.uhabmessenger.service.user.other;
 
-import com.example.uhabmessenger.exception.UserNotFoundException;
 import com.example.uhabmessenger.exception.UserSaveException;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,21 +30,21 @@ public class SimpleUserService {
     public UserModel findById(UUID userId) {
 
         return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found by id"));
+                .orElseThrow(() -> new EntityNotFoundException("user not found by id"));
 
     }
 
     public UserModel findByEmail(String email) {
 
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("user not found by email"));
+                .orElseThrow(() -> new EntityNotFoundException("user not found by email"));
 
     }
 
     public UserModel findByPhone(String phone) {
 
         return userRepository.findByPhone(phone)
-                .orElseThrow(() -> new UserNotFoundException("user not found by phone"));
+                .orElseThrow(() -> new EntityNotFoundException("user not found by phone"));
 
     }
 

@@ -2,8 +2,7 @@ package com.example.uhabmessenger.service.user.authorization;
 
 import com.example.uhabmessenger.dto.register.LoginDto;
 import com.example.uhabmessenger.dto.register.SignUpDto;
-import com.example.uhabmessenger.exception.AuthorizationErrorException;
-import com.example.uhabmessenger.exception.UserAlreadyExistsException;
+import com.example.uhabmessenger.exception.AuthorizationException;
 import com.example.uhabmessenger.mapper.UserMapstructService;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
@@ -32,7 +31,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     public void signup(SignUpDto signUpDto, HttpServletResponse response) {
 
         if (checkForAlreadyExists(signUpDto.username())) {
-            throw new UserAlreadyExistsException("user this username " + signUpDto + " already exists");
+            throw new AuthorizationException("user this username " + signUpDto + " already exists");
         }
         simpleUserService.save(mapperToUserModel(signUpDto));
 
@@ -43,7 +42,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     public UUID login(LoginDto loginDto, HttpServletResponse response) {
 
         if (!checkForAlreadyExists(loginDto.username())) {
-            throw new AuthorizationErrorException("user login fail with username: " + loginDto.username());
+            throw new AuthorizationException("user login fail with username: " + loginDto.username());
         }
         return findIdByUsername(loginDto.username());
 
@@ -78,7 +77,7 @@ public class AuthUserServiceImpl implements AuthUserService {
         } else if (usernameIsPhoneFormatted(username)) {
             userModel.setPhone(username);
         } else {
-            throw new AuthorizationErrorException("wrong username");
+            throw new AuthorizationException("wrong username");
         }
         return userModel;
     }
