@@ -83,7 +83,7 @@ public class GroupController {
 
     }
 
-    @GetMapping("/posts/{groupOrUserId}")
+    @GetMapping("/posts/{groupId}")
     public ResponseEntity<List<PostInfoDto>> groupPostInfoDto(@PathVariable UUID groupId) {
 
         return ResponseEntity.ok(

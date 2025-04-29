@@ -6,14 +6,12 @@ import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.exception.CreatePostException;
 import com.example.uhabmessenger.mapper.PostMapstructService;
-import com.example.uhabmessenger.model.CommentModel;
-import com.example.uhabmessenger.model.ImageModel;
-import com.example.uhabmessenger.model.PostModel;
-import com.example.uhabmessenger.model.UserModel;
+import com.example.uhabmessenger.model.*;
 import com.example.uhabmessenger.repository.entity.PostRepository;
 import com.example.uhabmessenger.service.groups.SimpleGroupService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,21 +50,21 @@ public class PostService {
         simpleUserService.save(userModel);
 
     }
-//    public void groupPostSave(UUID groupId, String title, String description, List<MultipartFile> multipartFiles) {
-//
-//        PostModel postModel = save(title, description, multipartFiles);
-//        savePostIntoGroup(groupId, postModel);
-//
 
-//    }
+    public void groupPostSave(CreatePostDto createPostDto, List<MultipartFile> multipartFiles) {
 
-//    private void savePostIntoGroup(UUID groupId, PostModel postModel) {
-//
-//        GroupModel groupModel = simpleGroupService.findById(groupId);
-//        groupModel.getPosts().add(postModel);
-//        simpleGroupService.save(groupModel);
-//
-//    }
+        PostModel postModel = save(createPostDto, multipartFiles);
+        savePostIntoGroup(createPostDto.groupOrUserId(), postModel);
+
+    }
+
+    private void savePostIntoGroup(UUID groupId, PostModel postModel) {
+
+        GroupModel groupModel = simpleGroupService.findById(groupId);
+        groupModel.getPosts().add(postModel);
+        simpleGroupService.save(groupModel);
+
+    }
 
     public PostModel save(CreatePostDto createPostDto, List<MultipartFile> multipartFiles) {
 
@@ -189,6 +187,12 @@ public class PostService {
                         .userLastname(comment.getUser().getLastname())
                         .build())
                 .toList();
+
+    }
+
+    public void imageDownload(UUID imageId, HttpServletResponse response) {
+
+        imageService.downloadFromMinio(imageService.findByImageId(imageId), response);
 
     }
 }

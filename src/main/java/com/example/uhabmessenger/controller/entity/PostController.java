@@ -5,6 +5,7 @@ import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.service.PostService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -24,27 +25,25 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(value = "/user/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Void> userPostSave(@RequestPart(name = "name") MultipartFile multipartFile,
-                                             @RequestPart(name = "value") CreatePostDto createPostDto) {
+    public ResponseEntity<Void> userPostSave(@RequestPart(name = "images") List<MultipartFile> multipartFiles,
+                                             @RequestPart(name = "dto") CreatePostDto createPostDto) {
 
         log.info("check---------------------------------------");
-        postService.userPostSave(null, null);
+        postService.userPostSave(createPostDto, multipartFiles);
         return ResponseEntity.ok().build();
 
     }
 
-//    @PostMapping(value = "/group/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Void> groupPostSave(@RequestParam(value = "groupId") UUID groupId,
-//                                              @RequestParam(value = "title", required = false) String title,
-//                                              @RequestParam(value = "description", required = false) String description,
-//                                              @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
-//
-//        postService.groupPostSave(groupId, title, description, multipartFiles);
-//        return ResponseEntity.ok().build();
-//
-//    }
+    @PostMapping(value = "/group/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> groupPostSave(@RequestPart("dto") CreatePostDto createPostDto,
+                                              @RequestPart("images") List<MultipartFile> multipartFiles) {
 
-    @GetMapping("/post-info/{postId}")
+        postService.groupPostSave(createPostDto, multipartFiles);
+        return ResponseEntity.ok().build();
+
+    }
+
+    @GetMapping("/info/{postId}")
     public ResponseEntity<PostInfoDto> getPostInfo(@PathVariable UUID postId) {
 
         return ResponseEntity.ok(postService.getPostInfo(postId));
@@ -65,6 +64,14 @@ public class PostController {
         return ResponseEntity.ok(
                 postService.getCommentsByPostId(postId)
         );
+
+    }
+
+    @GetMapping("/image/download/{imageId}")
+    public ResponseEntity<Void> imageDownload(@PathVariable UUID imageId, HttpServletResponse response) {
+
+        postService.imageDownload(imageId, response);
+        return ResponseEntity.ok().build();
 
     }
 }
