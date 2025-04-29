@@ -1,6 +1,6 @@
 package com.example.uhabmessenger.controller.advice;
 
-import com.example.uhabmessenger.dto.controllerAdviceException.BadRequestExceptionDto;
+import com.example.uhabmessenger.dto.controllerAdvice.BadRequestExceptionDto;
 import com.example.uhabmessenger.exception.AuthorizationException;
 import com.example.uhabmessenger.exception.DownloadImageException;
 import com.example.uhabmessenger.exception.GroupSaveException;
