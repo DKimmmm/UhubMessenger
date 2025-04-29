@@ -2,11 +2,14 @@ package com.example.uhabmessenger.service;
 
 import com.example.uhabmessenger.dto.comment.AddCommentDto;
 import com.example.uhabmessenger.dto.comment.CommentInfoDto;
-import com.example.uhabmessenger.dto.posts.PostDto;
+import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.exception.CreatePostException;
 import com.example.uhabmessenger.mapper.PostMapstructService;
-import com.example.uhabmessenger.model.*;
+import com.example.uhabmessenger.model.CommentModel;
+import com.example.uhabmessenger.model.ImageModel;
+import com.example.uhabmessenger.model.PostModel;
+import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.repository.entity.PostRepository;
 import com.example.uhabmessenger.service.groups.SimpleGroupService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
@@ -34,47 +37,10 @@ public class PostService {
 
     private final ImageService imageService;
 
-    public void userPostSave(UUID userId, String title, String description,
-                             List<MultipartFile> multipartFiles) {
+    public void userPostSave(CreatePostDto createPostDto, List<MultipartFile> multipartFiles) {
 
-        PostModel postModel = save(title, description, multipartFiles);
-        userPostSaveIntoUser(userId, postModel);
-
-    }
-
-    public void groupPostSave(UUID groupId, String title, String description, List<MultipartFile> multipartFiles) {
-
-        PostModel postModel = save(title, description, multipartFiles);
-        savePostIntoGroup(groupId, postModel);
-
-    }
-
-    private void savePostIntoGroup(UUID groupId, PostModel postModel) {
-
-        GroupModel groupModel = simpleGroupService.findById(groupId);
-        groupModel.getPosts().add(postModel);
-        simpleGroupService.save(groupModel);
-
-    }
-
-    public PostModel save(String title, String description, List<MultipartFile> multipartFiles) {
-
-        checkForOneNotNullField(title, multipartFiles);
-
-        PostModel beginnerPostModel = mapperToModel(title, description);
-
-        List<ImageModel> images = savePostImages(multipartFiles);
-        beginnerPostModel.setImages(images);
-
-        return beginnerPostModel;
-
-    }
-
-    private PostModel mapperToModel(String title, String description) {
-
-        return postMapstructService.toPostModel(
-                new PostDto(title, description)
-        );
+        PostModel postModel = save(createPostDto, multipartFiles);
+        userPostSaveIntoUser(createPostDto.groupOrUserId(), postModel);
 
     }
 
@@ -84,6 +50,40 @@ public class PostService {
         userModel.getPosts().add(beginnerPostModel);
 
         simpleUserService.save(userModel);
+
+    }
+//    public void groupPostSave(UUID groupId, String title, String description, List<MultipartFile> multipartFiles) {
+//
+//        PostModel postModel = save(title, description, multipartFiles);
+//        savePostIntoGroup(groupId, postModel);
+//
+
+//    }
+
+//    private void savePostIntoGroup(UUID groupId, PostModel postModel) {
+//
+//        GroupModel groupModel = simpleGroupService.findById(groupId);
+//        groupModel.getPosts().add(postModel);
+//        simpleGroupService.save(groupModel);
+//
+//    }
+
+    public PostModel save(CreatePostDto createPostDto, List<MultipartFile> multipartFiles) {
+
+//        checkForOneNotNullField(createPostDto.title(), createPostDto.multipartFiles());
+
+        PostModel beginnerPostModel = mapperToModel(createPostDto);
+
+        List<ImageModel> images = savePostImages(multipartFiles);
+        beginnerPostModel.setImages(images);
+
+        return beginnerPostModel;
+
+    }
+
+    private PostModel mapperToModel(CreatePostDto createPostDto) {
+
+        return postMapstructService.toPostModel(createPostDto);
 
     }
 

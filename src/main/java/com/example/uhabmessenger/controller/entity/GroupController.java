@@ -32,7 +32,7 @@ public class GroupController {
 
     }
 
-    @PostMapping(value = "/photo-update/{groupId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/photo-update/{groupOrUserId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> photoUpdate(@PathVariable UUID groupId,
                                             @RequestPart MultipartFile multipartFile) {
         groupService.photoUpdate(groupId, multipartFile);
@@ -45,7 +45,7 @@ public class GroupController {
         return ResponseEntity.ok(groupService.getAllInfo());
     }
 
-    @GetMapping("/info/{groupId}")
+    @GetMapping("/info/{groupOrUserId}")
     public ResponseEntity<GroupInfoDto> getInfo(@PathVariable UUID groupId) {
         return ResponseEntity.ok(groupService.getInfo(groupId));
     }
@@ -65,7 +65,7 @@ public class GroupController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{groupId}")
+    @DeleteMapping("/{groupOrUserId}")
     public ResponseEntity<Void> groupRemove(@PathVariable UUID groupId) {
 
         groupService.removeById(groupId);
@@ -83,7 +83,7 @@ public class GroupController {
 
     }
 
-    @GetMapping("/posts/{groupId}")
+    @GetMapping("/posts/{groupOrUserId}")
     public ResponseEntity<List<PostInfoDto>> groupPostInfoDto(@PathVariable UUID groupId) {
 
         return ResponseEntity.ok(
