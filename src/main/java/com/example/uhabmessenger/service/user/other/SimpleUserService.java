@@ -6,6 +6,7 @@ import com.example.uhabmessenger.repository.entity.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -17,6 +18,7 @@ public class SimpleUserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public UserModel save(UserModel userModel) {
 
         try {
@@ -27,6 +29,7 @@ public class SimpleUserService {
 
     }
 
+    @Transactional(readOnly = true)
     public UserModel findById(UUID userId) {
 
         return userRepository.findByUserId(userId)
@@ -34,6 +37,7 @@ public class SimpleUserService {
 
     }
 
+    @Transactional(readOnly = true)
     public UserModel findByEmail(String email) {
 
         return userRepository.findByEmail(email)
@@ -41,6 +45,7 @@ public class SimpleUserService {
 
     }
 
+    @Transactional(readOnly = true)
     public UserModel findByPhone(String phone) {
 
         return userRepository.findByPhone(phone)
@@ -48,7 +53,7 @@ public class SimpleUserService {
 
     }
 
-
+    @Transactional(readOnly = true)
     public boolean isExistByUsername(String username) {
 
         return userRepository.existsByPhone(username)

@@ -15,9 +15,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -68,8 +70,6 @@ public class PostService {
 
     public PostModel save(CreatePostDto createPostDto, List<MultipartFile> multipartFiles) {
 
-//        checkForOneNotNullField(createPostDto.title(), createPostDto.multipartFiles());
-
         PostModel beginnerPostModel = mapperToModel(createPostDto);
 
         List<ImageModel> images = savePostImages(multipartFiles);
@@ -97,7 +97,7 @@ public class PostService {
 
     private List<ImageModel> savePostImages(List<MultipartFile> multipartFiles) {
 
-        if (multipartFiles == null || multipartFiles.isEmpty()) {
+        if (Objects.isNull(multipartFiles) || multipartFiles.isEmpty()) {
             return null;
         }
 
@@ -107,6 +107,7 @@ public class PostService {
 
     }
 
+    @Transactional(readOnly = true)
     public PostInfoDto getPostInfo(UUID postId) {
 
         PostModel postModel = postRepository.findByPostId(postId)
@@ -150,6 +151,7 @@ public class PostService {
 
     }
 
+    @Transactional
     public void addComment(AddCommentDto addCommentDto) {
 
         PostModel postModel = postRepository.findByPostId(addCommentDto.postId())
@@ -167,6 +169,7 @@ public class PostService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<CommentInfoDto> getCommentsByPostId(UUID postId) {
 
         PostModel postModel = postRepository.findByPostId(postId).orElseThrow(
@@ -176,6 +179,7 @@ public class PostService {
         return listCommentsToListInfoDto(postModel.getComments());
 
     }
+
 
     private List<CommentInfoDto> listCommentsToListInfoDto(List<CommentModel> comments) {
 

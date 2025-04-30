@@ -54,7 +54,6 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private boolean checkForAlreadyExists(String username) {
 
         return simpleUserService.isExistByUsername(username);
