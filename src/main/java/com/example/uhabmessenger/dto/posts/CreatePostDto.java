@@ -1,19 +1,17 @@
 package com.example.uhabmessenger.dto.posts;
 
-import org.springframework.web.multipart.MultipartFile;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
 import java.util.UUID;
 
 public record CreatePostDto(
 
+        @NotNull
         UUID groupOrUserId,
 
         String title,
 
         String description
-
-//        List<MultipartFile> multipartFiles
 
 ) {
 }

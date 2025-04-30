@@ -24,6 +24,8 @@ public class UhubRestControllerAdvice {
     @ExceptionHandler(value = AuthorizationException.class)
     public ResponseEntity<BadRequestExceptionDto> handleAuthorizationException(Exception e) {
 
+        e.printStackTrace();
+
         return new ResponseEntity<>(new BadRequestExceptionDto
                 ("К сожалению, произошла ошибка во время авторизации.", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
                 HttpStatus.BAD_REQUEST);
@@ -32,6 +34,8 @@ public class UhubRestControllerAdvice {
 
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ResponseEntity<BadRequestExceptionDto> handleEntityNotFoundException(Exception e) {
+
+        e.printStackTrace();
 
         return new ResponseEntity<>(new BadRequestExceptionDto
                 ("Искомый ресурс не найден.", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
@@ -42,14 +46,18 @@ public class UhubRestControllerAdvice {
     @ExceptionHandler(value = {GroupSaveException.class, ImageSaveException.class, DownloadImageException.class})
     public ResponseEntity<BadRequestExceptionDto> handleOtherException(Exception e) {
 
+        e.printStackTrace();
+
         return new ResponseEntity<>(new BadRequestExceptionDto
                 ("К сожалению, произошла ошибка.", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
                 HttpStatus.BAD_REQUEST);
 
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<BadRequestExceptionDto> handleNoValidDataException(MethodArgumentNotValidException e) {
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class, IllegalArgumentException.class})
+    public ResponseEntity<BadRequestExceptionDto> handleNoValidDataException(Exception e) {
+
+        e.printStackTrace();
 
         return new ResponseEntity<>(new BadRequestExceptionDto
                 ("Получены данные некорректного формата, попробуйте снова.", e.getMessage(), HttpStatus.BAD_REQUEST.value()),
@@ -59,6 +67,8 @@ public class UhubRestControllerAdvice {
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<BadRequestExceptionDto> handleHttpClientException(HttpClientErrorException e) {
+
+        e.printStackTrace();
 
         return new ResponseEntity<>(new BadRequestExceptionDto
                 ("Доступ закрыт. Либо ограничен доступ, либо не предоставлены данные для аутентификации ", e.getMessage(), HttpStatus.valueOf(403).value()),

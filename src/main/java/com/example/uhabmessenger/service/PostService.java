@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -102,6 +103,7 @@ public class PostService {
         }
 
         return multipartFiles.stream()
+                .filter(image -> Objects.nonNull(image) && Objects.nonNull(image.getOriginalFilename()) && !image.getOriginalFilename().isBlank())
                 .map(imageService::uploadImage)
                 .toList();
 

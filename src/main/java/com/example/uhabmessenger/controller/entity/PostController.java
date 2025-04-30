@@ -5,17 +5,21 @@ import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.service.PostService;
+import com.example.uhabmessenger.validation.method.ImageOrTitleExist;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
 
+@Validated
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -24,9 +28,10 @@ public class PostController {
 
     private final PostService postService;
 
+    @ImageOrTitleExist
     @PostMapping(value = "/user/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> userPostSave(@RequestPart(name = "images") List<MultipartFile> multipartFiles,
-                                             @RequestPart(name = "dto") CreatePostDto createPostDto) {
+                                             @Valid @RequestPart(name = "dto") CreatePostDto createPostDto) {
 
         log.info("check---------------------------------------");
         postService.userPostSave(createPostDto, multipartFiles);
@@ -35,8 +40,8 @@ public class PostController {
     }
 
     @PostMapping(value = "/group/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> groupPostSave(@RequestPart("dto") CreatePostDto createPostDto,
-                                              @RequestPart("images") List<MultipartFile> multipartFiles) {
+    public ResponseEntity<Void> groupPostSave(@RequestPart("images") List<MultipartFile> multipartFiles,
+                                              @RequestPart("dto") CreatePostDto createPostDto) {
 
         postService.groupPostSave(createPostDto, multipartFiles);
         return ResponseEntity.ok().build();

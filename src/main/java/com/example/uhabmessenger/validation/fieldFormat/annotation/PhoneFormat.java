@@ -1,6 +1,6 @@
-package com.example.uhabmessenger.validation.annotation;
+package com.example.uhabmessenger.validation.fieldFormat.annotation;
 
-import com.example.uhabmessenger.validation.PhoneFormatValidator;
+import com.example.uhabmessenger.validation.fieldFormat.PhoneFormatValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

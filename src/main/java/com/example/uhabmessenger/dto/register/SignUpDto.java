@@ -1,8 +1,8 @@
 package com.example.uhabmessenger.dto.register;
 
-import com.example.uhabmessenger.validation.annotation.Password;
-import com.example.uhabmessenger.validation.annotation.PhoneOrEmail;
-import com.example.uhabmessenger.validation.annotation.TitleCase;
+import com.example.uhabmessenger.validation.fieldFormat.annotation.Password;
+import com.example.uhabmessenger.validation.fieldFormat.annotation.PhoneOrEmail;
+import com.example.uhabmessenger.validation.fieldFormat.annotation.TitleCase;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
