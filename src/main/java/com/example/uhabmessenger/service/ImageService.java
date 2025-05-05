@@ -1,6 +1,7 @@
 package com.example.uhabmessenger.service;
 
 import com.example.uhabmessenger.exception.DownloadImageException;
+import com.example.uhabmessenger.exception.ImageSaveException;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.repository.MinioService;
 import com.example.uhabmessenger.repository.entity.ImageRepository;
@@ -27,13 +28,21 @@ public class ImageService {
     @SneakyThrows
     public ImageModel uploadImage(MultipartFile file) {
 
+        ImageModel imageModel = imageRepository.save(imageModelBuilder(file));
+        String extension;
+        try {
+            extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")).toLowerCase();
+        } catch (Exception e) {
+            throw new ImageSaveException("error in read your image name");
+        }
+
         minioService.uploadFile(
-                file.getOriginalFilename(),
+                imageModel.getImageId().toString()+extension,
                 file.getInputStream(),
                 file.getSize()
         );
 
-        return imageModelBuilder(file);
+        return imageModel;
 
     }
 
