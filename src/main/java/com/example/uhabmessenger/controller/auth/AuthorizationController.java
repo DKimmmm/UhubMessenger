@@ -19,7 +19,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/authorization")
 @RequiredArgsConstructor
-
 public class AuthorizationController {
 
     private final AuthUserService authUserService;
