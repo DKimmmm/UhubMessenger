@@ -85,16 +85,6 @@ public class PostService {
 
     }
 
-    private void checkForOneNotNullField(String title, List<MultipartFile> multipartFiles) {
-
-        if ((title == null || title.isBlank())
-                && (multipartFiles == null || multipartFiles.isEmpty())) {
-
-            throw new CreatePostException("post without title and image cannot be created!");
-        }
-
-    }
-
     private List<ImageModel> savePostImages(List<MultipartFile> multipartFiles) {
 
         if (Objects.isNull(multipartFiles) || multipartFiles.isEmpty()) {
