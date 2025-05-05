@@ -197,7 +197,10 @@ public class PostService {
 
     public void imageDownload(UUID imageId, HttpServletResponse response) {
 
-        imageService.downloadFromMinio(imageService.findByImageId(imageId), response);
+        imageService.downloadFromMinio(
+                imageService.findByImageId(imageId),
+                response
+        );
 
     }
 }

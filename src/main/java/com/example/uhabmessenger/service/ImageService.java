@@ -29,20 +29,27 @@ public class ImageService {
     public ImageModel uploadImage(MultipartFile file) {
 
         ImageModel imageModel = imageRepository.save(imageModelBuilder(file));
+
         String extension;
         try {
-            extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")).toLowerCase();
+            extension = getExtension(file.getOriginalFilename());
         } catch (Exception e) {
             throw new ImageSaveException("error in read your image name");
         }
 
         minioService.uploadFile(
-                imageModel.getImageId().toString()+extension,
+                imageModel.getImageId().toString() + extension,
                 file.getInputStream(),
                 file.getSize()
         );
 
         return imageModel;
+
+    }
+
+    private String getExtension(String filename) {
+
+        return filename.substring(filename.lastIndexOf(".")).toLowerCase();
 
     }
 
@@ -73,11 +80,11 @@ public class ImageService {
     @SneakyThrows
     public void downloadFromMinio(ImageModel image, HttpServletResponse response) {
 
-        try (InputStream is = minioService.downloadInputStream(image.getFileName());
+        try (InputStream is = minioService.downloadInputStream(image.getImageId().toString() + getExtension(image.getFileName()));
              OutputStream os = response.getOutputStream()) {
 
             response.setStatus(200);
-            response.setContentType(image.getContentType());
+            response.setContentType("image/jpeg");
             response.setContentLength(image.getSize().intValue());
             is.transferTo(os);
         }

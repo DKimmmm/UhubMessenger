@@ -33,15 +33,15 @@ public class PostController {
     public ResponseEntity<Void> userPostSave(@RequestPart(name = "images") List<MultipartFile> multipartFiles,
                                              @Valid @RequestPart(name = "dto") CreatePostDto createPostDto) {
 
-        log.info("check---------------------------------------");
         postService.userPostSave(createPostDto, multipartFiles);
         return ResponseEntity.ok().build();
 
     }
 
+    @ImageOrTitleExist
     @PostMapping(value = "/group/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> groupPostSave(@RequestPart("images") List<MultipartFile> multipartFiles,
-                                              @RequestPart("dto") CreatePostDto createPostDto) {
+                                              @Valid @RequestPart("dto") CreatePostDto createPostDto) {
 
         postService.groupPostSave(createPostDto, multipartFiles);
         return ResponseEntity.ok().build();
@@ -51,7 +51,9 @@ public class PostController {
     @GetMapping("/info/{postId}")
     public ResponseEntity<PostInfoDto> getPostInfo(@PathVariable UUID postId) {
 
-        return ResponseEntity.ok(postService.getPostInfo(postId));
+        return ResponseEntity.ok(
+                postService.getPostInfo(postId)
+        );
 
     }
 

@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Slf4j
 @RestControllerAdvice
 public class UhubRestControllerAdvice {
@@ -79,7 +76,7 @@ public class UhubRestControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BadRequestExceptionDto> handleAllException(Exception e) {
 
-       e.printStackTrace();
+        e.printStackTrace();
 
         return new ResponseEntity<>(new BadRequestExceptionDto
                 ("К сожалению, произошла серьезная ошибка. Обратитесь к администратору! ", e.getMessage(), HttpStatus.BAD_REQUEST.value()),

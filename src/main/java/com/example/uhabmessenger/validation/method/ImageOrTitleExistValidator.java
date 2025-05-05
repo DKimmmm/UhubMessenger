@@ -1,7 +1,6 @@
 package com.example.uhabmessenger.validation.method;
 
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
-import io.jsonwebtoken.lang.Strings;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.constraintvalidation.SupportedValidationTarget;

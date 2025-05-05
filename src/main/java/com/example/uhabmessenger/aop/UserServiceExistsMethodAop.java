@@ -25,7 +25,7 @@ public class UserServiceExistsMethodAop {
         this.transactionManager = transactionManager;
     }
 
-    @Pointcut("execution(boolean com.example.UhabMessenger.repository.*.*(String))")
+    @Pointcut("execution(boolean com.example.uhabmessenger.repository.*.*(String))")
     public void cutCheckOnExists(){}
 
     @Before("cutCheckOnExists()")

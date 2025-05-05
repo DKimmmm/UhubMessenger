@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/authorization")
@@ -23,7 +25,7 @@ public class AuthorizationController {
     private final AuthUserService authUserService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDto signUpDto, HttpServletResponse response) {
+    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpDto signUpDto) {
 
             authUserService.signup(signUpDto);
             return ResponseEntity.ok().build();
@@ -31,7 +33,7 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<UUID> login(@RequestBody @Valid LoginDto loginDto) {
 
             return ResponseEntity.ok(
                     authUserService.login(loginDto)
