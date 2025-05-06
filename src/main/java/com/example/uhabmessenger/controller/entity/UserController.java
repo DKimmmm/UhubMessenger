@@ -25,8 +25,8 @@ public class UserController {
 
     @SneakyThrows
     @PostMapping(value = "/image/add/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> save(@PathVariable UUID userId,
-                                     @RequestPart MultipartFile multipartFile) {
+    public ResponseEntity<Void> addImage(@PathVariable UUID userId,
+                                         @RequestPart MultipartFile multipartFile) {
 
         userService.uploadUserImage(multipartFile, userId);
         return ResponseEntity.ok().build();
@@ -52,7 +52,7 @@ public class UserController {
 
     }
 
-    @PutMapping("/update/info")
+    @PutMapping("/info")
     public ResponseEntity<UserInfoDto> updateInfo(@Valid @RequestBody UserUpdateInfoDto userUpdateInfoDto) {
 
         return ResponseEntity.ok(
