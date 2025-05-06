@@ -11,12 +11,14 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +28,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -66,16 +67,17 @@ public class PostControllerTest {
 
         given(postService.getPostInfo(postId)).willReturn(value);
 
-        ResultActions response = mockMvc.perform(get("/uhab")
-                .uri("/post/info/{postId}", postId.toString())
-                .contentType(MediaType.APPLICATION_JSON)
-
+        ResultActions request = mockMvc.perform(
+                MockMvcRequestBuilders.request(
+                                HttpMethod.GET, "/post/info/{postId}", postId.toString()
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
         );
 
-
-        response.andDo(print())
-                .andExpect(status().isOk())
+        request.andDo(print())
                 .andExpectAll(
+
+                        status().isOk(),
 
                         jsonPath("$.title", is("Title")),
                         jsonPath("$.description", is("des")),
@@ -88,29 +90,33 @@ public class PostControllerTest {
     @Test
     @SneakyThrows
     void userPostSaveTest() {
-        // Arrange
+
         UUID groupOrUserId = new UUID(2L, 2L);
+
         CreatePostDto createPostDto = new CreatePostDto(groupOrUserId, "title", null);
-        MockMultipartFile image = new MockMultipartFile(
+
+        MockMultipartFile imageFileFirstPart = new MockMultipartFile(
                 "images",
-                "test-image.jpg",
+                "test-imageFileFirstPart.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
                 new byte[0]
         );
 
         BDDMockito.doNothing().when(postService).userPostSave(any(CreatePostDto.class), any(List.class));
 
-        // Act
-        MockPart dtoPart = new MockPart("dto", objectMapper.writeValueAsString(createPostDto).getBytes());
-        dtoPart.getHeaders().setContentType(MediaType.APPLICATION_JSON); // Указываем Content-Type для dto
+        MockPart dtoSecondPartJson = new MockPart("dto", objectMapper.writeValueAsString(createPostDto).getBytes());
+        dtoSecondPartJson.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        ResultActions perform = mockMvc.perform(multipart("/post/user/create")
-                .file(image) // Отправляем images как MultipartFile
-                .part(dtoPart) // Отправляем dto как JSON
-                .contentType(MediaType.MULTIPART_FORM_DATA));
+        ResultActions request = mockMvc.perform(
+                multipart("/post/user/create")
 
-        // Assert
-        perform.andDo(print())
+                        .file(imageFileFirstPart)
+                        .part(dtoSecondPartJson)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+
+        );
+
+        request.andDo(print())
                 .andExpectAll(status().isOk());
 
         then(postService).should().userPostSave(any(CreatePostDto.class), any(List.class));
@@ -118,34 +124,33 @@ public class PostControllerTest {
 
     @Test
     @SneakyThrows
-    void userPostSaveUnValidArgsIdNotNullTest() {
-        // Arrange
+    void userPostSaveInvalidArgsIdIsNullTest() {
+
         CreatePostDto createPostDto = new CreatePostDto(null, "title", null);
-        MockMultipartFile image = new MockMultipartFile(
+
+        MockMultipartFile imageFileFirstPart = new MockMultipartFile(
                 "images",
-                "test-image.jpg",
+                "test-imageFileFirstPart.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
                 new byte[0]
         );
 
         BDDMockito.doNothing().when(postService).userPostSave(any(CreatePostDto.class), any(List.class));
 
-        // Act
-        MockPart dtoPart = new MockPart("dto", objectMapper.writeValueAsString(createPostDto).getBytes());
-        dtoPart.getHeaders().setContentType(MediaType.APPLICATION_JSON); // Указываем Content-Type для dto
+        MockPart dtoJsonSecondPart = new MockPart("dto", objectMapper.writeValueAsString(createPostDto).getBytes());
+        dtoJsonSecondPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        ResultActions perform = mockMvc.perform(multipart("/post/user/create")
-                .file(image) // Отправляем images как MultipartFile
-                .part(dtoPart) // Отправляем dto как JSON
-                .contentType(MediaType.MULTIPART_FORM_DATA));
+        ResultActions perform = mockMvc
+                .perform(multipart(HttpMethod.POST, "/post/user/create")
 
-        // Assert
+                        .file(imageFileFirstPart)
+                        .part(dtoJsonSecondPart)
+                        .contentType(MediaType.MULTIPART_FORM_DATA));
+
         perform.andDo(print())
                 .andExpectAll(status().isBadRequest());
 
     }
-
-
 
     @Test
     @SneakyThrows
@@ -154,28 +159,94 @@ public class PostControllerTest {
         UUID uuid = new UUID(2L, 2L);
 
         CreatePostDto createPostDto = new CreatePostDto(uuid, null, null);
-        String s = objectMapper.writeValueAsString(createPostDto);
-        System.out.println("----------------------"+ s);
-        MockPart dtoPart = new MockPart("dto", s.getBytes());
-        dtoPart.getHeaders().setContentType(MediaType.APPLICATION_JSON); // Указываем Content-Type для dto
+        String dtoJsonValue = objectMapper.writeValueAsString(createPostDto);
 
-        // Arrange
+        MockPart dtoPart = new MockPart("dto", dtoJsonValue.getBytes());
+        dtoPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        MockMultipartFile image = new MockMultipartFile(
+        MockMultipartFile imageSecondPartFile = new MockMultipartFile(
                 "images",
-                "test-image.jpg",
+                "test-imageSecondPartFile.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
                 "moreBytesInsteadImage".getBytes()
         );
 
         BDDMockito.doNothing().when(postService).userPostSave(any(CreatePostDto.class), any(List.class));
 
-        ResultActions perform1 = mockMvc.perform(multipart("/post/user/create")
-                .file(image) // Отправляем images как MultipartFile
-                .part(dtoPart) // Отправляем dto как JSON
-                .contentType(MediaType.MULTIPART_FORM_DATA));
+        ResultActions perform1 = mockMvc
+                .perform(multipart(HttpMethod.POST, "/post/user/create")
+
+                        .file(imageSecondPartFile)
+                        .part(dtoPart)
+                        .contentType(MediaType.MULTIPART_FORM_DATA));
 
         perform1.andDo(print())
                 .andExpectAll(status().isOk());
+
+    }
+
+    @Test
+    @SneakyThrows
+    void userGroupSaveSuccessfulTest(){
+        BDDMockito.doNothing().when(postService).groupPostSave(any(CreatePostDto.class),any(List.class));
+
+        UUID uuidForCreatePostDto = new UUID(1L, 1L);
+        CreatePostDto createPostDto = new CreatePostDto(uuidForCreatePostDto, "title", "description");
+        String createPostDtoJsonValue = objectMapper.writeValueAsString(createPostDto);
+
+        MockPart dtoPart = new MockPart("dto", createPostDtoJsonValue.getBytes());
+        dtoPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+        MockMultipartFile imagePartFile = new MockMultipartFile(
+                "images",
+                "test-image.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "sdfsdfsd".getBytes()
+        );
+
+        ResultActions request = mockMvc.perform(
+                MockMvcRequestBuilders.multipart(
+                        HttpMethod.POST, "/post/group/create"
+                )
+                        .file(imagePartFile)
+                        .file(imagePartFile)
+                        .part(dtoPart)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+        );
+
+        request.andDo(print())
+                .andExpectAll(
+                        status().is(200)
+                );
+
+    }
+
+    @Test
+    @SneakyThrows
+    void postGroupSaveWithoutImageShouldBeGoodTest() {
+        BDDMockito.doNothing().when(postService).groupPostSave(any(CreatePostDto.class), any(List.class));
+
+        UUID uuidForCreatePostDto = new UUID(1L, 1L);
+
+        CreatePostDto createPostDto = new CreatePostDto(uuidForCreatePostDto, "title", null);
+        String dtoJsonValue = objectMapper.writeValueAsString(createPostDto);
+
+        MockPart dtoPart = new MockPart("dto", dtoJsonValue.getBytes());
+        dtoPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+        ResultActions request = mockMvc.perform(
+                MockMvcRequestBuilders.multipart(
+                                HttpMethod.POST, "/post/group/create"
+                        )
+
+                        .part(dtoPart)
+        );
+
+        request.andDo(print())
+                .andExpectAll(
+                        status().is(200)
+                );
+
     }
 }
+

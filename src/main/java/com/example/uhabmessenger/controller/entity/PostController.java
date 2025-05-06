@@ -40,7 +40,7 @@ public class PostController {
 
     @ImageOrTitleExist
     @PostMapping(value = "/group/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> groupPostSave(@RequestPart("images") List<MultipartFile> multipartFiles,
+    public ResponseEntity<Void> groupPostSave(@RequestPart(value = "images", required = false) List<MultipartFile> multipartFiles,
                                               @Valid @RequestPart("dto") CreatePostDto createPostDto) {
 
         postService.groupPostSave(createPostDto, multipartFiles);

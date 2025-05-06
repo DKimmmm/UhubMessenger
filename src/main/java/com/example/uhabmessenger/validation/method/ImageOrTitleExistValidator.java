@@ -28,26 +28,39 @@ public class ImageOrTitleExistValidator implements ConstraintValidator<ImageOrTi
         }
 
 
-        if (!(args[0] instanceof List<?>)
-                || !(args[1] instanceof CreatePostDto)) {
-            throw new IllegalArgumentException(
-                    "Illegal method signature, expected two parameters of type List<MultipartFile> and CreatePostDto.");
+        List<MultipartFile> multipartFiles = null;
+
+        if (Objects.nonNull(args[0])) {
+            if (!(args[0] instanceof List<?>)) {
+                throw new IllegalArgumentException(
+                        "Illegal method signature, expected parameter of type List<MultipartFile>");
+            }
+
+            try {
+                multipartFiles = (List<MultipartFile>) args[0];
+            } catch (Exception e) {
+                throw new IllegalArgumentException("arguments of wrong types");
+            }
+
         }
 
-        List<MultipartFile> multipartFiles;
         CreatePostDto createPostDto;
 
-        try {
-            multipartFiles = (List<MultipartFile>) args[0];
-            createPostDto = (CreatePostDto) args[1];
-        } catch (Exception e) {
-            throw new IllegalArgumentException("arguments of wrong types");
-        }
+        if (Objects.nonNull(args[1])) {
+            if (!(args[1] instanceof CreatePostDto)) {
+                throw new IllegalArgumentException(
+                        "Illegal method signature, expected parameter of type CreatePostDto");
+            }
 
-        if (Objects.equals(createPostDto, null)) {
+            try {
+                createPostDto = (CreatePostDto) args[1];
+            } catch (Exception e) {
+                throw new IllegalArgumentException("arguments of wrong types");
+            }
+
+        } else {
             return false;
         }
-
 
         boolean hasTitle = Objects.nonNull(createPostDto.title()) && !(createPostDto.title().isBlank()) && createPostDto.title().trim().length() > 3;
         boolean hasValidImages = multipartFiles != null && !multipartFiles.isEmpty() && validateImages(multipartFiles);
