@@ -4,6 +4,8 @@ import com.example.uhabmessenger.validation.fieldFormat.annotation.PhoneFormat;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.util.Objects;
+
 import static com.example.uhabmessenger.formatutils.RegexUtils.PHONE_REGEX;
 
 public class PhoneFormatValidator implements ConstraintValidator<PhoneFormat, String> {
@@ -11,7 +13,7 @@ public class PhoneFormatValidator implements ConstraintValidator<PhoneFormat, St
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        if (value.isBlank()) {
+        if (Objects.isNull(value) || value.isBlank()) {
             return true;
         }
 

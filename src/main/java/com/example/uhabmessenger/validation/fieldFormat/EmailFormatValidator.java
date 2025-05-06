@@ -4,6 +4,8 @@ import com.example.uhabmessenger.validation.fieldFormat.annotation.EmailFormat;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.util.Objects;
+
 import static com.example.uhabmessenger.formatutils.RegexUtils.EMAIL_REGEX;
 
 public class EmailFormatValidator implements ConstraintValidator<EmailFormat, String> {
@@ -11,7 +13,7 @@ public class EmailFormatValidator implements ConstraintValidator<EmailFormat, St
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        if (value.isBlank()) {
+        if (Objects.isNull(value) || value.isBlank()) {
             return true;
         }
         return matchersEmailRegex(value);
