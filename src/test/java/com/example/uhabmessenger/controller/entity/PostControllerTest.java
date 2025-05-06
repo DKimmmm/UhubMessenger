@@ -124,9 +124,9 @@ public class PostControllerTest {
 
         MockMultipartFile imageFileFirstPart = new MockMultipartFile(
                 "images",
-                "test-imageFileFirstPart.jpg",
+                "test-imageFile.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
-                new byte[0]
+                "s;lfdk;dls".getBytes()
         );
 
         BDDMockito.doNothing().when(postService).userPostSave(any(CreatePostDto.class), any(List.class));
