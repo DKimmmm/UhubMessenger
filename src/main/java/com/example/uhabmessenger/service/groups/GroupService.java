@@ -207,7 +207,7 @@ public class GroupService {
         if (!groupModel.getImages().isEmpty()) {
 
             ImageModel remove = groupModel.getImages().removeFirst();
-            imageService.deleteFromMinio(remove.getFileName());
+            imageService.deleteFromMinio(remove.getImageId(), remove.getFileName());
 
         }
 

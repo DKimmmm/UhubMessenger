@@ -71,9 +71,9 @@ public class ImageService {
 
     }
 
-    public void deleteFromMinio(String fileName) {
+    public void deleteFromMinio(UUID imageId, String fileName) {
 
-        minioService.deleteFile(fileName);
+        minioService.deleteFile(imageId.toString() + getExtension(fileName));
 
     }
 

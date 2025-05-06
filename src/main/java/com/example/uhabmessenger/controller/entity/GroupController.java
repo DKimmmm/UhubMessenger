@@ -33,10 +33,10 @@ public class GroupController {
     }
 
     @PostMapping(value = "/photo-update/{groupOrUserId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> photoUpdate(@PathVariable UUID groupId,
+    public ResponseEntity<Void> photoUpdate(@PathVariable UUID groupOrUserId,
                                             @RequestPart MultipartFile multipartFile) {
 
-        groupService.photoUpdate(groupId, multipartFile);
+        groupService.photoUpdate(groupOrUserId, multipartFile);
         return ResponseEntity.ok().build();
 
     }

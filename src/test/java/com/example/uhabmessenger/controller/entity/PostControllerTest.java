@@ -51,14 +51,14 @@ public class PostControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockitoBean
     private PostService postService;
 
     @MockitoBean
     private AuthUserService authUserService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @SneakyThrows
