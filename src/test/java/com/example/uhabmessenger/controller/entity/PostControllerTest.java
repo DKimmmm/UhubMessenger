@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         value = PostController.class,
         properties = {
                 "spring.profiles.active=test",
-                "server.port=8080",
+                "server.port=8008",
                 "server.servlet.context-path=/uhab"
         }
 )
@@ -56,9 +56,6 @@ public class PostControllerTest {
 
     @MockitoBean
     private PostService postService;
-
-    @MockitoBean
-    private AuthUserService authUserService;
 
     @Test
     @SneakyThrows
