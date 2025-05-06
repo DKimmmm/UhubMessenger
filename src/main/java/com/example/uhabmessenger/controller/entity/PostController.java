@@ -30,7 +30,7 @@ public class PostController {
 
     @ImageOrTitleExist
     @PostMapping(value = "/user/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Void> userPostSave(@RequestPart(name = "images") List<MultipartFile> multipartFiles,
+    public ResponseEntity<Void> userPostSave(@RequestPart(name = "images", required = false) List<MultipartFile> multipartFiles,
                                              @Valid @RequestPart(name = "dto") CreatePostDto createPostDto) {
 
         postService.userPostSave(createPostDto, multipartFiles);
@@ -58,7 +58,7 @@ public class PostController {
     }
 
     @PostMapping("/add/comment")
-    public ResponseEntity<Void> addComment(@RequestBody AddCommentDto addCommentDto) {
+    public ResponseEntity<Void> addComment(@Valid @RequestBody AddCommentDto addCommentDto) {
 
         postService.addComment(addCommentDto);
         return ResponseEntity.ok().build();
@@ -66,7 +66,7 @@ public class PostController {
     }
 
     @GetMapping("/get-comments")
-    public ResponseEntity<List<CommentInfoDto>> getInfoByPostId(@RequestParam UUID postId) {
+    public ResponseEntity<List<CommentInfoDto>> getPostComments(@RequestParam UUID postId) {
 
         return ResponseEntity.ok(
                 postService.getCommentsByPostId(postId)
