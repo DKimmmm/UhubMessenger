@@ -26,19 +26,27 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
 
-            "/authorization/**",
+
             "/swagger-resources/**",
             "/v3/api-docs",
             "/swagger-ui/**",
             "/v3/api-docs*/**",
-            "/image/**",
-            "/post/**",
-            "/user/**",
-            "/group/**"
+
+//            "/image/**",
+//            "/post/**",
+//            "/user/**",
+//            "/group/**",
+
+            "/authorization/**"
 
     };
 
     private static final String[] AUTH_AUTHORIZATION = {
+
+            "/image/**",
+            "/post/**",
+            "/user/**",
+            "/group/**",
 
             "/messenger",
             "/user-profile"

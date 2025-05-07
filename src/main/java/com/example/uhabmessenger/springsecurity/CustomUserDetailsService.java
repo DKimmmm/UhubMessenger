@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.springsecurity;
 
+import com.example.uhabmessenger.exception.AuthorizationException;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.service.user.other.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +30,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserModel userModel = null;
 
+        String encodedPassword = null;
         try {
+
             userModel = userService.getUserByUsername(username);
+
+            String currentPassword = userModel.getPassword();
+            encodedPassword = passwordEncoder.encode(currentPassword);
+
         } catch (Exception e) {
             log.warn("error in load user by email");
+            throw new AuthorizationException("error in load user by Username into filters");
         }
-
-        String currentPassword = userModel.getPassword();
-        String encodedPassword = passwordEncoder.encode(currentPassword);
 
         Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         return new UserPrincipal(username, encodedPassword, authorities);

@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,47 +46,29 @@ public class SecurityConfigTest extends BaseIntegrationTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @MockitoBean
+    @MockitoBean()
     private UserService userService;
 
     @Test
     @SneakyThrows
-    public void myTest() {
+    public void userGetInfoByAuthorizationTest() {
 
-        SignUpDto signUpDto = new SignUpDto(
-                "Name", "Lastname", "81234567890", "Password1"
-        );
+        String userRoleToken = getUserRoleToken();
 
-        String signupDtoJson = objectMapper.writeValueAsString(signUpDto);
-
-        String token = mockMvc.perform(
-                        MockMvcRequestBuilders.post("/authorization/signup")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(signupDtoJson)
-
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-
-                .andReturn().getResponse().getHeader("Authorization");
-
-        Assertions.assertThat(token == null || token.isBlank()).isFalse();
-        Assertions.assertThat(jwtTokenProvider.validateToken(token)).isTrue();
+        Assertions.assertThat(userRoleToken == null || userRoleToken.isBlank()).isFalse();
+        Assertions.assertThat(jwtTokenProvider.validateToken(userRoleToken)).isTrue();
 
         UserInfoDto userInfoDto = new UserInfoDto(
                 "Name", "Lastname", "81234567890", "email@test.com", false, false, List.of(), List.of()
         );
 
         BDDMockito.given(userService.getUserInfo(any(UUID.class))).willReturn(userInfoDto);
-        BDDMockito.given(userService.getUserByUsername(any(String.class))).willReturn(UserModel.builder()
-                .userId(new UUID(1L, 4L))
-                .password("Password1")
-                .name("Name")
-                .build());
 
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/user/info/{userId}", new UUID(1L, 1L))
+                                .header("Authorization", userRoleToken)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(user("test").roles("USER"))
                 ).andDo(print())
                 .andExpectAll(
                         status().isOk()
@@ -95,5 +78,34 @@ public class SecurityConfigTest extends BaseIntegrationTest {
         BDDMockito.then(userService).should(times(1)).getUserByUsername(any());
 
     }
+
+    @SneakyThrows
+    private String getUserRoleToken() {
+        SignUpDto signUpDto = new SignUpDto(
+                "Name", "Lastname", "81234567890", "Password1"
+        );
+
+        String signupDtoJson = objectMapper.writeValueAsString(signUpDto);
+
+        BDDMockito.given(userService.getUserByUsername(any(String.class))).willReturn(UserModel.builder()
+                .userId(new UUID(1L, 4L))
+                .password("Password1")
+                .name("Name")
+                .build());
+
+        return mockMvc.perform(
+                        MockMvcRequestBuilders.post("/authorization/signup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(signupDtoJson)
+
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+
+                .andReturn().getResponse().getHeader("Authorization");
+    }
+
+
+
 
 }
