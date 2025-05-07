@@ -1,11 +1,13 @@
 package com.example.uhabmessenger.controller.entity;
 
+import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.dto.user.UserInfoDto;
 import com.example.uhabmessenger.dto.user.UserUpdateInfoDto;
 import com.example.uhabmessenger.service.user.other.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.empty;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -231,5 +235,68 @@ public class UserControllerTest {
         BDDMockito.then(userService).should(times(0)).updateInfo(any());
     }
 
+    @Test
+    @SneakyThrows
+    void getUserInfoTest() {
+
+        UserInfoDto userInfoDto = new UserInfoDto(
+                "name", "lastname", "81234567890", "email@gmail.com", false, false, List.of(), List.of()
+        );
+
+        BDDMockito.given(userService.getUserInfo(any(UUID.class))).willReturn(userInfoDto);
+
+        ResultActions request = mockMvc.perform(
+                get("/user/info/{userId}", new UUID(2L, 3L))
+                        .contentType(MediaType.APPLICATION_JSON)
+
+        );
+
+        request.andDo(print())
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.name").value("name"),
+                        jsonPath("$.lastname").value("lastname"),
+                        jsonPath("$.phone").value("81234567890"),
+                        jsonPath("$.email").value("email@gmail.com"),
+                        jsonPath("$.approvedPhone").value("false"),
+                        jsonPath("$.approvedEmail").value("false"),
+                        jsonPath("$.imagesIds").isEmpty(),
+                        jsonPath("$.groupsIds").isEmpty()
+                        );
+
+        BDDMockito.then(userService).should(times(1)).getUserInfo(any());
+
+    }
+
+    @Test
+    @SneakyThrows
+    void getMyPostsInfoTest() {
+
+        UUID postId = new UUID(1L, 2L);
+        List<PostInfoDto> listResponseDto = List.of(
+                new PostInfoDto(postId, "title", "des", List.of(new UUID(3L, 3L)))
+        );
+
+        BDDMockito.given(userService.findPostsInfoListByUserId(any(UUID.class))).willReturn(listResponseDto);
+
+        ResultActions request = mockMvc.perform(
+                get("/user/posts/{userId}", new UUID(2L, 3L))
+                        .contentType(MediaType.APPLICATION_JSON)
+
+        );
+
+        request.andDo(print())
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", Matchers.hasSize(1)),
+                        jsonPath("$[0].postId").value(postId.toString()),
+                        jsonPath("$[0].title").value("title"),
+                        jsonPath("$[0].description").value("des"),
+                        jsonPath("$[0].imagesIds", Matchers.hasSize(1))
+                );
+
+        BDDMockito.then(userService).should(times(1)).findPostsInfoListByUserId(any());
+
+    }
 
 }
