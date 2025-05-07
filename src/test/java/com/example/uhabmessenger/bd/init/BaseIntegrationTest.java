@@ -13,7 +13,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(
         properties = {
                 "spring.profiles.active=test",
-                "server.port=8080", // Фиксированный порт для веб-приложения
+                "server.port=8008", // Фиксированный порт для веб-приложения
                 "server.servlet.context-path=/uhub"
         }
 )

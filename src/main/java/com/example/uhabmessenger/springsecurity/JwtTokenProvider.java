@@ -52,7 +52,7 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
-
+        token = tokenBearerDelete(token);
         try {
             Jwts.parser()
                     .verifyWith(secretKey)
@@ -89,6 +89,20 @@ public class JwtTokenProvider {
                 userPrincipal, "USER_ROLE", userPrincipal.getAuthorities()
         );
 
+    }
+
+    private String tokenBearerDelete(String token) {
+
+        if (token == null) {
+            return null;
+        }
+
+        String bearerPrefix = "Bearer ";
+
+        if (token.startsWith(bearerPrefix)) {
+            return token.substring(bearerPrefix.length());
+        }
+        return token;
     }
 }
 

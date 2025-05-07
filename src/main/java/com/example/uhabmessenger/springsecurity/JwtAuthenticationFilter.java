@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = jwtTokenProvider.resolveToken(request);
         log.debug("api is: [{}], token is: [{}]", request.getServletPath(), token);
-        token = tokenBearerDelete(token);
+//        token = tokenBearerDelete(token);
 
         try {
 
@@ -43,18 +43,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    private String tokenBearerDelete(String token) {
-
-        if (token == null) {
-            return null;
-        }
-
-        String bearerPrefix = "Bearer ";
-
-        if (token.startsWith(bearerPrefix)) {
-            return token.substring(bearerPrefix.length());
-        }
-        return token;
-    }
+//    private String tokenBearerDelete(String token) {
+//
+//        if (token == null) {
+//            return null;
+//        }
+//
+//        String bearerPrefix = "Bearer ";
+//
+//        if (token.startsWith(bearerPrefix)) {
+//            return token.substring(bearerPrefix.length());
+//        }
+//        return token;
+//    }
 }
 

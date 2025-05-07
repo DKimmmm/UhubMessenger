@@ -1,6 +1,7 @@
 package com.example.uhabmessenger.aop;
 
 import com.example.uhabmessenger.dto.register.LoginDto;
+import com.example.uhabmessenger.dto.register.SignUpDto;
 import com.example.uhabmessenger.service.user.authorization.TokenInjectionService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Aspect
 @Component
@@ -53,8 +55,8 @@ public class AuthControllerAop {
         log.info("======= after login ======= {}", joinPoint.getArgs()[0].toString());
     }
 
-    @Pointcut("execution(* com.example.uhabmessenger.service.user.authorization.AuthUserServiceImpl.signup(..)) " +
-                    "|| execution(* com.example.uhabmessenger.service.user.authorization.AuthUserServiceImpl.login(..))")
+    @Pointcut("execution(* com.example.uhabmessenger..AuthUserServiceImpl.signup(..)) " +
+                    "|| execution(* com.example.uhabmessenger..AuthUserServiceImpl.login(..))")
     public void createAuthTokenHeader() {
 
     }
@@ -68,11 +70,22 @@ public class AuthControllerAop {
         if (args.length == 1) {
             Object dto = args[0];
             HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-            if (response != null && dto instanceof LoginDto(String username, String password)) {
-                tokenInjectionService.jwtInjection(response, username, password);
-            } else {
-                log.warn("HttpServletResponse is not available in request context");
+
+            if (Objects.nonNull(response)) {
+                if (dto instanceof LoginDto(String username, String password)) {
+                    tokenInjectionService.jwtInjection(response, username, password);
+                } else if (dto instanceof SignUpDto(String name, String lastname, String username, String password)) {
+                    tokenInjectionService.jwtInjection(response, username, password);
+                } else {
+                    log.warn("HttpServletResponse is not available in request context");
+                }
             }
+
+//            if (response != null && (dto instanceof LoginDto(String username, String password) || dto instanceof SignUpDto(String name, String lastname, String username, String password))) {
+//                tokenInjectionService.jwtInjection(response, username, password);
+//            } else {
+//                log.warn("HttpServletResponse is not available in request context");
+//            }
         } else {
             log.warn("!!!!!!!!!!! where is authorization body !!!!!!!!!");
             log.info("args: {}", Arrays.toString(args));
