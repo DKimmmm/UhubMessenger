@@ -22,13 +22,13 @@ public class PhoneOrEmailValidator implements ConstraintValidator<PhoneOrEmail, 
 
     public static boolean matchersPhoneRegex(String value) {
 
-        return value.matches(PHONE_REGEX);
+        return value.length() > 5 && value.matches(PHONE_REGEX);
 
     }
 
     public static boolean matchersEmailRegex(String value) {
 
-        return value.matches(EMAIL_REGEX);
+        return value.length() > 8 && value.matches(EMAIL_REGEX);
 
     }
 }
