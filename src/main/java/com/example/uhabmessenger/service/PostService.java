@@ -193,4 +193,10 @@ public class PostService {
         );
 
     }
+
+    public List<PostModel> getAllPostList() {
+
+        return postRepository.findAll();
+
+    }
 }

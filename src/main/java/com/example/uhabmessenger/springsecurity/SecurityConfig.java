@@ -31,12 +31,21 @@ public class SecurityConfig {
             "/v3/api-docs",
             "/swagger-ui/**",
             "/v3/api-docs*/**",
+            "/post-line/**",
 
-//            "/post/**",       // for swagger access
-//            "/user/**",
-//            "/group/**",
+            "/post/**",       // for swagger access
+            "/user/**",
+            "/group/**",
 
             "/authorization/**"
+
+    };
+
+    private static final String[] AUTH_USER = {
+
+//            "/post/**",
+//            "/user/**",
+//            "/group/**"
 
     };
 
@@ -44,14 +53,6 @@ public class SecurityConfig {
 
             "/messenger",
             "/user-profile"
-
-    };
-
-    private static final String[] AUTH_USER = {
-
-            "/post/**",
-            "/user/**",
-            "/group/**"
 
     };
 

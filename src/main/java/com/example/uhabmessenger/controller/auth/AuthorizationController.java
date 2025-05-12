@@ -36,9 +36,4 @@ public class AuthorizationController {
             );
     }
 
-    @GetMapping("/test/string")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("my post line");
-    }
-
 }
