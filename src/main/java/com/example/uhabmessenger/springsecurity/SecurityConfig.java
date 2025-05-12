@@ -32,8 +32,7 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/v3/api-docs*/**",
 
-//            "/image/**",
-//            "/post/**",
+//            "/post/**",       // for swagger access
 //            "/user/**",
 //            "/group/**",
 
@@ -43,13 +42,16 @@ public class SecurityConfig {
 
     private static final String[] AUTH_AUTHORIZATION = {
 
-            "/image/**",
-            "/post/**",
-            "/user/**",
-            "/group/**",
-
             "/messenger",
             "/user-profile"
+
+    };
+
+    private static final String[] AUTH_USER = {
+
+            "/post/**",
+            "/user/**",
+            "/group/**"
 
     };
 
@@ -66,6 +68,7 @@ public class SecurityConfig {
 
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers(AUTH_AUTHORIZATION).authenticated()
+                        .requestMatchers(AUTH_USER).hasRole("USER")
                         .anyRequest().denyAll()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
