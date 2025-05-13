@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.model;
 
+import com.example.uhabmessenger.model.likes.PostLike;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -54,10 +55,12 @@ public class UserModel {
     )
     private List<PostModel> posts = new ArrayList<>();
 
-
     @ManyToMany(mappedBy = "users")
     @JsonBackReference
     private List<GroupModel> groups = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<PostLike> postLikes;
 
     public List<ImageModel> getImages() {
 

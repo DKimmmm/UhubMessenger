@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class PostHaveCommentsTest extends BaseIntegrationTest {
 
     @Autowired
@@ -36,7 +38,7 @@ public class PostHaveCommentsTest extends BaseIntegrationTest {
     void cascadeTest() {
         UserModel userModel = justUserCreatorRepository();
 
-        Assertions.assertThat(userRepository.count()).isEqualTo(1);
+        assertThat(userRepository.count()).isEqualTo(1);
 
         PostModel postModel = PostModel.builder().title("title").description("des").build();
         CommentModel commentModel = justCommentCreator(userModel);
@@ -44,8 +46,8 @@ public class PostHaveCommentsTest extends BaseIntegrationTest {
         postModel.addComment(commentModel);
         postRepository.save(postModel);
 
-        Assertions.assertThat(postRepository.count()).isEqualTo(1);
-        Assertions.assertThat(commentRepository.count()).isEqualTo(1);
+        assertThat(postRepository.count()).isEqualTo(1);
+        assertThat(commentRepository.count()).isEqualTo(1);
     }
 
     private UserModel justUserCreatorRepository() {
@@ -73,16 +75,16 @@ public class PostHaveCommentsTest extends BaseIntegrationTest {
 
         postRepository.save(postModel);
 
-        Assertions.assertThat(commentRepository.count()).isEqualTo(2);
+        assertThat(commentRepository.count()).isEqualTo(2);
 
         postModel.getComments().remove(commentModel1);
         postRepository.save(postModel);
 
-        Assertions.assertThat(commentRepository.count()).isEqualTo(1);
+        assertThat(commentRepository.count()).isEqualTo(1);
 
         postRepository.deleteAll();
 
-        Assertions.assertThat(commentRepository.count()).isEqualTo(0);
+        assertThat(commentRepository.count()).isEqualTo(0);
 
     }
 

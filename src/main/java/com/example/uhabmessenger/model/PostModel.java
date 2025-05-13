@@ -1,10 +1,12 @@
 package com.example.uhabmessenger.model;
 
+import com.example.uhabmessenger.model.likes.PostLike;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -37,12 +39,24 @@ public class PostModel {
     @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentModel> comments;
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<PostLike> postLikes;
+
     public List<CommentModel> getComments() {
 
         if (comments == null) {
             comments = new ArrayList<>();
         }
         return comments;
+
+    }
+
+    public List<PostLike> getPostLikes() {
+
+        if (Objects.isNull(postLikes)) {
+            postLikes = new ArrayList<>();
+        }
+        return postLikes;
 
     }
 
@@ -62,4 +76,16 @@ public class PostModel {
 
     }
 
+    public void addLike(PostLike postLike) {
+
+        postLike.setPost(this);
+        getPostLikes().add(postLike);
+
+    }
+
+    public void removeLike(PostLike first) {
+
+        getPostLikes().remove(first);
+
+    }
 }

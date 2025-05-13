@@ -59,8 +59,11 @@ public class PostRepositoryTest extends BaseIntegrationTest {
         List<ImageModel> images = imageInitialized();
         PostModel postModel = postModelInitialized(images);
         PostModel postModel1 = postRepository.findById(postModel.getPostId()).orElse(null);
+
         assertThat(postModel1).isNotNull();
+
         List<ImageModel> images1 = postModel1.getImages();
+
         assertThat(images1.size()).isEqualTo(2);
 
         images1.remove(1);
