@@ -6,6 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.constraintvalidation.SupportedValidationTarget;
 import jakarta.validation.constraintvalidation.ValidationTarget;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -28,21 +29,7 @@ public class ImageOrTitleExistValidator implements ConstraintValidator<ImageOrTi
         }
 
 
-        List<MultipartFile> multipartFiles = null;
-
-        if (Objects.nonNull(args[0])) {
-            if (!(args[0] instanceof List<?>)) {
-                throw new IllegalArgumentException(
-                        "Illegal method signature, expected parameter of type List<MultipartFile>");
-            }
-
-            try {
-                multipartFiles = (List<MultipartFile>) args[0];
-            } catch (Exception e) {
-                throw new IllegalArgumentException("arguments of wrong types");
-            }
-
-        }
+        List<MultipartFile> multipartFiles = getMultipartFiles(args);
 
         CreatePostDto createPostDto;
 
@@ -65,8 +52,28 @@ public class ImageOrTitleExistValidator implements ConstraintValidator<ImageOrTi
         boolean hasTitle = Objects.nonNull(createPostDto.title()) && !(createPostDto.title().isBlank()) && createPostDto.title().trim().length() > 3;
         boolean hasValidImages = multipartFiles != null && !multipartFiles.isEmpty() && validateImages(multipartFiles);
 
-
         return hasTitle || hasValidImages;
+    }
+
+    private static @Nullable List<MultipartFile> getMultipartFiles(Object[] args) {
+
+        if (Objects.nonNull(args[0])) {
+
+            if (!(args[0] instanceof List<?>)) {
+                throw new IllegalArgumentException(
+                        "Illegal method signature, expected parameter of type List<MultipartFile>");
+            }
+
+            try {
+                return (List<MultipartFile>) args[0];
+            } catch (Exception e) {
+                throw new IllegalArgumentException("arguments of wrong types");
+            }
+
+        }
+
+        return null;
+
     }
 
     private boolean validateImages(List<MultipartFile> multipartFiles) {
