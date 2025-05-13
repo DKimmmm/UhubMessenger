@@ -27,3 +27,5 @@ databaseChangeLog:
       file: db/liquibase/scripts/13-add-unique-group-title.sql
   - include:
       file: db/liquibase/scripts/14-create-comments-table.sql
+  - include:
+      file: db/liquibase/scripts/15-create-table-post-likes-and-unique-index-for-double-likes.sql
