@@ -1,6 +1,6 @@
 package com.example.uhabmessenger.controller.postsline;
 
-import com.example.uhabmessenger.dto.posts.PostInfoDto;
+import com.example.uhabmessenger.dto.posts.PostWithLikesInfoDto;
 import com.example.uhabmessenger.service.PostLineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class PostLineController {
     private final PostLineService postLineService;
 
     @GetMapping("/post-info/all")
-    public ResponseEntity<List<PostInfoDto>> getAllPostInfoList() {
+    public ResponseEntity<List<PostWithLikesInfoDto>> getAllPostInfoList() {
 
         return ResponseEntity.ok(
                 postLineService.getAllPostInfo()

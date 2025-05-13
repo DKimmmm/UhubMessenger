@@ -4,7 +4,6 @@ import com.example.uhabmessenger.dto.comment.AddCommentDto;
 import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
-import com.example.uhabmessenger.exception.CreatePostException;
 import com.example.uhabmessenger.mapper.PostMapstructService;
 import com.example.uhabmessenger.model.*;
 import com.example.uhabmessenger.repository.entity.PostRepository;

@@ -2,6 +2,7 @@ package com.example.uhabmessenger.mapper;
 
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
+import com.example.uhabmessenger.dto.posts.PostWithLikesInfoDto;
 import com.example.uhabmessenger.model.PostModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -12,5 +13,7 @@ public interface PostMapstructService {
     PostModel toPostModel(CreatePostDto dto);
 
     PostInfoDto toPostInfoDto(PostModel postModel);
+
+    PostWithLikesInfoDto toPostWithLikesInfoDto(PostModel postModel);
 
 }
