@@ -4,6 +4,7 @@ import com.example.uhabmessenger.dto.comment.AddCommentDto;
 import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
+import com.example.uhabmessenger.service.CommentService;
 import com.example.uhabmessenger.service.PostService;
 import com.example.uhabmessenger.validation.method.ImageOrTitleExist;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +28,7 @@ import java.util.UUID;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @ImageOrTitleExist
     @PostMapping(value = "/user/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -69,7 +71,7 @@ public class PostController {
     public ResponseEntity<List<CommentInfoDto>> getPostComments(@RequestParam UUID postId) {
 
         return ResponseEntity.ok(
-                postService.getCommentsByPostId(postId)
+                commentService.getCommentsByPostId(postId)
         );
 
     }

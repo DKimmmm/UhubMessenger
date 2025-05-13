@@ -4,6 +4,7 @@ import com.example.uhabmessenger.dto.comment.AddCommentDto;
 import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
+import com.example.uhabmessenger.service.CommentService;
 import com.example.uhabmessenger.service.PostService;
 import com.example.uhabmessenger.service.user.authorization.AuthUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,6 +57,9 @@ public class PostControllerTest {
 
     @MockitoBean
     private PostService postService;
+
+    @MockitoBean
+    private CommentService commentService;
 
     @Test
     @SneakyThrows
@@ -346,11 +350,11 @@ public class PostControllerTest {
 
         UUID userId = new UUID(12L, 12L);
         List<CommentInfoDto> responseDto = List.of(
-                new CommentInfoDto("text", userId, "username", "userLastname"),
-                new CommentInfoDto("text1", new UUID(121L, 121L), "username1", "userLastname1")
+                new CommentInfoDto(new UUID(51L, 12L),"text", userId, "username", "userLastname"),
+                new CommentInfoDto(new UUID(213L, 432L), "text1", new UUID(121L, 121L), "username1", "userLastname1")
         );
 
-        BDDMockito.given(postService.getCommentsByPostId(any())).willReturn(responseDto);
+        BDDMockito.given(commentService.getCommentsByPostId(any())).willReturn(responseDto);
 
         ResultActions request = mockMvc.perform(
                 MockMvcRequestBuilders.get("/post/get-comments")
@@ -370,7 +374,7 @@ public class PostControllerTest {
                         jsonPath("$[1].text", is("text1"))
                 );
 
-        BDDMockito.then(postService).should(times(1)).getCommentsByPostId(any());
+        BDDMockito.then(commentService).should(times(1)).getCommentsByPostId(any());
 
     }
 

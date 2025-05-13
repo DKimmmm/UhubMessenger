@@ -7,6 +7,7 @@ import com.example.uhabmessenger.exception.GroupSaveException;
 import com.example.uhabmessenger.exception.ImageSaveException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -73,6 +74,17 @@ public class UhubRestControllerAdvice {
         return new ResponseEntity<>(new BadRequestExceptionDto
                 ("Доступ закрыт. Либо ограничен доступ, либо не предоставлены данные для аутентификации ", e.getMessage(), HttpStatus.valueOf(403).value()),
                 HttpStatus.valueOf(403));
+
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<BadRequestExceptionDto> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+
+        e.printStackTrace();
+
+        return new ResponseEntity<>(new BadRequestExceptionDto
+                ("Возможно вы пытаетесь поставить два раза лайк, не делайте так!", e.getMessage(), HttpStatus.valueOf(403).value()),
+                HttpStatus.valueOf(400));
 
     }
 

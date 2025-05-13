@@ -1,5 +1,7 @@
 package com.example.uhabmessenger.repository.entity;
 
+import com.example.uhabmessenger.model.CommentModel;
+import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.model.likes.CommentLike;
 import com.example.uhabmessenger.model.likes.PostLike;
@@ -13,5 +15,7 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, UUID> 
     Optional<CommentLike> findByLikeId(UUID likeId);
 
     Optional<CommentLike> findByUser(UserModel model);
+
+    Optional<CommentLike> findByCommentAndUser(CommentModel comment, UserModel user);
 
 }

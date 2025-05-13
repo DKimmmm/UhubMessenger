@@ -153,30 +153,6 @@ public class PostService {
 
     }
 
-    @Transactional(readOnly = true)
-    public List<CommentInfoDto> getCommentsByPostId(UUID postId) {
-
-        PostModel postModel = postRepository.findByPostId(postId).orElseThrow(
-                () -> new EntityNotFoundException("post not fount by " + postId)
-        );
-
-        return listCommentsToListInfoDto(postModel.getComments());
-
-    }
-
-
-    private List<CommentInfoDto> listCommentsToListInfoDto(List<CommentModel> comments) {
-
-        return comments.stream()
-                .map(comment -> CommentInfoDto.builder()
-                        .text(comment.getText())
-                        .userId(comment.getUser().getUserId())
-                        .userName(comment.getUser().getName())
-                        .userLastname(comment.getUser().getLastname())
-                        .build())
-                .toList();
-
-    }
 
     public void imageDownload(UUID imageId, HttpServletResponse response) {
 

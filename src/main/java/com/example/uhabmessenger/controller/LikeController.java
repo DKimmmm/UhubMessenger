@@ -31,24 +31,24 @@ public class LikeController {
         return ResponseEntity.ok().build();
 
     }
-//
-//    @DeleteMapping("/to-post")
-//    public ResponseEntity<Void> removeLikeToPost(@RequestParam UUID postId,
-//                          @RequestParam UUID userId) {
-//
-//        likeService.removeLikeToPost(postId, userId);
-//        return ResponseEntity.ok().build();
-//
-//    }
-//
-//    @DeleteMapping("/to-comment")
-//    public ResponseEntity<Void> removeLikeToComment(@RequestParam UUID commentId,
-//                                 @RequestParam UUID userId) {
-//
-//        likeService.removeLikeToComment(commentId, userId);
-//        return ResponseEntity.ok().build();
-//
-//    }
+
+    @DeleteMapping("/to-post")
+    public ResponseEntity<Void> removeLikeToPost(@RequestParam UUID postId,
+                          @RequestParam UUID userId) {
+
+        likeService.removeLikeToPost(postId, userId);
+        return ResponseEntity.ok().build();
+
+    }
+
+    @DeleteMapping("/to-comment")
+    public ResponseEntity<Void> removeLikeToComment(@RequestParam UUID commentId,
+                                 @RequestParam UUID userId) {
+
+        likeService.removeLikeToComment(commentId, userId);
+        return ResponseEntity.ok().build();
+
+    }
 
 
 }

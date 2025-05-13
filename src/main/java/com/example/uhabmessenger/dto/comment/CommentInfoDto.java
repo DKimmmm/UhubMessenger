@@ -10,6 +10,8 @@ import java.util.UUID;
 @Builder
 public class CommentInfoDto {
 
+    private UUID commentId;
+
     private String text;
 
     private UUID userId;
