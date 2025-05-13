@@ -7,8 +7,6 @@ import com.example.uhabmessenger.model.likes.PostLike;
 import com.example.uhabmessenger.repository.entity.PostLikeRepository;
 import com.example.uhabmessenger.repository.entity.PostRepository;
 import com.example.uhabmessenger.repository.entity.UserRepository;
-import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +24,6 @@ public class PostLikeRepositoryTest extends BaseIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private EntityManager entityManager;
 
     @BeforeEach
     public void repositoryDel() {
