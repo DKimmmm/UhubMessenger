@@ -36,9 +36,13 @@ public class PostLineService {
 
     private PostWithLikesInfoDto modelToWithLikesInfoDtoWithListImageIds(PostModel postModel) {
 
+        PostWithLikesInfoDto postWithLikesInfoDto = postMapstructService.toPostWithLikesInfoDto(postModel);
+
+        postWithLikesInfoDto.setLikeCount(postModel.getPostLikes().size());
+
         return addImagesIdsToPostWithLikesInfoDto(
                 postModel,
-                postMapstructService.toPostWithLikesInfoDto(postModel)
+                postWithLikesInfoDto
         );
 
     }

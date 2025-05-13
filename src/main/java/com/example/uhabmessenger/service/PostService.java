@@ -69,18 +69,12 @@ public class PostService {
 
     public PostModel save(CreatePostDto createPostDto, List<MultipartFile> multipartFiles) {
 
-        PostModel beginnerPostModel = mapperToModel(createPostDto);
+        PostModel beginnerPostModel = postMapstructService.toPostModel(createPostDto);
 
         List<ImageModel> images = savePostImages(multipartFiles);
         beginnerPostModel.setImages(images);
 
         return beginnerPostModel;
-
-    }
-
-    private PostModel mapperToModel(CreatePostDto createPostDto) {
-
-        return postMapstructService.toPostModel(createPostDto);
 
     }
 

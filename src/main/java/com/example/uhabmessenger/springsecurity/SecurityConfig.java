@@ -36,6 +36,7 @@ public class SecurityConfig {
             "/post/**",       // for swagger access
             "/user/**",
             "/group/**",
+            "/like/**",
 
             "/authorization/**"
 
