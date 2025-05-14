@@ -19,19 +19,21 @@ public class OldScheduleRemoverService {
         //
         List<PostModel> postListForRemark = postList.stream()
                 .filter(post -> isOlderThanXDays(post.getCreateAt(), markThresholdDays))
+                .peek(post -> post.setRemoveMark(true))
                 .toList();
 
         List<PostModel> postListForRemove = postList.stream()
                 .filter(post -> isOlderThanXDays(post.getCreateAt(), alreadyDelThresholdDays))
                 .toList();
 
-        System.out.println("postListForRemark = " + postListForRemark.toString());
-        System.out.println("postListForRemove = " + postListForRemove.toString());
+        System.out.println("postListForRemark = " + postListForRemark);
+        System.out.println("postListForRemove = " + postListForRemove);
 
-////         remark
-//        simplePostService.save(List.of());
-//        // del
-//        simplePostService.delete(List.of());
+
+//         remark
+        simplePostService.save(postListForRemark);
+        // del
+        simplePostService.delete(postListForRemove);
 
     }
 
