@@ -29,7 +29,7 @@ public class PostModel {
 
     private String description;
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     private LocalDateTime createAt;
 
     @Column(name = "remove_mark")
@@ -94,5 +94,12 @@ public class PostModel {
 
         getPostLikes().remove(first);
 
+    }
+
+    public String toString() {
+        return "title = " + title
+                + " description = " + description
+                + " createAt = " + createAt
+                +" removeMark = " + removeMark;
     }
 }

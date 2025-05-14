@@ -25,8 +25,8 @@ public class OldScheduleRemoverService {
                 .filter(post -> isOlderThanXDays(post.getCreateAt(), alreadyDelThresholdDays))
                 .toList();
 
-        System.out.println("postListForRemark = " + postListForRemark.toString().toString());
-        System.out.println("postListForRemove = " + postListForRemove.toString().toString());
+        System.out.println("postListForRemark = " + postListForRemark.toString());
+        System.out.println("postListForRemove = " + postListForRemove.toString());
 
 ////         remark
 //        simplePostService.save(List.of());
