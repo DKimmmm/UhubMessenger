@@ -4,6 +4,7 @@ import com.example.uhabmessenger.model.likes.PostLike;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +28,9 @@ public class PostModel {
     private String title;
 
     private String description;
+
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinTable(
