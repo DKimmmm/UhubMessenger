@@ -5,7 +5,8 @@ import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.service.CommentService;
-import com.example.uhabmessenger.service.PostService;
+import com.example.uhabmessenger.service.post.OldScheduleRemoverService;
+import com.example.uhabmessenger.service.post.PostService;
 import com.example.uhabmessenger.validation.method.ImageOrTitleExist;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final OldScheduleRemoverService oldScheduleRemoverService;
 
     @ImageOrTitleExist
     @PostMapping(value = "/user/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -80,6 +82,16 @@ public class PostController {
     public ResponseEntity<Void> imageDownload(@PathVariable UUID imageId, HttpServletResponse response) {
 
         postService.imageDownload(imageId, response);
+        return ResponseEntity.ok().build();
+
+    }
+
+    @DeleteMapping("/old-scheduler")
+    public ResponseEntity<Void> oldScheduleRemover(@RequestParam Integer markThresholdDays,
+                                                   @RequestParam Integer alreadyDelThresholdDays) {
+
+        log.info("old post remover controller tap");
+        oldScheduleRemoverService.checkForMarkAndRemove(markThresholdDays, alreadyDelThresholdDays);
         return ResponseEntity.ok().build();
 
     }

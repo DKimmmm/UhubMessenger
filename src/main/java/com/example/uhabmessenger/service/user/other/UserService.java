@@ -11,7 +11,7 @@ import com.example.uhabmessenger.model.GroupModel;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.UserModel;
 import com.example.uhabmessenger.service.ImageService;
-import com.example.uhabmessenger.service.PostService;
+import com.example.uhabmessenger.service.post.PostService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

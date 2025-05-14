@@ -1,12 +1,12 @@
-package com.example.uhabmessenger.service;
+package com.example.uhabmessenger.service.post;
 
 import com.example.uhabmessenger.dto.comment.AddCommentDto;
-import com.example.uhabmessenger.dto.comment.CommentInfoDto;
 import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.mapper.PostMapstructService;
 import com.example.uhabmessenger.model.*;
 import com.example.uhabmessenger.repository.entity.PostRepository;
+import com.example.uhabmessenger.service.ImageService;
 import com.example.uhabmessenger.service.groups.SimpleGroupService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +35,8 @@ public class PostService {
     private final PostRepository postRepository;
 
     private final ImageService imageService;
+
+    private final OldScheduleRemoverService oldScheduleRemoverService;
 
     public void userPostSave(CreatePostDto createPostDto, List<MultipartFile> multipartFiles) {
 
@@ -168,4 +170,5 @@ public class PostService {
         return postRepository.findAll();
 
     }
+
 }

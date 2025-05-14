@@ -5,7 +5,7 @@ import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.dto.register.SignUpDto;
 import com.example.uhabmessenger.dto.user.UserInfoDto;
 import com.example.uhabmessenger.model.UserModel;
-import com.example.uhabmessenger.service.PostService;
+import com.example.uhabmessenger.service.post.PostService;
 import com.example.uhabmessenger.service.groups.GroupService;
 import com.example.uhabmessenger.service.user.other.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;

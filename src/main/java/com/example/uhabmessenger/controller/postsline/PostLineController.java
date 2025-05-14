@@ -1,7 +1,7 @@
 package com.example.uhabmessenger.controller.postsline;
 
 import com.example.uhabmessenger.dto.posts.PostWithLikesInfoDto;
-import com.example.uhabmessenger.service.PostLineService;
+import com.example.uhabmessenger.service.post.PostLineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.example.uhabmessenger.service;
+package com.example.uhabmessenger.service.post;
 
 import com.example.uhabmessenger.dto.posts.PostWithLikesInfoDto;
 import com.example.uhabmessenger.mapper.PostMapstructService;
