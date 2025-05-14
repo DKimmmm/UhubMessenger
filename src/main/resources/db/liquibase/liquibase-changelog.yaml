@@ -33,3 +33,5 @@ databaseChangeLog:
       file: db/liquibase/scripts/16-create-table-comment-likes.sql
   - include:
       file: db/liquibase/scripts/17-alter-post-table-add-timestamp-createat.sql
+  - include:
+      file: db/liquibase/scripts/18-alter-post-table-add-mark-for-delete.sql

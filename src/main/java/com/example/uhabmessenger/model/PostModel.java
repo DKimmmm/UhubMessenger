@@ -32,6 +32,9 @@ public class PostModel {
     @Column(name = "create_at")
     private LocalDateTime createAt;
 
+    @Column(name = "remove_mark")
+    private Boolean removeMark;
+
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinTable(
             name = "post_images",
