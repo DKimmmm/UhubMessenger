@@ -24,4 +24,6 @@ public class PostWithLikesInfoDto {
 
     private Integer likeCount;
 
+    private Integer commentCount;
+
 }

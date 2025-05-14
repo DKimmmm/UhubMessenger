@@ -40,6 +40,8 @@ public class PostLineService {
 
         postWithLikesInfoDto.setLikeCount(postModel.getPostLikes().size());
 
+        postWithLikesInfoDto.setCommentCount(postModel.getComments().size());
+
         return addImagesIdsToPostWithLikesInfoDto(
                 postModel,
                 postWithLikesInfoDto
