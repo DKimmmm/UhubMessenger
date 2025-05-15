@@ -4,13 +4,11 @@ server:
     context-path: ${PROJECT_API}
 
 
-minio:
-  url: ${MINIO_URL}
-  access-key: ${MINIO_ACCESS_KEY}
-  secret-key: ${MINIO_SECRET_KEY}
-  bucket-name: ${MINIO_BUCKET_NAME}
-
 spring:
+
+  application:
+    name: ${PROJECT_NAME}
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -31,7 +29,15 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
-      max-request-size: 10MB
+      max-request-size: 10MBv
+
+
+minio:
+  url: ${MINIO_URL}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  bucket-name: ${MINIO_BUCKET_NAME}
+
 
 logging:
   level:
