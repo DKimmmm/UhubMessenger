@@ -147,19 +147,12 @@ public class PostService {
 
     }
 
-
     public void imageDownload(UUID imageId, HttpServletResponse response) {
 
         imageService.downloadFromMinio(
                 imageService.findByImageId(imageId),
                 response
         );
-
-    }
-
-    public List<PostModel> getAllPostList() {
-
-        return simplePostService.findAllByRemoveMark(false);
 
     }
 
