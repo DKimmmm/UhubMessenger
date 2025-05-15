@@ -5,6 +5,9 @@ import com.example.uhabmessenger.mapper.PostMapstructService;
 import com.example.uhabmessenger.model.ImageModel;
 import com.example.uhabmessenger.model.PostModel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,15 +17,31 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PostLineService {
 
-    private final PostService postService;
+    private final SimplePostService simplePostService;
+
     private final PostMapstructService postMapstructService;
 
 
     public List<PostWithLikesInfoDto> getAllPostInfo() {
 
         return createPostWithLikeInfoDtosByPostModelList(
-                postService.getAllPostList()
+                simplePostService.findAllByRemoveMark(false)
         );
+
+    }
+
+    public List<PostWithLikesInfoDto> getAllPostInfoBySpecification(Integer pageSize, Boolean isSortedByLikes, Boolean isSortedByComments, String searchedBy) {
+
+        Pageable pageable = PageRequest.of(0, pageSize);
+
+        Specification<PostModel> specification = PostSpecifications.withFilters(
+                isSortedByLikes, isSortedByComments, searchedBy
+        );
+
+        List<PostModel> allBySpecification =
+                simplePostService.getAllBySpecification(specification, pageable);
+
+        return createPostWithLikeInfoDtosByPostModelList(allBySpecification);
 
     }
 

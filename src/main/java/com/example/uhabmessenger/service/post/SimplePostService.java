@@ -4,6 +4,8 @@ import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.repository.entity.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,4 +80,13 @@ public class SimplePostService {
         return postRepository.findAllByRemoveMark(isRemoved);
 
     }
+
+    public List<PostModel> getAllBySpecification(Specification<PostModel> postModelSpecification, Pageable pageable) {
+
+        return postRepository.findAll(postModelSpecification, pageable)
+                .stream()
+                .toList();
+
+    }
+
 }
