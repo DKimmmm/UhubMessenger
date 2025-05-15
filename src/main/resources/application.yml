@@ -29,7 +29,7 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
-      max-request-size: 10MBv
+      max-request-size: 10MB
 
 
 minio:
