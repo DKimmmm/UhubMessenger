@@ -167,7 +167,7 @@ public class PostService {
 
     public List<PostModel> getAllPostList() {
 
-        return postRepository.findAll();
+        return postRepository.findAllByRemoveMark(false);
 
     }
 
