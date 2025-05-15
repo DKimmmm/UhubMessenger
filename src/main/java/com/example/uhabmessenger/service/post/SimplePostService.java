@@ -2,10 +2,12 @@ package com.example.uhabmessenger.service.post;
 
 import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.repository.entity.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +62,20 @@ public class SimplePostService {
         } catch (Exception e) {
             throw new RuntimeException("error at post find all");
         }
+
+    }
+
+    public PostModel findById(UUID postId) {
+
+        return postRepository.findByPostId(postId).orElseThrow(
+                () -> new EntityNotFoundException("post not found by " + postId)
+        );
+
+    }
+
+    public List<PostModel> findAllByRemoveMark(boolean isRemoved) {
+
+        return postRepository.findAllByRemoveMark(isRemoved);
 
     }
 }

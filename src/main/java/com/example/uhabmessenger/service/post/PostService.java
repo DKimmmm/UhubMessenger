@@ -5,11 +5,9 @@ import com.example.uhabmessenger.dto.posts.CreatePostDto;
 import com.example.uhabmessenger.dto.posts.PostInfoDto;
 import com.example.uhabmessenger.mapper.PostMapstructService;
 import com.example.uhabmessenger.model.*;
-import com.example.uhabmessenger.repository.entity.PostRepository;
 import com.example.uhabmessenger.service.ImageService;
 import com.example.uhabmessenger.service.groups.SimpleGroupService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,11 +30,9 @@ public class PostService {
 
     private final SimpleGroupService simpleGroupService;
 
-    private final PostRepository postRepository;
+    private final SimplePostService simplePostService;
 
     private final ImageService imageService;
-
-    private final OldScheduleRemoverService oldScheduleRemoverService;
 
     public void userPostSave(CreatePostDto createPostDto, List<MultipartFile> multipartFiles) {
 
@@ -96,8 +92,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostInfoDto getPostInfo(UUID postId) {
 
-        PostModel postModel = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new EntityNotFoundException("post not found"));
+        PostModel postModel = simplePostService.findById(postId);
 
         return modelToInfoDtoWithListImageIds(postModel);
 
@@ -140,10 +135,7 @@ public class PostService {
     @Transactional
     public void addComment(AddCommentDto addCommentDto) {
 
-        PostModel postModel = postRepository.findByPostId(addCommentDto.postId())
-                .orElseThrow(() ->
-                        new EntityNotFoundException("post not found by id: " + addCommentDto.postId())
-                );
+        PostModel postModel = simplePostService.findById(addCommentDto.postId());
 
         CommentModel commentModel = CommentModel.builder()
                 .text(addCommentDto.text())
@@ -151,7 +143,7 @@ public class PostService {
                 .build();
 
         postModel.addComment(commentModel);
-        postRepository.save(postModel);
+        simplePostService.save(postModel);
 
     }
 
@@ -167,7 +159,7 @@ public class PostService {
 
     public List<PostModel> getAllPostList() {
 
-        return postRepository.findAllByRemoveMark(false);
+        return simplePostService.findAllByRemoveMark(false);
 
     }
 

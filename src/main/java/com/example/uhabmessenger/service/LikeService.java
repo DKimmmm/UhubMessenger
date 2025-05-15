@@ -9,6 +9,7 @@ import com.example.uhabmessenger.repository.entity.CommentLikeRepository;
 import com.example.uhabmessenger.repository.entity.CommentRepository;
 import com.example.uhabmessenger.repository.entity.PostLikeRepository;
 import com.example.uhabmessenger.repository.entity.PostRepository;
+import com.example.uhabmessenger.service.post.SimplePostService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,8 @@ public class LikeService {
 
     private final SimpleUserService simpleUserService;
 
-    private final PostRepository postRepository;
+//    private final PostRepository postRepository;
+    private final SimplePostService simplePostService;
 
     private final CommentRepository commentRepository;
 
@@ -34,9 +36,7 @@ public class LikeService {
     @Transactional
     public void addLikeToPost(UUID postId, UUID userId) {
 
-        PostModel postModel = postRepository.findByPostId(postId).orElseThrow(
-                () -> new EntityNotFoundException("post not found by " + postId.toString())
-        );
+        PostModel postModel = simplePostService.findById(postId);
 
         UserModel userModel = simpleUserService.findById(userId);
 
@@ -49,7 +49,7 @@ public class LikeService {
 
         );
 
-        postRepository.save(postModel);
+        simplePostService.save(postModel);
 
     }
 
@@ -80,9 +80,7 @@ public class LikeService {
 
         UserModel user = simpleUserService.findById(userId);
 
-        PostModel post = postRepository.findByPostId(postId).orElseThrow(
-                () -> new EntityNotFoundException("post not found by " + postId)
-        );
+        PostModel post = simplePostService.findById(postId);
 
         PostLike like = postLikeRepository.findByPostAndUser(post, user).orElseThrow(
                 () -> new EntityNotFoundException("post like not found")
@@ -90,7 +88,7 @@ public class LikeService {
 
         post.removeLike(like);
 
-        postRepository.save(post);
+        simplePostService.save(post);
 
     }
 
