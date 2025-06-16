@@ -8,7 +8,6 @@ import com.example.uhabmessenger.model.likes.PostLike;
 import com.example.uhabmessenger.repository.entity.CommentLikeRepository;
 import com.example.uhabmessenger.repository.entity.CommentRepository;
 import com.example.uhabmessenger.repository.entity.PostLikeRepository;
-import com.example.uhabmessenger.repository.entity.PostRepository;
 import com.example.uhabmessenger.service.post.SimplePostService;
 import com.example.uhabmessenger.service.user.other.SimpleUserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,7 +23,6 @@ public class LikeService {
 
     private final SimpleUserService simpleUserService;
 
-//    private final PostRepository postRepository;
     private final SimplePostService simplePostService;
 
     private final CommentRepository commentRepository;
