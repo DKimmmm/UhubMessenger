@@ -1,5 +1,6 @@
 package com.example.uhabmessenger.service;
 
+import com.example.uhabmessenger.annotation.KafkaAsyncLogging;
 import com.example.uhabmessenger.model.CommentModel;
 import com.example.uhabmessenger.model.PostModel;
 import com.example.uhabmessenger.model.UserModel;
@@ -32,6 +33,7 @@ public class LikeService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
+    @KafkaAsyncLogging(sendMessage = "был создан лайк для поста с id: ", sendArgNumber = 0)
     public void addLikeToPost(UUID postId, UUID userId) {
 
         PostModel postModel = simplePostService.findById(postId);
