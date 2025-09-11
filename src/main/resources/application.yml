@@ -1,18 +1,59 @@
 server:
-  port: 8081
+  port: ${SERVER_PORT}
+  servlet:
+    context-path: ${PROJECT_API}
+
 
 spring:
+
+  application:
+    name: ${PROJECT_NAME}
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-  sql:
-    init:
-      schema-locations: classpath:sql/schema.sql
-      data-locations: classpath:sql/data.sql
-      mode: always
+  liquibase:
+    enabled: true
+    change-log: classpath:db/liquibase/liquibase-changelog.yaml
 
   jpa:
     hibernate:
-      ddl-auto=update:
+      ddl-auto: none
+
+    properties:
+      hibernate:
+        show_sql: false
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  kafka:
+    topic: my-topic
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+
+minio:
+  url: ${MINIO_URL}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  bucket-name: ${MINIO_BUCKET_NAME}
+
+
+logging:
+  level:
+    org.springframework.transaction: ERROR
+    org.springframework.orm.jpa: ERROR
+    org.springframework.jdbc: ERROR
+    org.springframework.aop: ERROR
